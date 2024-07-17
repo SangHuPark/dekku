@@ -1,0 +1,10 @@
+{
+    "extends": ["next", "prettier"],
+    "plugins": ["prettier"],
+    "rules": {
+      "prettier/prettier": ["error", { "singleQuote": true, "semi": false }]
+    }
+  }
+// extends: ESLint의 기본 설정을 확장합니다. next는 Next.js에서 권장하는 ESLint 설정을 포함하고, prettier는 Prettier와 충돌하는 ESLint 규칙을 비활성화합니다.
+// plugins: ESLint 플러그인을 설정합니다. prettier 플러그인은 Prettier를 ESLint와 함께 사용할 수 있게 합니다.
+// rules: 사용자 정의 규칙을 설정합니다. 여기서는 Prettier 규칙을 ESLint 오류로 보고하고, singleQuote(작은 따옴표 사용)와 semi(세미콜론 사용) 옵션을 설정합니다.
