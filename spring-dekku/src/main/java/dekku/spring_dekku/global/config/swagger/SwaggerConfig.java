@@ -1,5 +1,6 @@
 package dekku.spring_dekku.global.config.swagger;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
@@ -10,6 +11,11 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import java.util.Arrays;
 
 @Configuration
+@OpenAPIDefinition(
+        servers = {
+                @io.swagger.v3.oas.annotations.servers.Server(url="http://localhost:8080/", description = "Default Server url")
+        }
+)
 public class SwaggerConfig {
 
     @Bean
