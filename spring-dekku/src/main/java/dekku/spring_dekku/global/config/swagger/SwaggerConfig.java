@@ -39,8 +39,8 @@ public class SwaggerConfig {
 
     private Info getInfo() {
         return new Info()
-                .title("SSAFY TRIP API")
-                .description("SSAFY TRIP DOCS");
+                .title("SSAFY Dekku API")
+                .description("SSAFY Dekku DOCS");
     }
 
 
