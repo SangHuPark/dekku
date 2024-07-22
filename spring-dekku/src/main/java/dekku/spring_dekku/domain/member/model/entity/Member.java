@@ -1,45 +1,41 @@
 package dekku.spring_dekku.domain.member.model.entity;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import jakarta.persistence.*;
+import java.sql.Timestamp;
+
+@Entity
+@Data
+@NoArgsConstructor
 public class Member {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long user_id;
 
-	private long id;
+	@Column(nullable = false, unique = true)
 	private String email;
+
+	@Column(nullable = false)
 	private String password;
-	private String nickName;
 
-	public Member() {
-	}
+	@Column(nullable = false)
+	private String name;
 
-	public long getId() {
-		return id;
-	}
+	@Column(nullable = false, unique = true)
+	private String nickname;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+	private String phone;
 
-	public String getEmail() {
-		return email;
-	}
+	private String image_url;
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+	private Timestamp created_at;
 
-	public String getPassword() {
-		return password;
-	}
+	private Timestamp deleted_at;
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getNickName() {
-		return nickName;
-	}
-
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
-	}
-
+	@ManyToOne
+	@JoinColumn(name = "role_id")
+	private MemberRole role;
 }
+
