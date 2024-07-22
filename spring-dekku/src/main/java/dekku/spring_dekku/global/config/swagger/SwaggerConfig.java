@@ -6,7 +6,7 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+
 
 import java.util.Arrays;
 
@@ -14,7 +14,12 @@ import java.util.Arrays;
 @OpenAPIDefinition(
         servers = {
                 @io.swagger.v3.oas.annotations.servers.Server(url="http://localhost:8080/", description = "Default Server url")
-        }
+        },
+        info = @io.swagger.v3.oas.annotations.info.Info(
+                title = "Dekku API 명세서",
+                description = "Dekku API 명세서 입니다.",
+                version = "v1.0.0"
+        )
 )
 public class SwaggerConfig {
 
