@@ -1,35 +1,335 @@
-// src/data.js
+export const datas = [
+  // 기존 데이터
+  {
+    id: 1,
+    imgSrc: "/desk1.jpg",
+    profileImg: "/profile_icon1.png",
+    username: "한국최고ILoveKorea",
+    description: "역시 데스크테리어는 한국풍이지~",
+    views: "12,000",
+    likes: "3,000",
+    comments: "100",
+    createdAt: "2024-06-01" // 가장 오래된 날짜
+  },
+  {
+    id: 2,
+    imgSrc: "/desk2.jpg",
+    profileImg: "/profile_icon2.png",
+    username: "게임밥잠",
+    description: "같이 게임하실 분 연락주세요",
+    views: "10,000",
+    likes: "2,000",
+    comments: "75",
+    createdAt: "2024-06-08"
+  },
+  {
+    id: 3,
+    imgSrc: "/desk3.jpg",
+    profileImg: "/profile_icon3.png",
+    username: "_nice_guy123",
+    description: "혼자 있고 싶어요 다 나가주세요",
+    views: "8,000",
+    likes: "1,000",
+    comments: "50",
+    createdAt: "2024-06-15"
+  },
+  {
+    id: 4,
+    imgSrc: "/desk1.jpg",
+    profileImg: "/profile_icon1.png",
+    username: "CoolDeskFan",
+    description: "새로운 데스크 가구 너무 좋아요!",
+    views: "15,000",
+    likes: "4,500",
+    comments: "120",
+    createdAt: "2024-06-22"
+  },
+  {
+    id: 5,
+    imgSrc: "/desk2.jpg",
+    profileImg: "/profile_icon2.png",
+    username: "TechEnthusiast",
+    description: "최신 기술로 꾸민 제 데스크!",
+    views: "20,000",
+    likes: "5,000",
+    comments: "150",
+    createdAt: "2024-07-17"
+  },
+  {
+    id: 6,
+    imgSrc: "/desk3.jpg",
+    profileImg: "/profile_icon3.png",
+    username: "MinimalistMaster",
+    description: "미니멀한 디자인이 최고입니다",
+    views: "9,000",
+    likes: "2,200",
+    comments: "90",
+    createdAt: "2024-07-18"
+  },
+  {
+    id: 7,
+    imgSrc: "/desk1.jpg",
+    profileImg: "/profile_icon1.png",
+    username: "GamerPro",
+    description: "게임할 때 이 데스크가 최고!",
+    views: "13,000",
+    likes: "3,500",
+    comments: "110",
+    createdAt: "2024-07-19"
+  },
+  {
+    id: 8,
+    imgSrc: "/desk2.jpg",
+    profileImg: "/profile_icon2.png",
+    username: "Workaholic",
+    description: "효율적인 작업 환경을 위한 데스크",
+    views: "11,000",
+    likes: "2,800",
+    comments: "80",
+    createdAt: "2024-07-20"
+  },
+  {
+    id: 9,
+    imgSrc: "/desk3.jpg",
+    profileImg: "/profile_icon3.png",
+    username: "CreativeSoul",
+    description: "창의력을 자극하는 데스크",
+    views: "14,000",
+    likes: "3,700",
+    comments: "130",
+    createdAt: "2024-07-21"
+  },
+  {
+    id: 10,
+    imgSrc: "/desk1.jpg",
+    profileImg: "/profile_icon1.png",
+    username: "DeskLover",
+    description: "편안한 데스크가 필요하신가요?",
+    views: "16,000",
+    likes: "4,200",
+    comments: "140",
+    createdAt: "2024-07-22" // 가장 최근 날짜
+  },
 
-export const cards = [
-    {
-      id: 1,
-      imgSrc: "/desk1.jpg",
-      profileImg: "/profile_icon1.png",
-      username: "한국최고ILoveKorea",
-      description: "역시 데스크테리어는 한국풍이지~",
-      views: "12,000",
-      likes: "3,000",
-      comments: "100"
-    },
-    {
-      id: 2,
-      imgSrc: "/desk2.jpg",
-      profileImg: "/profile_icon2.png",
-      username: "게임밥잠",
-      description: "같이 게임하실 분 연락주세요",
-      views: "10,000",
-      likes: "2,000",
-      comments: "75"
-    },
-    {
-      id: 3,
-      imgSrc: "/desk3.jpg",
-      profileImg: "/profile_icon3.png",
-      username: "_nice_guy123",
-      description: "혼자 있고 싶어요 다 나가주세요",
-      views: "8,000",
-      likes: "1,000",
-      comments: "50"
-    }
-  ];
-  
+  // 추가 데이터
+  {
+    id: 11,
+    imgSrc: "/desk2.jpg",
+    profileImg: "/profile_icon2.png",
+    username: "OfficeGuru",
+    description: "완벽한 오피스 환경",
+    views: "18,000",
+    likes: "4,800",
+    comments: "110",
+    createdAt: "2024-07-24"
+  },
+  {
+    id: 12,
+    imgSrc: "/desk3.jpg",
+    profileImg: "/profile_icon3.png",
+    username: "HomeHacker",
+    description: "편안한 홈 오피스",
+    views: "17,000",
+    likes: "4,200",
+    comments: "105",
+    createdAt: "2024-07-25"
+  },
+  {
+    id: 13,
+    imgSrc: "/desk1.jpg",
+    profileImg: "/profile_icon1.png",
+    username: "DigitalNomad",
+    description: "이동 중에도 효율적인 작업 환경",
+    views: "21,000",
+    likes: "5,500",
+    comments: "140",
+    createdAt: "2024-07-26"
+  },
+  {
+    id: 14,
+    imgSrc: "/desk2.jpg",
+    profileImg: "/profile_icon2.png",
+    username: "TechJunkie",
+    description: "최신 기기와 함께",
+    views: "19,000",
+    likes: "4,600",
+    comments: "115",
+    createdAt: "2024-07-27"
+  },
+  {
+    id: 15,
+    imgSrc: "/desk3.jpg",
+    profileImg: "/profile_icon3.png",
+    username: "StudyMaster",
+    description: "공부하기 좋은 환경",
+    views: "15,000",
+    likes: "3,800",
+    comments: "100",
+    createdAt: "2024-07-28"
+  },
+  {
+    id: 16,
+    imgSrc: "/desk1.jpg",
+    profileImg: "/profile_icon1.png",
+    username: "ZenSpace",
+    description: "편안하고 조용한 공간",
+    views: "16,500",
+    likes: "4,000",
+    comments: "120",
+    createdAt: "2024-07-29"
+  },
+  {
+    id: 17,
+    imgSrc: "/desk2.jpg",
+    profileImg: "/profile_icon2.png",
+    username: "CreativeMind",
+    description: "창의력을 자극하는 공간",
+    views: "22,000",
+    likes: "5,200",
+    comments: "135",
+    createdAt: "2024-07-30"
+  },
+  {
+    id: 18,
+    imgSrc: "/desk3.jpg",
+    profileImg: "/profile_icon3.png",
+    username: "Minimalist",
+    description: "미니멀 디자인의 정수",
+    views: "14,500",
+    likes: "3,600",
+    comments: "95",
+    createdAt: "2024-07-31"
+  },
+  {
+    id: 19,
+    imgSrc: "/desk1.jpg",
+    profileImg: "/profile_icon1.png",
+    username: "WorkspaceWizard",
+    description: "효율적인 작업 공간",
+    views: "20,500",
+    likes: "4,900",
+    comments: "125",
+    createdAt: "2024-08-01"
+  },
+  {
+    id: 20,
+    imgSrc: "/desk2.jpg",
+    profileImg: "/profile_icon2.png",
+    username: "GamerZone",
+    description: "최고의 게임 환경",
+    views: "23,000",
+    likes: "5,700",
+    comments: "145",
+    createdAt: "2024-08-02"
+  },
+  {
+    id: 21,
+    imgSrc: "/desk3.jpg",
+    profileImg: "/profile_icon3.png",
+    username: "TechFanatic",
+    description: "최신 기술로 꾸민 데스크",
+    views: "25,000",
+    likes: "6,000",
+    comments: "160",
+    createdAt: "2024-08-03"
+  },
+  {
+    id: 22,
+    imgSrc: "/desk1.jpg",
+    profileImg: "/profile_icon1.png",
+    username: "DeskEnthusiast",
+    description: "작업 효율을 높이는 데스크",
+    views: "18,500",
+    likes: "4,700",
+    comments: "120",
+    createdAt: "2024-08-04"
+  },
+  {
+    id: 23,
+    imgSrc: "/desk2.jpg",
+    profileImg: "/profile_icon2.png",
+    username: "StylishWork",
+    description: "스타일리시한 작업 환경",
+    views: "22,500",
+    likes: "5,300",
+    comments: "130",
+    createdAt: "2024-08-05"
+  },
+  {
+    id: 24,
+    imgSrc: "/desk3.jpg",
+    profileImg: "/profile_icon3.png",
+    username: "ProductiveSpace",
+    description: "생산성을 높이는 데스크",
+    views: "19,000",
+    likes: "4,400",
+    comments: "110",
+    createdAt: "2024-08-06"
+  },
+  {
+    id: 25,
+    imgSrc: "/desk1.jpg",
+    profileImg: "/profile_icon1.png",
+    username: "ModernMinimal",
+    description: "모던하고 미니멀한 공간",
+    views: "16,000",
+    likes: "4,100",
+    comments: "105",
+    createdAt: "2024-08-07"
+  },
+  {
+    id: 26,
+    imgSrc: "/desk2.jpg",
+    profileImg: "/profile_icon2.png",
+    username: "OfficeHero",
+    description: "최고의 오피스 환경",
+    views: "23,500",
+    likes: "5,800",
+    comments: "145",
+    createdAt: "2024-08-08"
+  },
+  {
+    id: 27,
+    imgSrc: "/desk3.jpg",
+    profileImg: "/profile_icon3.png",
+    username: "ChicWorkspace",
+    description: "세련된 작업 공간",
+    views: "20,000",
+    likes: "4,900",
+    comments: "125",
+    createdAt: "2024-08-09"
+  },
+  {
+    id: 28,
+    imgSrc: "/desk1.jpg",
+    profileImg: "/profile_icon1.png",
+    username: "UltimateDesk",
+    description: "궁극의 데스크 환경",
+    views: "24,000",
+    likes: "6,200",
+    comments: "155",
+    createdAt: "2024-08-10"
+  },
+  {
+    id: 29,
+    imgSrc: "/desk2.jpg",
+    profileImg: "/profile_icon2.png",
+    username: "GamerDen",
+    description: "게임을 위한 완벽한 공간",
+    views: "26,000",
+    likes: "6,500",
+    comments: "170",
+    createdAt: "2024-08-11"
+  },
+  {
+    id: 30,
+    imgSrc: "/desk3.jpg",
+    profileImg: "/profile_icon3.png",
+    username: "CreativeHub",
+    description: "창의적인 작업을 위한 공간",
+    views: "27,000",
+    likes: "6,800",
+    comments: "180",
+    createdAt: "2024-08-12"
+  }
+];
