@@ -10,6 +10,7 @@ import dekku.spring_dekku.global.common.model.dto.ResponseDto;
 import dekku.spring_dekku.global.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -28,7 +29,7 @@ public class ExceptionAdviceController {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	@ExceptionHandler({BaseException.class})
+	/*@ExceptionHandler({BaseException.class})
 	protected ResponseEntity<String> handleBaseException(BaseException exception) {
 
 		ResponseDto<String> result = new ResponseDto<>();
@@ -39,7 +40,7 @@ public class ExceptionAdviceController {
 
 		return ResponseUtil.error(result, exception.getErrorCode());
 
-	}
+	}*/
 
 	@ExceptionHandler({MethodArgumentNotValidException.class})
 	protected ResponseEntity<List<String>> handleValidException(MethodArgumentNotValidException exception) {
