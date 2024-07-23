@@ -6,9 +6,24 @@ package dekku.spring_dekku.domain.member.repository;
 //import com.trip.domain.member.model.entity.Member;
 
 import dekku.spring_dekku.domain.member.model.entity.Member;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {}
+import java.util.Optional;
+
+public interface MemberRepository extends JpaRepository<Member, Long> {
+    Member findByEmail(String email);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Member m SET m.token = :token WHERE m.email = :email")
+    void updateTokenByEmail(@Param("email") String email, @Param("token") String token);
+}
+
+
 
 //public interface MemberRepository {
 //

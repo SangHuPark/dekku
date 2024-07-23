@@ -1,14 +1,13 @@
 package dekku.spring_dekku.domain.member.model.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Data
-@NoArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,8 +33,28 @@ public class Member {
 
 	private Timestamp deleted_at;
 
-	@ManyToOne
-	@JoinColumn(name = "role_id")
-	private MemberRole role;
+	private String token;
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private MemberRole memberRole;
+
+	@Builder
+	public Member(Long user_id, String email, String password, String name, String nickname, String phone, Timestamp created_at) {
+		this.user_id = user_id;
+		this.email = email;
+		this.password = password;
+		this.name = name;
+		this.nickname = nickname;
+		this.phone = phone;
+		this.created_at = created_at;
+		this.memberRole = MemberRole.COMMON;
+	}
+
 }
 
