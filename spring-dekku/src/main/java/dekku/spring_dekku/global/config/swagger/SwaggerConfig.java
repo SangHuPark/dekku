@@ -20,7 +20,7 @@ public class SwaggerConfig {
 
         return new OpenAPI()
                 .info(getInfo())
-                .servers(List.of(localServer)); // Arrays.asList() => List.of()
+                .servers(List.of(localServer)); // Arrays.asList() == List.of()
 
     }
 
