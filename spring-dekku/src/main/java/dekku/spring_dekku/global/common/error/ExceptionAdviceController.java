@@ -8,6 +8,7 @@ import dekku.spring_dekku.global.common.error.code.ErrorCode;
 import dekku.spring_dekku.global.common.error.exeption.BaseException;
 import dekku.spring_dekku.global.common.model.dto.ResponseDto;
 import dekku.spring_dekku.global.util.ResponseUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ProblemDetail;
@@ -24,12 +25,11 @@ import static dekku.spring_dekku.global.common.constant.Format.VALID_ERROR_RESUL
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 
+@Slf4j
 @RestControllerAdvice
 public class ExceptionAdviceController {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
-
-	/*@ExceptionHandler({BaseException.class})
+	@ExceptionHandler({BaseException.class})
 	protected ResponseEntity<String> handleBaseException(BaseException exception) {
 
 		ResponseDto<String> result = new ResponseDto<>();
@@ -40,7 +40,7 @@ public class ExceptionAdviceController {
 
 		return ResponseUtil.error(result, exception.getErrorCode());
 
-	}*/
+	}
 
 	@ExceptionHandler({MethodArgumentNotValidException.class})
 	protected ResponseEntity<List<String>> handleValidException(MethodArgumentNotValidException exception) {
