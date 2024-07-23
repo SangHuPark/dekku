@@ -1,0 +1,29 @@
+/* app/styles/NavBar.css */
+.navbar {
+    background-color: #f3cbd3;
+    padding: 20px;
+    width: 200px;
+  }
+  
+  .navbar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .navbar ul li {
+    margin-bottom: 10px;
+  }
+  
+  .navbar ul li a {
+    text-decoration: none;
+    color: #000;
+    display: block;
+    padding: 10px;
+    background-color: #e6b3bc;
+    border-radius: 5px;
+  }
+  
+  .navbar ul li a:hover {
+    background-color: #d19ba3;
+  }
+  

@@ -1,10 +1,10 @@
 // app/page.js
-import MainContent from './components/MainContent';
+import HomeContent from './components/HomeContent';
 
 export default function HomePage() {
   return (
     <div>
-      <MainContent />
+      <HomeContent />
     </div>
   );
 }

@@ -1,16 +1,11 @@
-/* app/globals.css */
+/* app/styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* TailwindCSS 유틸리티를 사용하는 스타일 */
 body {
-  font-family: Arial, sans-serif;
+  @apply font-sans;
   margin: 0;
   padding: 0;
-}
-
-footer {
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  padding: 10px 0;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
 }

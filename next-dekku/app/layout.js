@@ -1,18 +1,21 @@
 // app/layout.js
-import './styles/globals.css'
-import Layout from './components/Layout'
+import Header from './components/Header';
+import Footer from './components/Footer';
+import './styles/globals.css';
 
 export const metadata = {
   title: 'Next Dekku',
   description: 'A Next.js project',
-}
+};
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Layout>{children}</Layout>
+        <Header />
+        <main>{children}</main>
+        <Footer />
       </body>
     </html>
-  )
+  );
 }
