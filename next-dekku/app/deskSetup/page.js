@@ -86,32 +86,32 @@ export default function DeskSetupPage() {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold mb-2">최근 인기 데스크 셋업</h1>
-        <h3 className="text-gray-400 mb-4">조회, 관심 급상승(최근 3일)</h3>
+        <h1 className="text-2xl font-bold mb-2">최근 인기 데스크셋업</h1>
+        <h3 className="text-gray-400 mb-4">조회, 관심 급상승 (최근 일주일)</h3>
         <div className="flex justify-center space-x-4 mb-8">
           {recentTopPosts.map(data => (
             <DeskSetupCard key={data.id} data={data} />
           ))}
         </div>
         <hr className="border-t-2 border-gray-500 mb-8" />
-        <h1 className="text-2xl font-bold mb-4">모든 데스크 셋업 게시글</h1>
+        <h1 className="text-2xl font-bold mb-4">모든 데스크셋업 게시글</h1>
         <div className="flex items-center justify-between mb-4">
           <div className="flex space-x-2">
             <select
               name="정렬"
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
-              className="p-2 border rounded"
+              className="p-2 bg-gray-50 text-gray-400 border rounded"
             >
               <option value="latest">최신순</option>
-              <option value="views">조회수순</option>
+              <option value="views">조회순</option>
               <option value="likes">추천순</option>
             </select>
             <select
               name="스타일"
               value={styleFilter}
               onChange={(e) => setStyleFilter(e.target.value)}
-              className="p-2 border rounded"
+              className="p-2 bg-gray-50 text-gray-400 border rounded"
             >
               <option value="all">모든 스타일</option>
               <option value="modern">모던</option>
@@ -127,7 +127,7 @@ export default function DeskSetupPage() {
               name="컬러"
               value={colorFilter}
               onChange={(e) => setColorFilter(e.target.value)}
-              className="p-2 border rounded"
+              className="p-2 bg-gray-50 text-gray-400 border rounded"
             >
               <option value="all">모든 컬러</option>
               <option value="black_white">블랙&화이트</option>
