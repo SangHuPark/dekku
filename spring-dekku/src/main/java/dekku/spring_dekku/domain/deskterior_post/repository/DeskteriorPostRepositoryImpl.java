@@ -15,7 +15,7 @@ public class DeskteriorPostRepositoryImpl implements DeskteriorPostRepositoryCus
     private EntityManager entityManager;
 
     @Override
-    public List<DeskteriorPost> findPostsByTitleContaining(String keyword) {
+    public List<DeskteriorPost> findByTitleContaining(String keyword) {
         String jpql = "SELECT p FROM DeskteriorPost p WHERE p.title LIKE :keyword";
         TypedQuery<DeskteriorPost> query = entityManager.createQuery(jpql, DeskteriorPost.class);
         query.setParameter("keyword", "%" + keyword + "%");

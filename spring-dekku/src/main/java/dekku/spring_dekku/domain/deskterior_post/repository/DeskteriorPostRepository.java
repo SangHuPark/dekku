@@ -8,6 +8,4 @@ import java.util.List;
 
 @Repository
 public interface DeskteriorPostRepository extends JpaRepository<DeskteriorPost, Long>, DeskteriorPostRepositoryCustom {
-    List<DeskteriorPost> findPostsByTitleContaining(String keyword);
 }
-
