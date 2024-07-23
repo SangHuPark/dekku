@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import DeskSetupCard from './DeskSetupCard'; // DeskSetupCard 컴포넌트를 가져옵니다
 import { datas } from './data'; // 데이터 파일을 가져옵니다
+import Link from 'next/link'; 
 
 // 최근 일주일을 계산하는 함수
 const getOneWeekAgoDate = () => {
@@ -93,7 +94,9 @@ export default function DeskSetupPage() {
             <DeskSetupCard key={data.id} data={data} />
           ))}
         </div>
-        <hr className="border-t-2 border-gray-500 mb-8" />
+
+        <hr className="border-t-2 border-gray-400 mb-6" />
+
         <h1 className="text-2xl font-bold mb-4">모든 데스크셋업 게시글</h1>
         <div className="flex items-center justify-between mb-4">
           <div className="flex space-x-2">
@@ -144,9 +147,9 @@ export default function DeskSetupPage() {
               <option value="other">기타</option>
             </select>
           </div>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded">
+          <Link className="bg-blue-500 text-white px-4 py-2 rounded" href="/deskSetup/create">
             글쓰기
-          </button>
+          </Link>
         </div>
         <div className="flex flex-col items-center">
           <div className="flex flex-wrap justify-center gap-4 mb-4">
