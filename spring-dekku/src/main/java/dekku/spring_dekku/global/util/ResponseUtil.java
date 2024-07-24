@@ -1,7 +1,7 @@
 package dekku.spring_dekku.global.util;
 
-import dekku.spring_dekku.global.common.error.code.ErrorCode;
-import dekku.spring_dekku.global.common.model.dto.ResponseDto;
+import dekku.spring_dekku.global.model.dto.ResponseDto;
+import dekku.spring_dekku.global.response.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -21,13 +21,15 @@ public class ResponseUtil {
     }
 
     public static ResponseEntity created(ResponseDto<?> result) {
-        return new ResponseEntity<>(
+        /*return new ResponseEntity<>(
                 result,
                 HttpStatus.CREATED
-        );
+        );*/
+
+        return null;
     }
 
-    public static ResponseEntity noContent() {
+    /*public static ResponseEntity noContent() {
         return new ResponseEntity<>(
             HttpStatus.NO_CONTENT
         );
@@ -38,13 +40,6 @@ public class ResponseUtil {
                 result,
                 HttpStatus.NO_CONTENT
         );
-    }
-
-    public static ResponseEntity error(ResponseDto<?> result, ErrorCode code) {
-        return new ResponseEntity<>(
-                result,
-                code.getCode()
-        );
-    }
+    }*/
 
 }

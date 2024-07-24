@@ -21,7 +21,7 @@ import java.net.URI;
 public class ExceptionAdviceHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({BaseException.class})
-    public ResponseEntity<ErrorResponse> handleBaseException(BaseException exception, WebRequest request) {
+    protected ResponseEntity<ErrorResponse> handleBaseException(BaseException exception, WebRequest request) {
 
 
 
@@ -34,12 +34,11 @@ public class ExceptionAdviceHandler extends ResponseEntityExceptionHandler {
                                         .getRequest()
                                         .getRequestURI()))
                         .build());
-        // instance
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
+            MethodArgumentNotValidException exception,
             HttpHeaders headers,
             HttpStatusCode status,
             WebRequest request) {
@@ -48,7 +47,7 @@ public class ExceptionAdviceHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity
                 .status(status)
                 .body(ErrorResponse
-                        .builder(ex, ex.getStatusCode(), ex.getMessage())
+                        .builder(exception, status, exception.getMessage())
                         .instance(URI.create(
                                 ((ServletWebRequest) request)
                                     .getRequest()

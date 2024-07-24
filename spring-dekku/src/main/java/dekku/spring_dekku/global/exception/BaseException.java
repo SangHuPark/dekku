@@ -1,6 +1,6 @@
 package dekku.spring_dekku.global.exception;
 
-import dekku.spring_dekku.global.error.ErrorCode;
+import dekku.spring_dekku.global.response.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

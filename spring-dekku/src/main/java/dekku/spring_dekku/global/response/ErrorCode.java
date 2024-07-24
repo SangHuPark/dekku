@@ -1,10 +1,11 @@
-package dekku.spring_dekku.global.error;
+package dekku.spring_dekku.global.response;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public enum ErrorCode {
 
