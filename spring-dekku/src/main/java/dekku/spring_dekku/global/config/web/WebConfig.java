@@ -1,4 +1,4 @@
-package dekku.spring_dekku.global.config.Web;
+package dekku.spring_dekku.global.config.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
