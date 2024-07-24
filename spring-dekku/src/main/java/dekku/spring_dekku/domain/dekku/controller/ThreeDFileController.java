@@ -33,6 +33,6 @@ public class ThreeDFileController {
     @PostMapping("")
     public ResponseEntity<ProblemDetail> createThreeDFile(@RequestBody CreateThreeDFileRequestDto request) {
 
-
+        return null;
     }
 }
