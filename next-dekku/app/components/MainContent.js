@@ -37,7 +37,7 @@ export default function MainContent() {
             </h1>
             <img
               src="/mainImg1.png"
-              className="h-60 w-auto mt-16"
+              className="h-72 w-auto mt-12"
               alt="3D Desk"
             />
           </Link>
@@ -77,7 +77,7 @@ export default function MainContent() {
           </div>
         </div>
         <h1 className="text-xl font-bold mb-4">Notice & Event</h1>
-        <div className="relative bg-gray-100 p-4 rounded-xl h-60 overflow-hidden">
+        <div className="relative bg-gray-100 rounded-xl h-60 overflow-visible">
           <img
             src={images[currentIndex].src}
             alt={images[currentIndex].alt}
@@ -85,13 +85,13 @@ export default function MainContent() {
           />
           <button
             onClick={handlePrev}
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full focus:outline-none"
+            className="absolute -left-3 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full focus:outline-none"
           >
             &lt;
           </button>
           <button
             onClick={handleNext}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full focus:outline-none"
+            className="absolute -right-3 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full focus:outline-none"
           >
             &gt;
           </button>
