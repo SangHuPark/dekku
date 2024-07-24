@@ -39,8 +39,8 @@ const SearchBar = ({ onSearch }) => {
 };
 
 // PropTypes를 사용하여 onSearch가 함수인지 확인
-// SearchBar.propTypes = {
-//   onSearch: PropTypes.func.isRequired,
-// };
+SearchBar.propTypes = {
+  onSearch: PropTypes.func.isRequired,
+};
 
 export default SearchBar;

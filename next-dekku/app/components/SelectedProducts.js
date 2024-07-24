@@ -7,7 +7,7 @@ const SelectedProducts = ({ selectedProducts, removeProduct }) => {
   const [isOpen, setIsOpen] = useState(false); // 드롭다운 상태 관리
 
   return (
-    <div className="absolute top-0 w-full bg-gray-200 border-b-2 border-gray-300 z-10">
+    <div className="absolute top-0 left-0 w-full bg-gray-200 border-b-2 border-gray-300 z-10">
       {/* 드롭다운 버튼 */}
       <button
         className="w-full text-left p-2 bg-gray-300"

@@ -15,9 +15,9 @@ const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searc
   );
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full w-1/4"> {/* 카테고리와 상품 목록을 포함하는 div */}
       {/* 카테고리 리스트 */}
-      <div className="bg-pink-300 p-2 w-1/6 border-r-2 border-gray-300">
+      <div className="bg-pink-300 p-2 w-1/4 border-r-2 border-gray-300">
         <ul className="list-none p-0 flex flex-col mt-4">
           {Object.keys(products).map((category) => (
             <li key={category} className="mb-2">
@@ -40,7 +40,7 @@ const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searc
           <SearchBar onSearch={onSearch} />
         </div>
         <div className="mt-2 overflow-auto">
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {/* 필터링된 상품 리스트 */}
             {filteredProducts.slice(0, showMore ? filteredProducts.length : 6).map((product, index) => (
               <ProductCard key={index} {...product} addProduct={addProduct} />
