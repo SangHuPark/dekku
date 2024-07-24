@@ -27,7 +27,7 @@ export default function WritePage() {
             });
 
             // 제출 후 홈 페이지로 리다이렉트합니다.
-            router.push('/');
+            router.push('/deskSetup');
         } catch (error) {
             console.error('Error:', error);
         }
@@ -38,7 +38,7 @@ export default function WritePage() {
             <h1 className="text-2xl font-bold mb-4">글쓰기</h1>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="title" className="block font-medium text-gray-700">
                         제목
                     </label>
                     <input
@@ -51,7 +51,7 @@ export default function WritePage() {
                     />
                 </div>
                 <div>
-                    <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="content" className="block font-medium text-gray-700">
                         내용
                     </label>
                     <textarea
@@ -64,7 +64,7 @@ export default function WritePage() {
                     ></textarea>
                 </div>
                 <div>
-                    <label htmlFor="image" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="image" className="block font-medium text-gray-700">
                         이미지 업로드
                     </label>
                     <input
@@ -72,7 +72,7 @@ export default function WritePage() {
                         type="file"
                         accept="image/*"
                         onChange={(e) => setImage(e.target.files[0])}
-                        className="mt-1 block w-full text-sm text-gray-500 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
+                        className="mt-1 block w-full text-gray-500 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
                     />
                 </div>
                 <button
