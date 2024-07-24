@@ -66,22 +66,23 @@ public class DeskteriorPostService {
         DeskteriorPost existingPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found with id: " + id));
 
-        DeskteriorImage updatedImage = DeskteriorImage.builder()
-                .id(updatedImageDto.getId())
-                .imageUrl(updatedImageDto.getImageUrl())
-                .build();
+        DeskteriorImage updatedImage = existingPost.getDeskteriorImage();
+        if (updatedImage != null) {
+            updatedImage = updatedImage.updateImage(updatedImageDto.getImageUrl());
+            deskteriorImageRepository.save(updatedImage);
+        } else {
+            updatedImage = DeskteriorImage.builder()
+                    .imageUrl(updatedImageDto.getImageUrl())
+                    .build();
+            deskteriorImageRepository.save(updatedImage);
+        }
 
-        DeskteriorImage savedImage = deskteriorImageRepository.save(updatedImage);
-
-        DeskteriorPost updatedPost = DeskteriorPost.builder()
-                .id(existingPost.getId())
-                .title(updatedPostDto.getTitle())
-                .thumbnailUrl(updatedPostDto.getThumbnailUrl())
-                .content(updatedPostDto.getContent())
-                .createdAt(existingPost.getCreatedAt())
+        DeskteriorPost updatedPost = existingPost.toBuilder()
+                .title(updatedPostDto.getTitle() != null ? updatedPostDto.getTitle() : existingPost.getTitle())
+                .thumbnailUrl(updatedPostDto.getThumbnailUrl() != null ? updatedPostDto.getThumbnailUrl() : existingPost.getThumbnailUrl())
+                .content(updatedPostDto.getContent() != null ? updatedPostDto.getContent() : existingPost.getContent())
                 .modifiedAt(new Timestamp(System.currentTimeMillis()))
-                .deskteriorImage(savedImage)
-                .userId(existingPost.getUserId())
+                .deskteriorImage(updatedImage != null ? updatedImage : existingPost.getDeskteriorImage())
                 .build();
 
         DeskteriorPost savedPost = deskteriorPostRepository.save(updatedPost);
@@ -93,7 +94,11 @@ public class DeskteriorPostService {
         if (!deskteriorPostRepository.existsById(id)) {
             throw new IllegalArgumentException("Post not found with id: " + id);
         }
+        DeskteriorPost postToDelete = deskteriorPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post not found with id: " + id));
         deskteriorPostRepository.deleteById(id);
+        if (postToDelete.getDeskteriorImage() != null) {
+            deskteriorImageRepository.deleteById(postToDelete.getDeskteriorImage().getId());
+        }
     }
 
     // 6. 제목에 특정 키워드를 포함하는 게시물 조회
@@ -106,7 +111,6 @@ public class DeskteriorPostService {
     // 엔티티를 DTO로 변환
     private DeskteriorPostDto convertToDto(DeskteriorPost post) {
         return DeskteriorPostDto.builder()
-                .id(post.getId())
                 .title(post.getTitle())
                 .thumbnailUrl(post.getThumbnailUrl())
                 .content(post.getContent())
@@ -119,7 +123,6 @@ public class DeskteriorPostService {
 
     private DeskteriorImageDto convertToDto(DeskteriorImage image) {
         return DeskteriorImageDto.builder()
-                .id(image.getId())
                 .imageUrl(image.getImageUrl())
                 .build();
     }
@@ -127,7 +130,6 @@ public class DeskteriorPostService {
     // DTO를 엔티티로 변환
     private DeskteriorPost convertToEntity(DeskteriorPostDto postDto) {
         return DeskteriorPost.builder()
-                .id(postDto.getId())
                 .title(postDto.getTitle())
                 .thumbnailUrl(postDto.getThumbnailUrl())
                 .content(postDto.getContent())
@@ -139,7 +141,6 @@ public class DeskteriorPostService {
 
     private DeskteriorImage convertToEntity(DeskteriorImageDto imageDto) {
         return DeskteriorImage.builder()
-                .id(imageDto.getId())
                 .imageUrl(imageDto.getImageUrl())
                 .build();
     }

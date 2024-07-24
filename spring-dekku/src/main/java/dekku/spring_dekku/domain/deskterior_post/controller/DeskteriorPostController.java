@@ -1,7 +1,7 @@
 package dekku.spring_dekku.domain.deskterior_post.controller;
 
 import dekku.spring_dekku.domain.deskterior_post.model.dto.DeskteriorPostDto;
-import dekku.spring_dekku.domain.deskterior_post.model.dto.DeskteriorImageDto;
+import dekku.spring_dekku.domain.deskterior_post.model.dto.DeskteriorPostRequest;
 import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/api/deskterior_posts")
@@ -39,15 +38,15 @@ public class DeskteriorPostController {
 
     // 3. 게시물 생성
     @PostMapping
-    public ResponseEntity<DeskteriorPostDto> createPost(@RequestBody DeskteriorPostDto deskteriorPostDto, @RequestBody DeskteriorImageDto deskteriorImageDto) {
-        DeskteriorPostDto createdPost = deskteriorPostService.save(deskteriorPostDto, deskteriorImageDto);
+    public ResponseEntity<DeskteriorPostDto> createPost(@RequestBody DeskteriorPostRequest request) {
+        DeskteriorPostDto createdPost = deskteriorPostService.save(request.getDeskteriorPostDto(), request.getDeskteriorImageDto());
         return ResponseEntity.ok(createdPost);
     }
 
     // 4. 게시물 수정
     @PutMapping("/{id}")
-    public ResponseEntity<DeskteriorPostDto> updatePost(@PathVariable Long id, @RequestBody DeskteriorPostDto deskteriorPostDto, @RequestBody DeskteriorImageDto deskteriorImageDto) {
-        DeskteriorPostDto updatedPost = deskteriorPostService.update(id, deskteriorPostDto, deskteriorImageDto);
+    public ResponseEntity<DeskteriorPostDto> updatePost(@PathVariable Long id, @RequestBody DeskteriorPostRequest request) {
+        DeskteriorPostDto updatedPost = deskteriorPostService.update(id, request.getDeskteriorPostDto(), request.getDeskteriorImageDto());
         return ResponseEntity.ok(updatedPost);
     }
 

@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 @Getter
 @Builder
 public class DeskteriorPostDto {
-    private Long id;
     private String title;
     private String thumbnailUrl;
     private String content;

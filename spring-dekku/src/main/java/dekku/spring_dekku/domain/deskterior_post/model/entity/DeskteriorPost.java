@@ -8,6 +8,8 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "deskterior_posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder(toBuilder = true)
 public class DeskteriorPost {
 
     @Id
@@ -38,7 +40,7 @@ public class DeskteriorPost {
     private Long userId;
 
     @Builder
-    private DeskteriorPost(String title, String thumbnailUrl, String content, Timestamp createdAt, Timestamp modifiedAt, DeskteriorImage deskteriorImage, Long userId) {
+    public DeskteriorPost(String title, String thumbnailUrl, String content, Timestamp createdAt, Timestamp modifiedAt, DeskteriorImage deskteriorImage, Long userId) {
         this.title = title;
         this.thumbnailUrl = thumbnailUrl;
         this.content = content;
@@ -48,15 +50,13 @@ public class DeskteriorPost {
         this.userId = userId;
     }
 
-    public static DeskteriorPost of(String title, String thumbnailUrl, String content, Timestamp createdAt, Timestamp modifiedAt, DeskteriorImage deskteriorImage, Long userId) {
-        return builder()
-                .title(title)
-                .thumbnailUrl(thumbnailUrl)
-                .content(content)
-                .createdAt(createdAt)
-                .modifiedAt(modifiedAt)
-                .deskteriorImage(deskteriorImage)
-                .userId(userId)
+    public DeskteriorPost updatePost(String title, String thumbnailUrl, String content, Timestamp timestamp, DeskteriorImage deskteriorImage) {
+        return this.toBuilder()
+                .title(title != null ? title : this.title)
+                .thumbnailUrl(thumbnailUrl != null ? thumbnailUrl : this.thumbnailUrl)
+                .content(content != null ? content : this.content)
+                .modifiedAt(timestamp != null ? timestamp : this.modifiedAt)
+                .deskteriorImage(deskteriorImage != null ? deskteriorImage : this.deskteriorImage)
                 .build();
     }
 }

@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "deskterior_images")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder(toBuilder = true)
 public class DeskteriorImage {
 
     @Id
@@ -25,9 +27,9 @@ public class DeskteriorImage {
         this.imageUrl = imageUrl;
     }
 
-    public static DeskteriorImage of(String imageUrl) {
-        return DeskteriorImage.builder()
-                .imageUrl(imageUrl)
+    public DeskteriorImage updateImage(String imageUrl) {
+        return this.toBuilder()
+                .imageUrl(imageUrl != null ? imageUrl : this.imageUrl)
                 .build();
     }
 }
