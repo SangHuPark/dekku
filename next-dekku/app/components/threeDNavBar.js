@@ -1,56 +1,52 @@
 'use client';
 
-import { useState } from 'react';
 import SearchBar from './SearchBar';
 import ProductCard from './ProductCard';
 import products from './ProductList';
 
-// ThreeDNavBar 컴포넌트는 카테고리와 상품 리스트를 보여줍니다.
 const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searchTerm, onSearch }) => {
-  const [showMore, setShowMore] = useState(false); // 더보기 버튼 상태 관리
 
-  // 검색어에 따라 상품을 필터링
   const filteredProducts = products[selectedCategory].filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const categoryImages = {
+    '모니터': '/category/monitor.png',
+    '노트북': '/category/laptop.png',
+    '데스크': '/category/desk.png',
+    '마우스': '/category/computer-mouse.png',
+    '키보드': '/category/keyboard.png',
+    '기타': '/category/menu-dots-square.png',
+  };
+
   return (
-    <div className="flex h-full w-1/4"> {/* 카테고리와 상품 목록을 포함하는 div */}
-      {/* 카테고리 리스트 */}
-      <div className="bg-pink-300 p-2 w-1/4 border-r-2 border-gray-300">
-        <ul className="list-none p-0 flex flex-col mt-4">
+    <div className="flex h-full" style={{ width: '420px' }}>
+      <div className="bg-gray-100 p-2 w-1/7 border-r-2 border-gray-300">
+        <ul className="list-none p-0 flex flex-col mt-4 space-y-4">
           {Object.keys(products).map((category) => (
-            <li key={category} className="mb-2">
+            <li key={category}>
               <button
-                className={`block p-1 bg-pink-200 rounded hover:bg-pink-400 ${
-                  selectedCategory === category ? 'bg-pink-400' : ''
+                className={`block w-full h-12 bg-gray-100 rounded hover:bg-gray-300 ${
+                  selectedCategory === category ? 'bg-gray-400' : ''
                 }`}
                 onClick={() => setSelectedCategory(category)}
               >
-                {category}
+                <img src={categoryImages[category]} alt={category} className="h-full w-auto mx-auto" />
               </button>
             </li>
           ))}
         </ul>
       </div>
-      {/* 상품 리스트 */}
-      <div className="flex-grow p-2 bg-white">
+      <div className="flex-grow p-2 w-6/7 bg-white h-full overflow-hidden flex flex-col">
         <div className="mb-2">
-          {/* 검색 바 컴포넌트에 onSearch prop을 전달 */}
           <SearchBar onSearch={onSearch} />
         </div>
-        <div className="mt-2 overflow-auto">
-          <div className="grid grid-cols-2 gap-2">
-            {/* 필터링된 상품 리스트 */}
-            {filteredProducts.slice(0, showMore ? filteredProducts.length : 6).map((product, index) => (
-              <ProductCard key={index} {...product} addProduct={addProduct} />
-            ))}
-          </div>
-          {/* 더보기 버튼 */}
-          {filteredProducts.length > 6 && (
-            <button className="mt-2 p-1 bg-blue-500 text-white rounded" onClick={() => setShowMore(!showMore)}>
-              {showMore ? '접기' : '더보기'}
-            </button>
+        <div className="mt-2 grid grid-cols-2 gap-2 flex-grow overflow-y-auto">
+          {filteredProducts.map((product, index) => (
+            <ProductCard key={index} {...product} addProduct={addProduct} />
+          ))}
+          {filteredProducts.length === 0 && (
+            <div className="col-span-2 text-center text-gray-500">No products found</div>
           )}
         </div>
       </div>
