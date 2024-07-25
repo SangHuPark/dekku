@@ -16,8 +16,8 @@ export default function Details({ params }) {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
-        <Link className="" href={"/deskSetup"}>목록으로</Link>
-        <h1 className="text-3xl font-bold mt-4 mb-2">{data.title}</h1>
+        {/* <Link className="" href={"/deskSetup"}>목록으로</Link> */}
+        <h1 className="text-3xl font-bold mb-2">{data.title}</h1>
         <h3 className="text-gray-500 mb-4">
           {new Date(data.createdAt).toLocaleDateString()}
         </h3>
@@ -30,7 +30,7 @@ export default function Details({ params }) {
           />
         </div>
 
-        <div className="text-lg mb-6">{data.content}</div>
+        <div className="text-lg mb-10 text-center">{data.content}</div>
 
         <h2 className="text-xl font-bold mb-4">제품 내용</h2>
         <div className="grid grid-cols-2 gap-4 mb-6">

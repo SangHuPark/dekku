@@ -10,7 +10,7 @@ const Header = () => {
   return (
     // bg-[#333] text-white
     <header className="bg-gray-100 fixed top-0 w-full z-50"> 
-      <div className="max-w-4xl mx-auto flex justify-between items-center p-4">
+      <div className="max-w-6xl mx-auto flex justify-between items-center py-2">
         <div className="flex items-center">
           <Link href="/">
             <img src="/logo_black.png" className="w-32" alt="Logo" />

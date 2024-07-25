@@ -6,7 +6,7 @@ const Layout = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow mt-20"> {/* Adjust the padding bottom to match Footer height */}
+      <main className="flex-grow mt-16"> {/* Adjust the padding bottom to match Footer height */}
         {children}
       </main>
       <Footer />

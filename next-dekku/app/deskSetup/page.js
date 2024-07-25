@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import DeskSetupCard from './DeskSetupCard'; // DeskSetupCard 컴포넌트를 가져옵니다
 import { datas } from './data'; // 데이터 파일을 가져옵니다
-import Link from 'next/link'; 
+import Link from 'next/link';
 
 // 최근 일주일을 계산하는 함수
 const getOneWeekAgoDate = () => {
@@ -21,18 +21,21 @@ export default function DeskSetupPage() {
   const [styleFilter, setStyleFilter] = useState('all');
   const [colorFilter, setColorFilter] = useState('all');
   const [displayedCount, setDisplayedCount] = useState(9);
+  const [searchTerm, setSearchTerm] = useState(''); // 검색어 상태
 
   useEffect(() => {
     const oneWeekAgo = getOneWeekAgoDate();
-    
+
     // 최근 일주일 내의 게시글 필터링
-    const recentPosts = datas.filter(data => data.createdAt >= oneWeekAgo);
+    const recentPosts = datas.filter((data) => data.createdAt >= oneWeekAgo);
 
     // 인기 게시글 정렬 (조회수 * 좋아요 수) 기준
     const sortedPosts = recentPosts
-      .map(post => ({
+      .map((post) => ({
         ...post,
-        score: parseInt(post.views.replace(/,/g, '')) * parseInt(post.likes.replace(/,/g, ''))
+        score:
+          parseInt(post.views.replace(/,/g, '')) *
+          parseInt(post.likes.replace(/,/g, '')),
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, 3); // 상위 3개 선택
@@ -45,30 +48,47 @@ export default function DeskSetupPage() {
 
     // 필터링
     if (styleFilter !== 'all') {
-      sortedData = sortedData.filter(data => data.style === styleFilter);
+      sortedData = sortedData.filter((data) => data.style === styleFilter);
     }
     if (colorFilter !== 'all') {
-      sortedData = sortedData.filter(data => data.color === colorFilter);
+      sortedData = sortedData.filter((data) => data.color === colorFilter);
+    }
+
+    // 검색 필터링
+    if (searchTerm) {
+      sortedData = sortedData.filter(
+        (data) =>
+          data.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          data.description?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
 
     // 정렬
     if (sortOrder === 'latest') {
       sortedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     } else if (sortOrder === 'likes') {
-      sortedData.sort((a, b) => parseInt(b.likes.replace(/,/g, '')) - parseInt(a.likes.replace(/,/g, '')));
+      sortedData.sort(
+        (a, b) =>
+          parseInt(b.likes.replace(/,/g, '')) -
+          parseInt(a.likes.replace(/,/g, ''))
+      );
     } else if (sortOrder === 'views') {
-      sortedData.sort((a, b) => parseInt(b.views.replace(/,/g, '')) - parseInt(a.views.replace(/,/g, '')));
+      sortedData.sort(
+        (a, b) =>
+          parseInt(b.views.replace(/,/g, '')) -
+          parseInt(a.views.replace(/,/g, ''))
+      );
     }
 
     setFilteredData(sortedData);
-  }, [sortOrder, styleFilter, colorFilter, allPosts]);
+  }, [sortOrder, styleFilter, colorFilter, allPosts, searchTerm]);
 
   useEffect(() => {
     const handleScroll = () => {
       // 페이지 전체 문서 높이와 현재 스크롤 위치를 비교하여 페이지 하단에 도달했는지 확인
       if (
-        window.innerHeight + document.documentElement.scrollTop
-        === document.documentElement.offsetHeight
+        window.innerHeight + document.documentElement.scrollTop ===
+        document.documentElement.offsetHeight
       ) {
         loadMore();
       }
@@ -81,25 +101,40 @@ export default function DeskSetupPage() {
   }, [filteredData, displayedCount]);
 
   const loadMore = () => {
-    setDisplayedCount(prevCount => Math.min(prevCount + 9, filteredData.length));
+    setDisplayedCount((prevCount) =>
+      Math.min(prevCount + 9, filteredData.length)
+    );
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <h1 className="text-2xl font-bold mb-2">최근 인기 데스크셋업</h1>
         <h3 className="text-gray-400 mb-4">조회, 관심 급상승 (최근 일주일)</h3>
-        <div className="flex justify-center space-x-4 mb-8">
-          {recentTopPosts.map(data => (
+        <div className="flex justify-center space-x-2 mb-6">
+          {recentTopPosts.map((data) => (
             <DeskSetupCard key={data.id} data={data} />
           ))}
         </div>
 
-        <hr className="border-t-2 border-gray-400 mb-6" />
+        <hr className="border-t-2 border-gray-400 mb-4" />
 
-        <h1 className="text-2xl font-bold mb-4">모든 데스크셋업 게시글</h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">모든 데스크셋업 게시글</h1>
+          <div className="relative flex items-center">
+            <img src="/search.png" alt="Search" className="absolute left-3 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="검색..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 p-2 bg-gray-50 text-gray-400 border rounded"
+            />
+          </div>
+        </div>
+
         <div className="flex items-center justify-between mb-4">
-          <div className="flex space-x-2">
+          <div className="flex items-center space-x-2">
             <select
               name="정렬"
               value={sortOrder}
@@ -147,22 +182,24 @@ export default function DeskSetupPage() {
               <option value="other">기타</option>
             </select>
           </div>
-          <Link className="bg-blue-500 text-white px-4 py-2 rounded" href="/deskSetup/create">
+          <Link
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            href="/deskSetup/create"
+          >
             글쓰기
           </Link>
         </div>
-        <div className="flex flex-wrap -m-2">
-          {filteredData.slice(0, displayedCount).map(data => (
-            <div key={data.id} className="w-1/3 p-2">
+
+        <div className="grid grid-cols-3 gap-4">
+          {filteredData.slice(0, displayedCount).map((data) => (
+            <div key={data.id}>
               <DeskSetupCard data={data} />
             </div>
           ))}
         </div>
+
         {displayedCount < filteredData.length && (
-          <button
-            onClick={loadMore}
-            className="text-blue-500 mt-4"
-          >
+          <button onClick={loadMore} className="text-blue-500 mt-4">
             Load More
           </button>
         )}

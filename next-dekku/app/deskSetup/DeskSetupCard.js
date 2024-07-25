@@ -1,44 +1,46 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function DeskSetupCard({ data }) {
-    return (
-        <Link href={`/deskSetup/${data.id}`} passHref>
-            <div className="border rounded-lg p-6 shadow-lg w-72 bg-white cursor-pointer">
-                <div className="flex items-center space-x-4 mb-6">
-                    <div className="flex-shrink-0 w-12 h-12">
-                        <img src={data.profileImg} alt="profile" className="w-full h-full object-cover rounded-full"/>
-                    </div>
-                    <div className="flex-1">
-                        <ul className="space-y-2">
-                            <li className="flex items-center space-x-2">
-                                <div className="font-semibold truncate w-28">{data.username}</div>
-                                <button className="text-blue-500 flex-shrink-0">Follow</button>
-                            </li>
-                            <li className="text-gray-400 text-xs truncate w-44">{data.introduce}</li>
-                        </ul>
-                    </div>
-                </div>
-                <img src={data.imgSrc} alt="desk" className="w-72 h-48 object-cover mb-6 rounded-md"/>
-                <div className="space-y-6">
-                    <div className="flex justify-between text-base">
-                        <div className="flex items-center space-x-2">
-                            <img src="/view_icon.png" alt="view" className="w-4 h-4"/>
-                            <span>{data.views}</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <img src="/like_icon.png" alt="like" className="w-4 h-4"/>
-                            <span>{data.likes}</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <img src="/comment_icon.png" alt="comment" className="w-4 h-4"/>
-                            <span>{data.comments}</span>
-                        </div>
-                    </div>
-                    <div className="text-lg font-semibold">
-                        {data.title}
-                    </div>
-                </div>
+  return (
+    <Link href={`/deskSetup/${data.id}`}>
+      <div className="rounded-lg py-2 w-96">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center space-x-2">
+            <img
+              src={data.profileImg}
+              alt="profile"
+              className="w-14 h-14 object-cover rounded-full shadow-md"
+            />
+            <div className="text-lg font-medium truncate w-28">
+              {data.username}
             </div>
-        </Link>
-    );
+          </div>
+          <button className="rounded px-3 p-1 h-8 bg-[#77C3EB] font-extrabold text-sm text-white flex-shrink-0">
+            팔로우
+          </button>
+        </div>
+        <div className="relative flex justify-center mb-3">
+          <img
+            src={data.imgSrc}
+            alt="desk"
+            className="w-96 h-72 rounded-lg object-cover"
+          />
+          <div className="absolute bottom-2 right-2 text-white bg-black bg-opacity-50 rounded px-2 py-1">
+            조회수 {data.views}
+          </div>
+        </div>
+        <div className="text-lg font-bold px-1 mb-1">{data.title}</div>
+        <ul className="flex space-x-4 font-bold text-gray-400 px-2">
+          <li className="flex items-center space-x-1">
+            <img src="/like_icon.png" alt="like" className="w-4 h-4" />
+            <span>{data.likes}</span>
+          </li>
+          <li className="flex items-center space-x-1">
+            <img src="/comment_icon.png" alt="comment" className="w-4 h-4" />
+            <span>{data.comments}</span>
+          </li>
+        </ul>
+      </div>
+    </Link>
+  );
 }
