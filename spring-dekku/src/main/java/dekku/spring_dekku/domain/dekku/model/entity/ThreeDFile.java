@@ -1,7 +1,7 @@
 package dekku.spring_dekku.domain.dekku.model.entity;
 
 import dekku.spring_dekku.domain.member.model.entity.Member;
-import dekku.spring_dekku.global.common.model.entity.BaseEntity;
+import dekku.spring_dekku.global.model.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

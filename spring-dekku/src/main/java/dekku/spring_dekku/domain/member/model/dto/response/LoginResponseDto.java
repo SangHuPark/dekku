@@ -1,4 +1,4 @@
-package dekku.spring_dekku.domain.member.model.dto;
+package dekku.spring_dekku.domain.member.model.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

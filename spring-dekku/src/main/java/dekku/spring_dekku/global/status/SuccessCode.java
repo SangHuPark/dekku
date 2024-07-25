@@ -1,4 +1,4 @@
-package dekku.spring_dekku.global.response;
+package dekku.spring_dekku.global.status;
 
 import lombok.AccessLevel;
 import lombok.Getter;

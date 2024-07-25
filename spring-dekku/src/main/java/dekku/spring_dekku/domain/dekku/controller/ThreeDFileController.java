@@ -2,8 +2,6 @@ package dekku.spring_dekku.domain.dekku.controller;
 
 import dekku.spring_dekku.domain.dekku.model.dto.request.CreateThreeDFileRequestDto;
 import dekku.spring_dekku.domain.dekku.model.dto.response.CreateThreeDFileResponseDto;
-import dekku.spring_dekku.global.common.model.response.Success;
-import dekku.spring_dekku.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
