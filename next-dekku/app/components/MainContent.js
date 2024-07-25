@@ -96,7 +96,7 @@ export default function MainContent() {
           </div>
         </div>
         <h1 className="text-2xl font-bold mb-4">Notice & Event</h1>
-        <div className="relative bg-gray-100 rounded-xl h-60 overflow-visible">
+        <div className="relative bg-gray-100 h-60 overflow-visible">
           <div className="relative h-full overflow-hidden">
             <TransitionGroup className="relative h-full">
               <CSSTransition
@@ -107,7 +107,7 @@ export default function MainContent() {
                 <img
                   src={images[currentIndex].src}
                   alt={images[currentIndex].alt}
-                  className="w-full h-full object-cover rounded-xl absolute"
+                  className="w-full h-full object-cover absolute"
                 />
               </CSSTransition>
             </TransitionGroup>

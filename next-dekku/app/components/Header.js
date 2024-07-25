@@ -1,53 +1,56 @@
 "use client";
-// 나중에 레이아웃에서 헤더 상단 고정 필요
+
 import Link from "next/link";
-import "../styles/Header.css";
 import { useState } from "react";
 import LoginModal from "../components/LoginModal";
 
 const Header = () => {
   const [showModal, setShowModal] = useState(false);
+
   return (
-    <header className="flex justify-between p-2 bg-[#333]">
-      <div className="flex items-center">
-        <Link href="/">
-          <img src="/logo.png" className="w-32"/>
-        </Link>
-      </div>
-      <div className="flex flex-col">
-        <div className="flex justify-end text-xs">
-          <nav>
-            <ul>
-              <li className="text-white">고객센터</li>
-              <li className="text-white">마이페이지</li>
-              <li>
-                <div>
-                  <button className="max-w-4xl mx-auto text-white">
-                    <div onClick={() => setShowModal(true)}>로그인</div>
-                    <LoginModal
-                      showModal={showModal}
-                      setShowModal={setShowModal}
-                    />
+    // bg-[#333] text-white
+    <header className="bg-gray-100 fixed top-0 w-full z-50"> 
+      <div className="max-w-4xl mx-auto flex justify-between items-center p-4">
+        <div className="flex items-center">
+          <Link href="/">
+            <img src="/logo_black.png" className="w-32" alt="Logo" />
+          </Link>
+        </div>
+        <div className="flex flex-col">
+          <div className="flex justify-end text-xs mb-2">
+            <nav>
+              <ul className="flex space-x-4">
+                <li>고객센터</li>
+                <li>마이페이지</li>
+                <li>
+                  <button
+                    onClick={() => setShowModal(true)}
+                  >
+                    로그인
                   </button>
-                </div>
-              </li>
-            </ul>
-          </nav>
-        </div>
-        <div className="flex font-bold justify-end mt-4 mb-4">
-          <nav>
-            <ul>
-              <li></li>
-              <li>
-                <Link href="/threeD" className="text-xl">3D Desk</Link>
-              </li>
-              <li>
-                <Link href="/deskSetup" className="text-xl">데스크셋업</Link>
-              </li>
-            </ul>
-          </nav>
+                  <LoginModal
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                  />
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div className="flex justify-end text-xl font-bold">
+            <nav>
+              <ul className="flex space-x-6">
+                <li>
+                  <Link href="/threeD">3D 데꾸</Link>
+                </li>
+                <li>
+                  <Link href="/deskSetup">데스크셋업</Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
       </div>
+      <hr className="border-t-2 border-gray-300" /> 
     </header>
   );
 };
