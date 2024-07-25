@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import ThreeDNavBar from '../components/ThreeDNavBar';
-import ThreeDMainContent from '../components/ThreeDMainContent';
+import ThreeDScene from '../components/ThreeDScene';
 import SelectedProducts from '../components/SelectedProducts';
 
 const ThreeDPage = () => {
@@ -33,7 +33,7 @@ const ThreeDPage = () => {
       />
       <div className="flex flex-col flex-grow relative border-l-2 border-gray-300">
         <div className="flex-grow h-4/5 overflow-hidden">
-          <ThreeDMainContent selectedProducts={selectedProducts} />
+          <ThreeDScene selectedProducts={selectedProducts} />
         </div>
         <div className="h-1/5 overflow-auto">
           <SelectedProducts

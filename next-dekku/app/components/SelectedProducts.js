@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 // SelectedProducts 컴포넌트는 선택된 상품들을 드롭다운 형식으로 보여줍니다.
-const SelectedProducts = ({ selectedProducts, removeProduct }) => {
+const SelectedProducts = ({ selectedProducts = [], removeProduct }) => {
   const [isOpen, setIsOpen] = useState(false); // 드롭다운 상태 관리
 
   return (

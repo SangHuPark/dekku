@@ -5,17 +5,13 @@ const products = {
     '모니터': [
       { name: '모니터1', description: '고해상도 모니터', image: 'https://via.placeholder.com/150' },
       { name: '모니터2', description: '게이밍 모니터', image: 'https://via.placeholder.com/150' },
-      { name: '모니터3', description: 'IPS 모니터', image: 'https://via.placeholder.com/150' },
-      { name: '모니터4', description: '곡면 모니터', image: 'https://via.placeholder.com/150' },
-      { name: '모니터5', description: '울트라와이드 모니터', image: 'https://via.placeholder.com/150' },
-      { name: '모니터6', description: '휴대용 모니터', image: 'https://via.placeholder.com/150' },
     ],
     '노트북': [
       { name: '노트북1', description: '휴대용 노트북', image: 'https://via.placeholder.com/150' },
       { name: '노트북2', description: '게이밍 노트북', image: 'https://via.placeholder.com/150' },
     ],
     '데스크': [
-      { name: '데스크1', description: '견고한 데스크', image: 'https://via.placeholder.com/150' },
+      { name: 'SSAFY DESK', description: '2학기 책상', image: 'https://via.placeholder.com/150', modelPath: 'threedmodels/ssafydesk.glb' },
     ],
     '마우스': [
       { name: '마우스1', description: '무선 마우스', image: 'https://via.placeholder.com/150' },
