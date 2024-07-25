@@ -1,5 +1,5 @@
 "use client";
-
+// 나중에 레이아웃에서 헤더 상단 고정 필요
 import Link from "next/link";
 import "../styles/Header.css";
 import { useState } from "react";
@@ -11,7 +11,7 @@ const Header = () => {
     <header className="flex justify-between p-2 bg-[#333]">
       <div className="flex items-center">
         <Link href="/">
-          <img src="/logo.png"/>
+          <img src="/logo.png" className="w-32"/>
         </Link>
       </div>
       <div className="flex flex-col">

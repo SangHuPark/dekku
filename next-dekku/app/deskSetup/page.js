@@ -151,21 +151,21 @@ export default function DeskSetupPage() {
             글쓰기
           </Link>
         </div>
-        <div className="flex flex-col items-center">
-          <div className="flex flex-wrap justify-center gap-4 mb-4">
-            {filteredData.slice(0, displayedCount).map(data => (
-              <DeskSetupCard key={data.id} data={data} />
-            ))}
-          </div>
-          {displayedCount < filteredData.length && (
-            <button
-              onClick={loadMore}
-              className="text-blue-500 mt-4"
-            >
-              Load More
-            </button>
-          )}
+        <div className="flex flex-wrap -m-2">
+          {filteredData.slice(0, displayedCount).map(data => (
+            <div key={data.id} className="w-1/3 p-2">
+              <DeskSetupCard data={data} />
+            </div>
+          ))}
         </div>
+        {displayedCount < filteredData.length && (
+          <button
+            onClick={loadMore}
+            className="text-blue-500 mt-4"
+          >
+            Load More
+          </button>
+        )}
       </div>
     </div>
   );

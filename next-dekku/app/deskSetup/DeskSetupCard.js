@@ -4,6 +4,20 @@ export default function DeskSetupCard({ data }) {
     return (
         <Link href={`/deskSetup/${data.id}`} passHref>
             <div className="border rounded-lg p-6 shadow-lg w-72 bg-white cursor-pointer">
+                <div className="flex items-center space-x-4 mb-6">
+                    <div className="flex-shrink-0 w-12 h-12">
+                        <img src={data.profileImg} alt="profile" className="w-full h-full object-cover rounded-full"/>
+                    </div>
+                    <div className="flex-1">
+                        <ul className="space-y-2">
+                            <li className="flex items-center space-x-2">
+                                <div className="font-semibold truncate w-28">{data.username}</div>
+                                <button className="text-blue-500 flex-shrink-0">Follow</button>
+                            </li>
+                            <li className="text-gray-400 text-xs truncate w-44">{data.introduce}</li>
+                        </ul>
+                    </div>
+                </div>
                 <img src={data.imgSrc} alt="desk" className="w-72 h-48 object-cover mb-6 rounded-md"/>
                 <div className="space-y-6">
                     <div className="flex justify-between text-base">
@@ -20,19 +34,8 @@ export default function DeskSetupCard({ data }) {
                             <span>{data.comments}</span>
                         </div>
                     </div>
-                    <div className="flex items-center space-x-4">
-                        <div className="flex-shrink-0 w-12 h-12">
-                            <img src={data.profileImg} alt="profile" className="w-full h-full object-cover rounded-full"/>
-                        </div>
-                        <div className="flex-1">
-                            <ul className="space-y-2">
-                                <li className="flex items-center space-x-2">
-                                    <div className="font-semibold truncate w-28">{data.username}</div>
-                                    <button className="text-blue-500 flex-shrink-0">Follow</button>
-                                </li>
-                                <li className="text-gray-400 text-xs truncate w-44">{data.introduce}</li>
-                            </ul>
-                        </div>
+                    <div className="text-lg font-semibold">
+                        {data.title}
                     </div>
                 </div>
             </div>

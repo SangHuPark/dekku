@@ -2,23 +2,42 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+import '../styles/MainContent.css';  // Make sure to create this CSS file for custom styles
 
 const images = [
-  { src: "/event1.png", alt: "Event" },
   { src: "/notice1.jpg", alt: "Notice" },
+  { src: "/event1.png", alt: "Event" },
 ];
 
 export default function MainContent() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [inProp, setInProp] = useState(true);
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    setInProp(false);
+    setTimeout(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+      setInProp(true);
+    }, 500);
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
+    setInProp(false);
+    setTimeout(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === 0 ? images.length - 1 : prevIndex - 1
+      );
+      setInProp(true);
+    }, 500);
+  };
+
+  const handleDotClick = (index) => {
+    setInProp(false);
+    setTimeout(() => {
+      setCurrentIndex(index);
+      setInProp(true);
+    }, 500);
   };
 
   return (
@@ -32,7 +51,7 @@ export default function MainContent() {
               background: "linear-gradient(to bottom, #D9D9D9, #737373)",
             }}
           >
-            <h1 className="absolute top-0 left-0 p-4 font-bold w-full">
+            <h1 className="absolute top-0 left-0 p-4 font-bold text-xl w-full">
               나만의 3D 데스크를 디자인하세요
             </h1>
             <img
@@ -49,7 +68,7 @@ export default function MainContent() {
                 background: "linear-gradient(to bottom, #D9D9D9, #737373)",
               }}
             >
-              <h1 className="absolute top-0 left-0 p-4 font-bold">
+              <h1 className="absolute top-0 left-0 p-4 font-bold text-xl ">
                 데스크 셋업
               </h1>
               <img
@@ -65,7 +84,7 @@ export default function MainContent() {
                 background: "linear-gradient(to bottom, #D9D9D9, #737373)",
               }}
             >
-              <h1 className="absolute top-0 left-0 p-4 font-bold">
+              <h1 className="absolute top-0 left-0 p-4 font-bold text-xl ">
                 글쓰기
               </h1>
               <img
@@ -76,25 +95,50 @@ export default function MainContent() {
             </Link>
           </div>
         </div>
-        <h1 className="text-xl font-bold mb-4">Notice & Event</h1>
+        <h1 className="text-2xl font-bold mb-4">Notice & Event</h1>
         <div className="relative bg-gray-100 rounded-xl h-60 overflow-visible">
-          <img
-            src={images[currentIndex].src}
-            alt={images[currentIndex].alt}
-            className="w-full h-full object-cover rounded-xl transition-transform duration-500"
-          />
+          <div className="relative h-full overflow-hidden">
+            <TransitionGroup className="relative h-full">
+              <CSSTransition
+                key={currentIndex}
+                timeout={500}
+                classNames="slide"
+              >
+                <img
+                  src={images[currentIndex].src}
+                  alt={images[currentIndex].alt}
+                  className="w-full h-full object-cover rounded-xl absolute"
+                />
+              </CSSTransition>
+            </TransitionGroup>
+          </div>
           <button
             onClick={handlePrev}
-            className="absolute -left-3 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full focus:outline-none"
+            className="absolute -left-5 top-1/2 transform -translate-y-1/2 bg-white text-black shadow w-10 h-10 rounded-full focus:outline-none flex items-center justify-center"
+            style={{ zIndex: 1 }}
           >
-            &lt;
+            <img src="/chevron-left.png" className="w-4 h-4" />
           </button>
           <button
             onClick={handleNext}
-            className="absolute -right-3 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full focus:outline-none"
+            className="absolute -right-5 top-1/2 transform -translate-y-1/2 bg-white text-black shadow w-10 h-10 rounded-full focus:outline-none flex items-center justify-center"
+            style={{ zIndex: 1 }}
           >
-            &gt;
+            <img src="/chevron-right.png" className="w-4 h-4" />
           </button>
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => handleDotClick(index)}
+                className={`w-3 h-3 rounded-full ${
+                  index === currentIndex
+                    ? "bg-gray-600"
+                    : "bg-gray-300"
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
