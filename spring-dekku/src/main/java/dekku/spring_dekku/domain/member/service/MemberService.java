@@ -1,17 +1,22 @@
 package dekku.spring_dekku.domain.member.service;
 
-import dekku.spring_dekku.domain.member.model.dto.LoginRequestDto;
-import dekku.spring_dekku.domain.member.model.dto.SignUpRequestDto;
+import dekku.spring_dekku.domain.member.model.dto.MemberDto;
+import dekku.spring_dekku.domain.member.model.dto.request.LoginRequestDto;
+import dekku.spring_dekku.domain.member.model.dto.request.CreateMemberRequestDto;
+import dekku.spring_dekku.domain.member.model.dto.response.CreateMemberResponseDto;
 import dekku.spring_dekku.domain.member.model.entity.Member;
+import org.springframework.security.core.userdetails.UserDetailsService;
+
 import java.util.List;
 import java.util.Optional;
 
-public interface MemberService {
+public interface MemberService extends UserDetailsService {
     List<Member> getAllMembers();
     Member saveMember(Member member);
     Optional<Member> getMemberById(Long id);
     void deleteMember(Long id);
     String login(LoginRequestDto loginRequestDto);
-    void signup(SignUpRequestDto signUpRequestDto);
+    CreateMemberResponseDto createMember(CreateMemberRequestDto request);
+    MemberDto getMemberDtoByEmail(String email);
 //    Member updateMember(Long id, Member member);
 }

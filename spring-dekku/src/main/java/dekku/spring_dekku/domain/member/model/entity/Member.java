@@ -1,5 +1,6 @@
 package dekku.spring_dekku.domain.member.model.entity;
 
+import dekku.spring_dekku.global.model.entity.BaseEntity;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -8,7 +9,7 @@ import java.sql.Timestamp;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long user_id;
@@ -25,34 +26,28 @@ public class Member {
 	@Column(nullable = false, unique = true)
 	private String nickname;
 
-	private String phone;
+	@Column(nullable = false, unique = true)
+	private String phoneNumber;
 
 	private String image_url;
 
-	private Timestamp created_at;
+	private String deleted_at;
 
-	private Timestamp deleted_at;
-
-	private String token;
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
-
-	@Column(nullable = false)
+	@Setter
+    @Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private MemberRole memberRole;
 
-	@Builder
-	public Member(Long user_id, String email, String password, String name, String nickname, String phone, Timestamp created_at) {
-		this.user_id = user_id;
+    @Builder
+	public Member(String email, String password, String name, String nickname, String phoneNumber, String image_url, String deleted_at) {
 		this.email = email;
 		this.password = password;
 		this.name = name;
 		this.nickname = nickname;
-		this.phone = phone;
-		this.created_at = created_at;
+		this.phoneNumber = phoneNumber;
+
+		// service 에서 처리
+		this.image_url = image_url;
 		this.memberRole = MemberRole.COMMON;
 	}
 

@@ -1,46 +1,53 @@
 package dekku.spring_dekku.domain.member.service;
 
-import dekku.spring_dekku.domain.member.model.dto.LoginRequestDto;
-import dekku.spring_dekku.domain.member.model.dto.SignUpRequestDto;
+import dekku.spring_dekku.domain.member.exception.NotExistsUserException;
+import dekku.spring_dekku.domain.member.model.dto.MemberDto;
+import dekku.spring_dekku.domain.member.model.dto.request.LoginRequestDto;
+import dekku.spring_dekku.domain.member.model.dto.request.CreateMemberRequestDto;
+import dekku.spring_dekku.domain.member.model.dto.response.CreateMemberResponseDto;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
-import dekku.spring_dekku.global.security.JwtTokenUtil;
-import lombok.AllArgsConstructor;
+import dekku.spring_dekku.global.status.ErrorCode;
+import dekku.spring_dekku.infra.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import static dekku.spring_dekku.global.format.StringFormat.DEFAULT_PROFILE;
 
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-
-//    @Autowired
-//    private MemberRepository memberRepository;
-//
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
-//
-//    @Autowired
-//    private JwtTokenUtil jwtTokenUtil;
-
     private final MemberRepository memberRepository;
 
     private final PasswordEncoder passwordEncoder;
 
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtUtil jwtUtil;
 
-//    @Autowired
-//    public MemberServiceImpl(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtTokenUtil jwtTokenUtil) {
-//        this.memberRepository = memberRepository;
-//        this.passwordEncoder = passwordEncoder;
-//        this.jwtTokenUtil = jwtTokenUtil;
-//    }
+    // Security session -> Authentication -> UserDetails
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Member member = memberRepository.findByEmail(email);
+
+        if (Objects.isNull(member)) {
+            throw new NotExistsUserException(ErrorCode.NOT_EXISTS_USER);
+        }
+
+        return new User(
+                member.getEmail(),
+                member.getPassword(),
+                new ArrayList<>());
+    }
 
     public String login(LoginRequestDto loginRequestDto) {
         Member member = memberRepository.findByEmail(loginRequestDto.getEmail());
@@ -48,30 +55,28 @@ public class MemberServiceImpl implements MemberService {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
-        String token = jwtTokenUtil.generateToken(loginRequestDto.getEmail());
+        String token = jwtUtil.generateAccessToken(loginRequestDto.getEmail());
 
 //        member.setToken(token);
 //        memberRepository.save(member);
         memberRepository.updateTokenByEmail(member.getEmail(), token);
 
-        return jwtTokenUtil.generateToken(member.getName());
+        return jwtUtil.generateAccessToken(member.getName());
     }
 
     @Override
-    public void signup(SignUpRequestDto signUpRequestDto) {
-        // 비밀번호 암호화
-        String encodedPassword = passwordEncoder.encode(signUpRequestDto.getPassword());
+    public CreateMemberResponseDto createMember(CreateMemberRequestDto request) {
 
-        Member member = Member.builder()
-                .email(signUpRequestDto.getEmail())
-                .password(encodedPassword)
-                .name(signUpRequestDto.getName())
-                .nickname(signUpRequestDto.getNickname())
-                .phone(signUpRequestDto.getPhone())
-                .created_at(signUpRequestDto.getCreated_at())
-                .build();
+        // toEntity() 에 static 제거 -> 요청이 들어와야 필드에 데이터가 생기니까ㅇ
+        Member member = request.toEntity(
+                passwordEncoder.encode(request.getPassword()),
+                DEFAULT_PROFILE);
 
         memberRepository.save(member);
+
+        CreateMemberResponseDto response = new ModelMapper().map(member, CreateMemberResponseDto.class);
+
+        return response;
     }
 
     @Override
@@ -92,6 +97,14 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    @Override
+    public MemberDto getMemberDtoByEmail(String email) {
+
+//        ModelMapper modelMapper
+
+        return null;
     }
 
 //    @Override
