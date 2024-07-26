@@ -3,7 +3,7 @@
 // 목업 구현을 위해 더미 리스트 생성
 const products = {
     '모니터': [
-      { name: '모니터1', description: '고해상도 모니터', image: 'https://via.placeholder.com/150' },
+      { name: '삼성 에센셜 커브드 모니터', description: '고해상도 모니터', image: '/products_image/삼성_에센셜_커브드_모니터.png' },
       { name: '모니터2', description: '게이밍 모니터', image: 'https://via.placeholder.com/150' },
     ],
     '노트북': [
