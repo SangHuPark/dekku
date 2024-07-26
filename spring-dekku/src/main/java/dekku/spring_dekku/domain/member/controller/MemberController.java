@@ -1,83 +1,70 @@
 package dekku.spring_dekku.domain.member.controller;
 
+import java.util.List;
 import java.util.Objects;
 
+import dekku.spring_dekku.domain.member.model.dto.request.CreateMemberRequestDto;
+import dekku.spring_dekku.domain.member.model.dto.response.CreateMemberResponseDto;
+import dekku.spring_dekku.domain.member.model.entity.Member;
+import dekku.spring_dekku.domain.member.repository.MemberRepository;
+import dekku.spring_dekku.domain.member.service.MemberService;
+import dekku.spring_dekku.global.model.dto.Success;
+import dekku.spring_dekku.global.util.ResponseUtil;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.trip.domain.member.model.DuplicationStatus;
-import com.trip.domain.member.model.dto.request.MemberSignUpReqDto;
-import com.trip.domain.member.model.entity.Member;
-import com.trip.domain.member.service.MemberService;
-import com.trip.global.common.model.dto.ResponseDto;
-import com.trip.global.util.ResponseUtil;
+import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "Member APIS")
+@Tag(name = "사용자 관련 API")
 @RestController
-@RequestMapping("/members")
+@RequiredArgsConstructor
+@RequestMapping("/api/users")
 public class MemberController {
 
 	private final MemberService memberService;
 
-	@Autowired
-	public MemberController(MemberService memberService) {
-		this.memberService = memberService;
+	@PostMapping
+	public ResponseEntity signUp(@RequestBody CreateMemberRequestDto request) {
+
+		memberService.createMember(request);
+
+		return ResponseUtil.created(
+				Success.builder()
+						.data()
+						.build());
 	}
 
-	@Operation(summary = "회원가입")
-	@PostMapping("/signup")
-	public ResponseEntity signUp(@RequestBody MemberSignUpReqDto req) {
-
-		ResponseDto result = new ResponseDto<>();
-		boolean isSuccess = memberService.signUp(req);
-
-		result.setResult(isSuccess);
-		return ResponseUtil.created(result);
-
+	@GetMapping
+	public List<Member> getAllMembers() {
+		return memberService.getAllMembers();
 	}
 
-	@Operation(summary = "이메일 중복 확인")
-	@GetMapping("/email/{email}")
-	public ResponseEntity checkDuplicationEmail(@PathVariable(name = "email") String email) {
+	@GetMapping("/{id}")
+	public ResponseEntity<Member> getMemberById(@PathVariable Long id) {
 
-		ResponseDto result = new ResponseDto<>();
-		result.setResult(DuplicationStatus.EXIST);
-		Member findMember = memberService.checkDuplicationEmail(email);
-
-		if (Objects.isNull(findMember)) {
-			result.setResult(DuplicationStatus.NOT_EXIST);
-			return ResponseEntity.ok(result);
-		}
-
-		return ResponseEntity.ok(result);
-
+		return memberService.getMemberById(id)
+				.map(ResponseEntity::ok)
+				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
-	@Operation(summary = "닉네임 중복 확인")
-	@GetMapping("/nickName/{nickName}")
-	public ResponseEntity checkDuplicationNickName(@PathVariable(name = "nickName") String nickName) {
+//	@PutMapping("/{id}")
+//	public ResponseEntity<Member> updateMember(@PathVariable Long id, @RequestBody Member memberDetails) {
+//		Member updatedMember = memberService.updateMember(id, memberDetails);
+//		if (updatedMember != null) {
+//			return ResponseEntity.ok(updatedMember);
+//		} else {
+//			return ResponseEntity.notFound().build();
+//		}
+//	}
 
-		ResponseDto result = new ResponseDto<>();
-		result.setResult(DuplicationStatus.EXIST);
-		Member findMember = memberService.checkDuplicationNickName(nickName);
-
-		if (Objects.isNull(findMember)) {
-			result.setResult(DuplicationStatus.NOT_EXIST);
-			return ResponseEntity.ok(result);
-		}
-
-		return ResponseEntity.ok(result);
-
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
+		memberService.deleteMember(id);
+		return ResponseEntity.ok().build();
 	}
-
 }

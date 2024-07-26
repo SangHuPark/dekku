@@ -1,45 +1,55 @@
 package dekku.spring_dekku.domain.member.model.entity;
 
-public class Member {
+import dekku.spring_dekku.global.model.entity.BaseEntity;
+import lombok.*;
 
-	private long id;
+import jakarta.persistence.*;
+import java.sql.Timestamp;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Member extends BaseEntity {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long user_id;
+
+	@Column(nullable = false, unique = true)
 	private String email;
+
+	@Column(nullable = false)
 	private String password;
-	private String nickName;
 
-	public Member() {
-	}
+	@Column(nullable = false)
+	private String name;
 
-	public long getId() {
-		return id;
-	}
+	@Column(nullable = false, unique = true)
+	private String nickname;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+	@Column(nullable = false, unique = true)
+	private String phoneNumber;
 
-	public String getEmail() {
-		return email;
-	}
+	private String image_url;
 
-	public void setEmail(String email) {
+	private String deleted_at;
+
+	@Setter
+    @Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private MemberRole memberRole;
+
+    @Builder
+	public Member(String email, String password, String name, String nickname, String phoneNumber, String image_url, String deleted_at) {
 		this.email = email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
 		this.password = password;
-	}
+		this.name = name;
+		this.nickname = nickname;
+		this.phoneNumber = phoneNumber;
 
-	public String getNickName() {
-		return nickName;
-	}
-
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
+		// service 에서 처리
+		this.image_url = image_url;
+		this.memberRole = MemberRole.COMMON;
 	}
 
 }
+
