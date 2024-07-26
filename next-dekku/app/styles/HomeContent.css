@@ -1,17 +1,25 @@
-/* app/styles/MainContent.css */
-.main-content {
-    padding: 20px;
-  }
-  
-  .intro, .current-events, .best-desk-setup {
-    margin-bottom: 20px;
-  }
-  
-  .intro h1 {
-    font-size: 2rem;
-  }
-  
-  .current-events h2, .best-desk-setup h2 {
-    font-size: 1.5rem;
-  }
-  
+/* MainContent.css */
+.slide-enter,
+.slide-exit {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.slide-enter {
+  transform: translateX(100%);
+}
+
+.slide-enter-active {
+  transform: translateX(0);
+  transition: transform 500ms ease-in-out;
+}
+
+.slide-exit {
+  transform: translateX(0);
+}
+
+.slide-exit-active {
+  transform: translateX(-100%);
+  transition: transform 500ms ease-in-out;
+}
