@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function DeskSetupCard({ data }) {
   return (
     <Link href={`/deskSetup/${data.id}`}>
-      <div className="rounded-lg py-2 w-96">
+      <div className="rounded-lg py-2 w-auto">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-2">
             <img
@@ -11,7 +11,7 @@ export default function DeskSetupCard({ data }) {
               alt="profile"
               className="w-14 h-14 object-cover rounded-full shadow-md"
             />
-            <div className="text-lg font-medium truncate w-28">
+            <div className="text-lg font-medium truncate">
               {data.username}
             </div>
           </div>
