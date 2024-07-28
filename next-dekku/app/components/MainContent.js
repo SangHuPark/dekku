@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import '../styles/MainContent.css';  // Make sure to create this CSS file for custom styles
+import '../styles/HomeContent.css';
 
 const images = [
   { src: "/notice1.jpg", alt: "Notice" },
