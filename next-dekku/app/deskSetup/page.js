@@ -1,27 +1,27 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import DeskSetupCard from './DeskSetupCard'; // DeskSetupCard 컴포넌트를 가져옵니다
-import { datas } from './data'; // 데이터 파일을 가져옵니다
-import Link from 'next/link';
+import { useEffect, useState } from "react";
+import DeskSetupCard from "./DeskSetupCard"; // DeskSetupCard 컴포넌트를 가져옵니다
+import { datas } from "./data"; // 데이터 파일을 가져옵니다
+import Link from "next/link";
 
 // 최근 일주일을 계산하는 함수
 const getOneWeekAgoDate = () => {
   const today = new Date();
   const oneWeekAgo = new Date(today);
   oneWeekAgo.setDate(today.getDate() - 7);
-  return oneWeekAgo.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 반환
+  return oneWeekAgo.toISOString().split("T")[0]; // YYYY-MM-DD 형식으로 반환
 };
 
 export default function DeskSetupPage() {
   const [recentTopPosts, setRecentTopPosts] = useState([]);
   const [allPosts, setAllPosts] = useState(datas);
   const [filteredData, setFilteredData] = useState(datas);
-  const [sortOrder, setSortOrder] = useState('latest');
-  const [styleFilter, setStyleFilter] = useState('all');
-  const [colorFilter, setColorFilter] = useState('all');
+  const [sortOrder, setSortOrder] = useState("latest");
+  const [styleFilter, setStyleFilter] = useState("all");
+  const [colorFilter, setColorFilter] = useState("all");
   const [displayedCount, setDisplayedCount] = useState(9);
-  const [searchTerm, setSearchTerm] = useState(''); // 검색어 상태
+  const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
 
   useEffect(() => {
     const oneWeekAgo = getOneWeekAgoDate();
@@ -34,8 +34,8 @@ export default function DeskSetupPage() {
       .map((post) => ({
         ...post,
         score:
-          parseInt(post.views.replace(/,/g, '')) *
-          parseInt(post.likes.replace(/,/g, '')),
+          parseInt(post.views.replace(/,/g, "")) *
+          parseInt(post.likes.replace(/,/g, "")),
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, 3); // 상위 3개 선택
@@ -47,10 +47,10 @@ export default function DeskSetupPage() {
     let sortedData = [...allPosts];
 
     // 필터링
-    if (styleFilter !== 'all') {
+    if (styleFilter !== "all") {
       sortedData = sortedData.filter((data) => data.style === styleFilter);
     }
-    if (colorFilter !== 'all') {
+    if (colorFilter !== "all") {
       sortedData = sortedData.filter((data) => data.color === colorFilter);
     }
 
@@ -64,19 +64,19 @@ export default function DeskSetupPage() {
     }
 
     // 정렬
-    if (sortOrder === 'latest') {
+    if (sortOrder === "latest") {
       sortedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    } else if (sortOrder === 'likes') {
+    } else if (sortOrder === "likes") {
       sortedData.sort(
         (a, b) =>
-          parseInt(b.likes.replace(/,/g, '')) -
-          parseInt(a.likes.replace(/,/g, ''))
+          parseInt(b.likes.replace(/,/g, "")) -
+          parseInt(a.likes.replace(/,/g, ""))
       );
-    } else if (sortOrder === 'views') {
+    } else if (sortOrder === "views") {
       sortedData.sort(
         (a, b) =>
-          parseInt(b.views.replace(/,/g, '')) -
-          parseInt(a.views.replace(/,/g, ''))
+          parseInt(b.views.replace(/,/g, "")) -
+          parseInt(a.views.replace(/,/g, ""))
       );
     }
 
@@ -94,10 +94,10 @@ export default function DeskSetupPage() {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
     // 컴포넌트가 언마운트 될 때 스크롤 이벤트 핸들러 제거
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [filteredData, displayedCount]);
 
   const loadMore = () => {
@@ -111,7 +111,7 @@ export default function DeskSetupPage() {
       <div className="max-w-6xl mx-auto">
         <h1 className="text-2xl font-bold mb-2">최근 인기 데스크셋업</h1>
         <h3 className="text-gray-400 mb-4">조회, 관심 급상승 (최근 일주일)</h3>
-        <div className="flex justify-center space-x-2 mb-6">
+        <div className="grid grid-cols-3 gap-4 mb-6">
           {recentTopPosts.map((data) => (
             <DeskSetupCard key={data.id} data={data} />
           ))}
@@ -122,7 +122,11 @@ export default function DeskSetupPage() {
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">모든 데스크셋업 게시글</h1>
           <div className="relative flex items-center">
-            <img src="/search.png" alt="Search" className="absolute left-3 w-4 h-4" />
+            <img
+              src="/search.png"
+              alt="Search"
+              className="absolute left-3 w-4 h-4"
+            />
             <input
               type="text"
               placeholder="검색..."

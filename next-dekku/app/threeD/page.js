@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import ThreeDNavBar from '../components/ThreeDNavBar';
+import ThreeDNavBar from '../components/threeDNavBar';
 import ThreeDScene from '../components/ThreeDScene';
 import SelectedProducts from '../components/SelectedProducts';
 
