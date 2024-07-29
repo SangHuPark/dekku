@@ -4,6 +4,7 @@ import { useState } from 'react';
 import ThreeDNavBar from '../components/ThreeDNavBar';
 import ThreeDScene from '../components/ThreeDScene';
 import SelectedProducts from '../components/SelectedProducts';
+import ThreeDMainContent from '../components/ThreeDMainContent';
 
 const ThreeDPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('모니터');
