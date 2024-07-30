@@ -54,13 +54,13 @@ public class CommentController {
 
     // 5. 대댓글 추가
     @PostMapping("/{id}/replies")
-    public ResponseEntity<Comment> addReply(@PathVariable String id, @RequestBody Reply reply) {
+    public ResponseEntity<Reply> addReply(@PathVariable String id, @RequestBody Reply reply) {
         if (!ObjectId.isValid(id)) {
             return ResponseEntity.badRequest().build();
         }
         ObjectId commentId = new ObjectId(id);
-        Comment updatedComment = commentService.addReply(commentId, reply);
-        return ResponseEntity.ok(updatedComment);
+        Reply newReply = commentService.addReply(commentId, reply);
+        return ResponseEntity.ok(newReply);
     }
 
     // 6. ID로 댓글 삭제
@@ -71,5 +71,16 @@ public class CommentController {
         }
         commentService.deleteCommentById(new ObjectId(id));
         return ResponseEntity.noContent().build();
+    }
+
+    // 7. ID로 대댓글 삭제
+    @DeleteMapping("/replies/{replyId}")
+    public ResponseEntity<Comment> deleteReply(@PathVariable String replyId) {
+        if (!ObjectId.isValid(replyId)) {
+            return ResponseEntity.badRequest().build();
+        }
+        ObjectId replyObjectId = new ObjectId(replyId);
+        Comment updatedComment = commentService.deleteReply(replyObjectId);
+        return ResponseEntity.ok(updatedComment);
     }
 }

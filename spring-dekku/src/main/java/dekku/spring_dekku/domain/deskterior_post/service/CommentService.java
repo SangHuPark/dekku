@@ -3,7 +3,6 @@ package dekku.spring_dekku.domain.deskterior_post.service;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.Comment;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.Reply;
 import dekku.spring_dekku.domain.deskterior_post.repository.CommentRepository;
-import dekku.spring_dekku.domain.deskterior_post.repository.ReplyRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +14,10 @@ import java.util.List;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final ReplyRepository replyRepository;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, ReplyRepository replyRepository) {
+    public CommentService(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
-        this.replyRepository = replyRepository;
     }
 
     // 1. 모든 댓글 조회
@@ -45,29 +42,46 @@ public class CommentService {
                 .author(comment.getAuthor())
                 .content(comment.getContent())
                 .createdAt(new Date())
-                .replies(comment.getReplies())
                 .build();
         return commentRepository.save(newComment);
     }
 
     // 5. 대댓글 추가
-    public Comment addReply(ObjectId commentId, Reply reply) {
+    public Reply addReply(ObjectId commentId, Reply reply) {
+        // 주어진 commentId를 사용하여 댓글(Comment)을 데이터베이스에서 찾습니다.
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found with id: " + commentId));
 
+        // 새로운 ObjectId를 생성하여 대댓글(Reply) 객체를 빌드합니다.
+        ObjectId replyId = new ObjectId();
         Reply newReply = Reply.builder()
+                .id(replyId)
                 .author(reply.getAuthor())
                 .content(reply.getContent())
                 .createdAt(new Date())
                 .build();
 
-        replyRepository.save(newReply);
+        // 댓글(Comment) 객체의 replies 리스트에 새로 생성된 대댓글을 추가합니다.
         comment.getReplies().add(newReply);
-        return commentRepository.save(comment);
+
+        // 변경된 댓글(Comment) 객체를 데이터베이스에 저장합니다.
+        commentRepository.save(comment);
+
+        // 새로 생성된 대댓글(Reply) 객체를 반환합니다.
+        return newReply;
     }
 
     // 6. ID로 댓글 삭제
     public void deleteCommentById(ObjectId id) {
         commentRepository.deleteById(id);
+    }
+
+    // 7. ID로 대댓글 삭제
+    public Comment deleteReply(ObjectId replyId) {
+        Comment comment = commentRepository.findByRepliesId(replyId)
+                .orElseThrow(() -> new IllegalArgumentException("Comment not found for reply id: " + replyId));
+
+        comment.getReplies().removeIf(r -> r.getId().equals(replyId));
+        return commentRepository.save(comment);
     }
 }

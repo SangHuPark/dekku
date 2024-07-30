@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 @Builder
 public class ReplyDto {
     @Id
-    private String commentId;
     private Long userId;
     private String content;
     private Timestamp createdAt;
