@@ -121,7 +121,7 @@ public class DeskteriorPostService {
                 .collect(Collectors.toList());
     }
 
-    // 필터 적용하여 게시물 조회
+    // 7. 필터 적용하여 게시물 조회
     public List<DeskteriorPostDto> findPostsByFilters(Style style, Color color, Job job) {
         return deskteriorPostRepository.findPostsByFilters(style, color, job).stream()
                 .map(this::convertToDto)

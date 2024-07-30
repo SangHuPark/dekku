@@ -21,4 +21,6 @@ public class DeskteriorPostDto {
     private int viewCount;
     private int likeCount;
     private Status status;
+    private CommentDto commentDto;
+    private ReplyDto replyDto;
 }

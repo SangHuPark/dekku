@@ -39,8 +39,6 @@ public class DeskteriorPostController {
         return ResponseEntity.ok(post);
     }
 
-
-
     // 3. 게시물 생성
     @PostMapping
     public ResponseEntity<DeskteriorPostDto> createPost(@RequestBody DeskteriorPostRequest request) {
