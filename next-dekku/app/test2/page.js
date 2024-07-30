@@ -46,6 +46,14 @@ const Page = () => {
 
       const scene = sceneRef.current;
 
+      // 조명 추가
+      const ambientLight = new THREE.AmbientLight(0x404040); // 부드러운 전체 조명
+      scene.add(ambientLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // 강한 방향성 조명
+      directionalLight.position.set(10, 20, 10).normalize(); // 조명 위치 조정
+      scene.add(directionalLight);
+
       // OrbitControls 설정
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.target.set(0, 0, 0); // 카메라의 중심점을 (0, 0, 0)으로 설정
