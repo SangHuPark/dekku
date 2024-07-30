@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import ThreeDNavBar from '../components/ThreeDNavBar';
 import ThreeDScene from '../components/ThreeDScene';
-import SelectedProducts from '../components/SelectedProducts';
-import ThreeDMainContent from '../components/ThreeDMainContent';
+import SelectedProducts from '../components/threeD/SelectedProducts';
+import ThreeDMainContent from '../components/threeD/ThreeDMainContent';
+import MainContent from '../components/HomeContent';
 
 const ThreeDPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('모니터');
@@ -34,7 +35,7 @@ const ThreeDPage = () => {
       />
       <div className="flex flex-col flex-grow relative border-l-2 border-gray-300">
         <div className="flex-grow h-4/5 overflow-hidden">
-          <ThreeDScene selectedProducts={selectedProducts} />
+          <ThreeDMainContent selectedProducts={selectedProducts} />
         </div>
         <div className="h-1/5 overflow-auto">
           <SelectedProducts

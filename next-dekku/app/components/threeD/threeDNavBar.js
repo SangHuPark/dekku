@@ -2,7 +2,7 @@
 
 import SearchBar from './SearchBar';
 import ProductCard from './ProductCard';
-import products from './ProductList';
+import products from './threeD/ProductList';
 
 const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searchTerm, onSearch }) => {
 
