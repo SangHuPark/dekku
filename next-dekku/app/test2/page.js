@@ -42,8 +42,14 @@ const Page = () => {
       const renderer = new THREE.WebGLRenderer();
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setClearColor(0xeeeeee);
-      canvasRef.current.appendChild(renderer.domElement);
-      rendererRef.current = renderer;
+
+      // 캔버스가 렌더러를 수용할 수 있는지 확인
+      if (canvasRef.current) {
+        canvasRef.current.appendChild(renderer.domElement);
+        rendererRef.current = renderer;
+      } else {
+        console.error("Canvas reference is not set.");
+      }
 
       const scene = sceneRef.current;
 
@@ -114,7 +120,7 @@ const Page = () => {
       // 컴포넌트 언마운트 시 클린업
       return () => {
         window.removeEventListener("resize", handleResize);
-        if (canvasRef.current) {
+        if (canvasRef.current && rendererRef.current) {
           canvasRef.current.removeChild(renderer.domElement);
         }
       };
@@ -147,23 +153,37 @@ const Page = () => {
       );
       dragControlsRef.current = dragControls;
 
-      // 드래그 이벤트 핸들러
-      dragControls.addEventListener("dragstart", () => {
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+
+      const onPointerMove = (event) => {
+        const rect = rendererRef.current.domElement.getBoundingClientRect();
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+      };
+
+      window.addEventListener('pointermove', onPointerMove);
+
+      dragControls.addEventListener("dragstart", (event) => {
         controlsRef.current.enableRotate = false;
         controlsRef.current.enableZoom = false;
         controlsRef.current.enablePan = false;
       });
 
-      dragControls.addEventListener("dragend", () => {
+      dragControls.addEventListener("dragend", (event) => {
         controlsRef.current.enableRotate = true;
         controlsRef.current.enableZoom = true;
         controlsRef.current.enablePan = true;
       });
 
       dragControls.addEventListener("drag", (event) => {
-        event.object.position.x = Math.round(event.object.position.x * 10) / 10;
-        event.object.position.z = Math.round(event.object.position.z * 10) / 10;
-        event.object.position.y = 0; // Y축 고정 (평면 위)
+        raycaster.setFromCamera(mouse, cameraRef.current);
+        const intersects = raycaster.intersectObject(planeRef.current);
+        if (intersects.length > 0) {
+          const intersect = intersects[0];
+          event.object.position.copy(intersect.point).add(intersect.face.normal);
+          event.object.position.y = 0; // Y축 고정 (평면 위)
+        }
       });
 
       // 클린업 함수
@@ -172,6 +192,7 @@ const Page = () => {
           dragControlsRef.current.dispose();
           dragControlsRef.current = null;
         }
+        window.removeEventListener('pointermove', onPointerMove);
       };
     }
   }, [selectedObjects]);
