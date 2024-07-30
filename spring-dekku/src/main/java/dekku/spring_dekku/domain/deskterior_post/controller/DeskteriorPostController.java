@@ -2,6 +2,9 @@ package dekku.spring_dekku.domain.deskterior_post.controller;
 
 import dekku.spring_dekku.domain.deskterior_post.model.dto.DeskteriorPostDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.DeskteriorPostRequest;
+import dekku.spring_dekku.domain.deskterior_post.model.type.Color;
+import dekku.spring_dekku.domain.deskterior_post.model.type.Job;
+import dekku.spring_dekku.domain.deskterior_post.model.type.Style;
 import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,8 @@ public class DeskteriorPostController {
         return ResponseEntity.ok(post);
     }
 
+
+
     // 3. 게시물 생성
     @PostMapping
     public ResponseEntity<DeskteriorPostDto> createPost(@RequestBody DeskteriorPostRequest request) {
@@ -62,5 +67,15 @@ public class DeskteriorPostController {
     public ResponseEntity<List<DeskteriorPostDto>> searchPosts(@RequestParam String keyword) {
         List<DeskteriorPostDto> posts = deskteriorPostService.findByTitleContaining(keyword);
         return ResponseEntity.ok(posts);
+    }
+
+    // 7. 스타일, 색상, 직업 필터를 적용하여 게시물 조회
+    @GetMapping("/filter")
+    public ResponseEntity<List<DeskteriorPostDto>> getPostsByFilters(
+            @RequestParam(required = false) Style style,
+            @RequestParam(required = false) Color color,
+            @RequestParam(required = false) Job job) {
+        List<DeskteriorPostDto> filteredPosts = deskteriorPostService.findPostsByFilters(style, color, job);
+        return ResponseEntity.ok(filteredPosts);
     }
 }
