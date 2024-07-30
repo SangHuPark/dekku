@@ -1,11 +1,10 @@
 'use client';
 
+import React, { useRef, useEffect, useState, useCallback, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment } from '@react-three/drei';
-import { Suspense, useRef, useEffect, useState, useCallback } from 'react';
 import ThreeDScene from './ThreeDScene';
 
-// ThreeDMainContent 컴포넌트
 const ThreeDMainContent = ({ selectedProducts }) => {
   const canvasRef = useRef();
   const [orbitEnabled, setOrbitEnabled] = useState(true);
@@ -59,13 +58,9 @@ const ThreeDMainContent = ({ selectedProducts }) => {
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
         <Suspense fallback={null}>
-          <ThreeDScene />
+          <ThreeDScene selectedProducts={selectedProducts} />
         </Suspense>
-        <OrbitControls 
-          enabled={orbitEnabled} 
-          minDistance={3}
-          maxDistance={10}
-        />
+        <OrbitControls enabled={orbitEnabled} minDistance={3} maxDistance={10} />
         <Environment preset="sunset" />
       </Canvas>
     </div>

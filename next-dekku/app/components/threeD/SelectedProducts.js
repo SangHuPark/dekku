@@ -2,39 +2,32 @@
 
 import { useState } from 'react';
 
-// SelectedProducts 컴포넌트는 선택된 상품들을 드롭다운 형식으로 보여줍니다.
-const SelectedProducts = ({ selectedProducts = [], removeProduct }) => {
-  const [isOpen, setIsOpen] = useState(false); // 드롭다운 상태 관리
+const SelectedProducts = ({ selectedProducts, removeProduct }) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const toggleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
+  };
 
   return (
-    <div className="absolute top-0 left-0 w-full bg-gray-200 border-b-2 border-gray-300 z-10">
-      {/* 드롭다운 버튼 */}
-      <button
-        className="w-full text-left p-2 bg-gray-300"
-        onClick={() => setIsOpen(!isOpen)}
+    <div className="p-2 overflow-auto">
+      <button 
+        className="bg-blue-500 text-white px-4 py-2 rounded mb-2"
+        onClick={toggleCollapse}
       >
-        {isOpen ? '선택한 상품 접기' : '선택한 상품 펼치기'}
+        {isCollapsed ? '펼치기' : '접기'}
       </button>
-      {/* 드롭다운 내용 */}
-      {isOpen && (
-        <div className="p-2 overflow-x-auto whitespace-nowrap">
-          <div className="inline-flex">
-            {selectedProducts.map((product, index) => (
-              <div key={index} className="relative border p-2 rounded bg-white m-1 flex-shrink-0">
-                {/* 삭제 버튼 */}
-                <button
-                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center"
-                  onClick={() => removeProduct(index)}
-                >
-                  &times;
-                </button>
-                {/* 상품 이미지 */}
-                <img src={product.image} alt={product.name} className="w-24 h-24 object-cover" onError={(e) => { e.target.src = '/fallback-image.png'; }} />
-                {/* 상품 이름 */}
-                <div className="mt-2">{product.name}</div>
+      {!isCollapsed && (
+        <div>
+          {selectedProducts.map((product, index) => (
+            <div key={index} className="flex justify-between items-center border p-2 mb-2 rounded">
+              <div>
+                <h3 className="text-lg">{product.name}</h3>
+                <p className="text-sm text-gray-500">{product.description}</p>
               </div>
-            ))}
-          </div>
+              <button className="text-red-500" onClick={() => removeProduct(index)}>Remove</button>
+            </div>
+          ))}
         </div>
       )}
     </div>

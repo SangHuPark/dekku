@@ -1,11 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import ThreeDNavBar from '../components/ThreeDNavBar';
-import ThreeDScene from '../components/ThreeDScene';
+import ThreeDNavBar from '../components/threeD/ThreeDNavBar';
 import SelectedProducts from '../components/threeD/SelectedProducts';
-import ThreeDMainContent from '../components/threeD/ThreeDMainContent';
-import MainContent from '../components/HomeContent';
+import ThreeJSRenderer from '../components/threeD/ThreeJSRenderer';
 
 const ThreeDPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('모니터');
@@ -34,14 +32,14 @@ const ThreeDPage = () => {
         onSearch={handleSearch}
       />
       <div className="flex flex-col flex-grow relative border-l-2 border-gray-300">
-        <div className="flex-grow h-4/5 overflow-hidden">
-          <ThreeDMainContent selectedProducts={selectedProducts} />
-        </div>
         <div className="h-1/5 overflow-auto">
           <SelectedProducts
             selectedProducts={selectedProducts}
             removeProduct={removeProduct}
           />
+        </div>
+        <div className="flex-grow h-4/5 overflow-hidden">
+          <ThreeJSRenderer selectedProducts={selectedProducts} />
         </div>
       </div>
     </div>

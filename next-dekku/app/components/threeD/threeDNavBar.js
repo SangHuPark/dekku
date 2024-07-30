@@ -2,10 +2,9 @@
 
 import SearchBar from './SearchBar';
 import ProductCard from './ProductCard';
-import products from './threeD/ProductList';
+import products from './ProductList';
 
 const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searchTerm, onSearch }) => {
-
   const filteredProducts = products[selectedCategory].filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
