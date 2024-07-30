@@ -6,6 +6,8 @@ import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorImage;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostRepository;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorImageRepository;
+import dekku.spring_dekku.domain.deskterior_post.model.type.Status;
+import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +56,11 @@ public class DeskteriorPostService {
                 .createdAt(postDto.getCreatedAt())
                 .modifiedAt(postDto.getModifiedAt())
                 .deskteriorImage(savedImage)
+                .deskteriorAttributes(postDto.getDeskteriorAttributes() != null ? postDto.getDeskteriorAttributes() : new DeskteriorAttributes())
                 .userId(postDto.getUserId())
+                .viewCount(postDto.getViewCount())
+                .likeCount(postDto.getLikeCount())
+                .status(postDto.getStatus() != null ? postDto.getStatus() : Status.CLOSED) // Set a default status, 설정하지 않을 경우
                 .build();
 
         DeskteriorPost savedPost = deskteriorPostRepository.save(deskteriorPost);
@@ -77,15 +83,19 @@ public class DeskteriorPostService {
             deskteriorImageRepository.save(updatedImage);
         }
 
-        DeskteriorPost updatedPost = existingPost.toBuilder()
-                .title(updatedPostDto.getTitle() != null ? updatedPostDto.getTitle() : existingPost.getTitle())
-                .thumbnailUrl(updatedPostDto.getThumbnailUrl() != null ? updatedPostDto.getThumbnailUrl() : existingPost.getThumbnailUrl())
-                .content(updatedPostDto.getContent() != null ? updatedPostDto.getContent() : existingPost.getContent())
-                .modifiedAt(new Timestamp(System.currentTimeMillis()))
-                .deskteriorImage(updatedImage != null ? updatedImage : existingPost.getDeskteriorImage())
-                .build();
+        existingPost.updatePost(
+                updatedPostDto.getTitle() != null ? updatedPostDto.getTitle() : existingPost.getTitle(),
+                updatedPostDto.getThumbnailUrl() != null ? updatedPostDto.getThumbnailUrl() : existingPost.getThumbnailUrl(),
+                updatedPostDto.getContent() != null ? updatedPostDto.getContent() : existingPost.getContent(),
+                new Timestamp(System.currentTimeMillis()),
+                updatedImage,
+                updatedPostDto.getDeskteriorAttributes() != null ? updatedPostDto.getDeskteriorAttributes() : existingPost.getDeskteriorAttributes(),
+                updatedPostDto.getViewCount() != 0 ? updatedPostDto.getViewCount() : existingPost.getViewCount(),
+                updatedPostDto.getLikeCount() != 0 ? updatedPostDto.getLikeCount() : existingPost.getLikeCount(),
+                updatedPostDto.getStatus() != null ? updatedPostDto.getStatus() : existingPost.getStatus()
+        );
 
-        DeskteriorPost savedPost = deskteriorPostRepository.save(updatedPost);
+        DeskteriorPost savedPost = deskteriorPostRepository.save(existingPost);
         return convertToDto(savedPost);
     }
 
@@ -118,6 +128,10 @@ public class DeskteriorPostService {
                 .modifiedAt(post.getModifiedAt())
                 .deskteriorImageId(post.getDeskteriorImage() != null ? post.getDeskteriorImage().getId() : null)
                 .userId(post.getUserId())
+                .viewCount(post.getViewCount())
+                .likeCount(post.getLikeCount())
+                .status(post.getStatus())
+                .deskteriorAttributes(post.getDeskteriorAttributes())
                 .build();
     }
 
@@ -136,6 +150,10 @@ public class DeskteriorPostService {
                 .createdAt(postDto.getCreatedAt())
                 .modifiedAt(postDto.getModifiedAt())
                 .userId(postDto.getUserId())
+                .deskteriorAttributes(postDto.getDeskteriorAttributes())
+                .viewCount(postDto.getViewCount())
+                .likeCount(postDto.getLikeCount())
+                .status(postDto.getStatus())
                 .build();
     }
 

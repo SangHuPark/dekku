@@ -1,4 +1,4 @@
-package dekku.spring_dekku.domain.stored_post.model.entity;
+package dekku.spring_dekku.domain.liked_post.model.entity;
 
 import lombok.*;
 import jakarta.persistence.*;
@@ -6,16 +6,15 @@ import java.sql.Timestamp;
 
 @Getter
 @Entity
-@Table(name = "members_stored_posts_info")
+@Table(name = "members_liked_posts_info")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder(toBuilder = true)
-public class StoredPost {
+public class LikedPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "stored_id")
-    private Long storedId;
+    @Column(name = "liked_id")
+    private Long likedId;
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
@@ -27,7 +26,7 @@ public class StoredPost {
     private Timestamp createdAt;
 
     @Builder
-    public StoredPost(Long userId, Long postId, Timestamp createdAt) {
+    public LikedPost(Long userId, Long postId, Timestamp createdAt) {
         this.userId = userId;
         this.postId = postId;
         this.createdAt = createdAt;

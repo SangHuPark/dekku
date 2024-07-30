@@ -1,7 +1,9 @@
 package dekku.spring_dekku.domain.deskterior_post.repository;
 
+import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorAttributes;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorImage;
+import dekku.spring_dekku.domain.deskterior_post.model.type.Status;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -27,11 +29,10 @@ public class DeskteriorPostRepositoryImpl implements DeskteriorPostRepositoryCus
 
     @Override
     @Transactional
-    public void updatePost(Long id, String title, String thumbnailUrl, String content, DeskteriorImage deskteriorImage) {
+    public void updatePost(Long id, String title, String thumbnailUrl, String content, DeskteriorImage deskteriorImage, DeskteriorAttributes deskteriorAttributes, int viewCount, int likeCount, Status status) {
         DeskteriorPost existingPost = entityManager.find(DeskteriorPost.class, id);
         if (existingPost != null) {
-            DeskteriorPost updatedPost = existingPost.updatePost(title, thumbnailUrl, content, new Timestamp(System.currentTimeMillis()), deskteriorImage);
-            entityManager.merge(updatedPost);
+            DeskteriorPost updatedPost = existingPost.updatePost(title, thumbnailUrl, content, new Timestamp(System.currentTimeMillis()), deskteriorImage, deskteriorAttributes, viewCount, likeCount, status);
         }
     }
 }

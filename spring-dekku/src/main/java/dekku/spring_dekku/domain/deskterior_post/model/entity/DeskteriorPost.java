@@ -1,5 +1,6 @@
 package dekku.spring_dekku.domain.deskterior_post.model.entity;
 
+import dekku.spring_dekku.domain.deskterior_post.model.type.Status;
 import lombok.*;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
@@ -39,24 +40,43 @@ public class DeskteriorPost {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Embedded
+    private DeskteriorAttributes deskteriorAttributes;
+
+    @Column(name = "view_count", nullable = false)
+    private int viewCount;
+
+    @Column(name = "like_count", nullable = false)
+    private int likeCount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
+
     @Builder
-    public DeskteriorPost(String title, String thumbnailUrl, String content, Timestamp createdAt, Timestamp modifiedAt, DeskteriorImage deskteriorImage, Long userId) {
+    public DeskteriorPost(String title, String thumbnailUrl, String content, Timestamp createdAt, Timestamp modifiedAt, DeskteriorImage deskteriorImage, DeskteriorAttributes deskteriorAttributes, int viewCount, int likeCount, Status status) {
         this.title = title;
         this.thumbnailUrl = thumbnailUrl;
         this.content = content;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
         this.deskteriorImage = deskteriorImage;
-        this.userId = userId;
+        this.deskteriorAttributes = deskteriorAttributes;
+        this.viewCount = viewCount;
+        this.likeCount = likeCount;
+        this.status = status;
     }
 
-    public DeskteriorPost updatePost(String title, String thumbnailUrl, String content, Timestamp timestamp, DeskteriorImage deskteriorImage) {
-        return this.toBuilder()
-                .title(title != null ? title : this.title)
-                .thumbnailUrl(thumbnailUrl != null ? thumbnailUrl : this.thumbnailUrl)
-                .content(content != null ? content : this.content)
-                .modifiedAt(timestamp != null ? timestamp : this.modifiedAt)
-                .deskteriorImage(deskteriorImage != null ? deskteriorImage : this.deskteriorImage)
-                .build();
+    public DeskteriorPost updatePost(String title, String thumbnailUrl, String content, Timestamp modifiedAt, DeskteriorImage deskteriorImage, DeskteriorAttributes deskteriorAttributes, int viewCount, int likeCount, Status status) {
+        this.title = title;
+        this.thumbnailUrl = thumbnailUrl;
+        this.content = content;
+        this.modifiedAt = modifiedAt;
+        this.deskteriorImage = deskteriorImage;
+        this.deskteriorAttributes = deskteriorAttributes;
+        this.viewCount = viewCount;
+        this.likeCount = likeCount;
+        this.status = status;
+        return this;
     }
 }
