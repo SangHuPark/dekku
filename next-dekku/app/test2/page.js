@@ -14,6 +14,7 @@ const objects = [
 
 const Page = () => {
   const [selectedObjects, setSelectedObjects] = useState([]); // 선택된 오브젝트 상태
+  const [isBarOpen, setIsBarOpen] = useState(true); // 헤더바 펼치기/접기 상태
   const canvasRef = useRef(null); // 캔버스 참조
   const sceneRef = useRef(new THREE.Scene()); // Three.js 장면 참조
   const cameraRef = useRef(null); // 카메라 참조
@@ -169,8 +170,8 @@ const Page = () => {
   }, [selectedObjects]);
 
   return (
-    <div className="flex">
-      <div className="w-48 p-4">
+    <div className="flex h-screen">
+      <div className="w-48 p-4 bg-gray-100">
         <h3 className="text-lg font-bold mb-2">Object Selector</h3>
         <ul className="space-y-2">
           {objects.map((obj, index) => (
@@ -180,14 +181,37 @@ const Page = () => {
                 const id = Date.now(); // 각 오브젝트에 고유 ID 부여
                 setSelectedObjects(prev => [...prev, { ...obj, id }]);
               }}
-              className={`cursor-pointer hover:bg-gray-200 p-2 rounded ${selectedObjects.some(o => o.name === obj.name) ? 'bg-gray-300' : ''}`}
+              className="cursor-pointer hover:bg-gray-200 p-2 rounded"
             >
               {obj.name}
             </li>
           ))}
         </ul>
       </div>
-      <div ref={canvasRef} className="flex-1 h-screen" />
+      <div className="flex flex-col">
+        <header className="bg-gray-800 text-white p-4 flex items-center space-x-4 overflow-x-auto">
+          <h1 className="text-xl font-bold">3D Viewer</h1>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={() => setIsBarOpen(prev => !prev)}
+          >
+            {isBarOpen ? "Hide Selected Objects" : "Show Selected Objects"}
+          </button>
+          {isBarOpen && (
+            <div className="flex space-x-4 overflow-x-auto">
+              {selectedObjects.map((obj, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-300 p-2 rounded"
+                >
+                  {obj.name}
+                </div>
+              ))}
+            </div>
+          )}
+        </header>
+        <div ref={canvasRef} className="" />
+      </div>
     </div>
   );
 };
