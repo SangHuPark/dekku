@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { DragControls } from "three/examples/jsm/controls/DragControls"; // 경로 수정
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"; // OrbitControls 추가
+import { DragControls } from "three/examples/jsm/controls/DragControls";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 const objects = [
   { name: "Cube", geometry: new THREE.BoxGeometry(), color: 0x00ff00 },
@@ -145,6 +145,20 @@ const Page = () => {
       dragControlsRef.current = dragControls;
 
       // 드래그 이벤트 핸들러
+      dragControls.addEventListener("dragstart", () => {
+        // 드래그 시작 시 OrbitControls 비활성화
+        controlsRef.current.enableRotate = false;
+        controlsRef.current.enableZoom = false;
+        controlsRef.current.enablePan = false;
+      });
+
+      dragControls.addEventListener("dragend", () => {
+        // 드래그 종료 시 OrbitControls 활성화
+        controlsRef.current.enableRotate = true;
+        controlsRef.current.enableZoom = true;
+        controlsRef.current.enablePan = true;
+      });
+
       dragControls.addEventListener("drag", (event) => {
         event.object.position.x = Math.round(event.object.position.x * 10) / 10;
         event.object.position.z = Math.round(event.object.position.z * 10) / 10;
