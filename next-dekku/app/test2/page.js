@@ -102,17 +102,18 @@ const Page = () => {
       });
 
       // 윈도우 리사이즈 이벤트 핸들러
-      window.addEventListener("resize", () => {
+      const handleResize = () => {
         if (rendererRef.current && cameraRef.current) {
           rendererRef.current.setSize(window.innerWidth, window.innerHeight);
           cameraRef.current.aspect = window.innerWidth / window.innerHeight;
           cameraRef.current.updateProjectionMatrix();
         }
-      });
+      };
+      window.addEventListener("resize", handleResize);
 
       // 컴포넌트 언마운트 시 클린업
       return () => {
-        window.removeEventListener("resize", () => {});
+        window.removeEventListener("resize", handleResize);
         if (canvasRef.current) {
           canvasRef.current.removeChild(renderer.domElement);
         }
@@ -122,21 +123,25 @@ const Page = () => {
 
   useEffect(() => {
     const scene = sceneRef.current;
-
-    if (selectedObjects.length > 0 && cameraRef.current && rendererRef.current) {
-      // 선택된 오브젝트 추가
-      const meshes = selectedObjects.map(({ geometry, color, id }) => {
+    const existingObjects = new Set(scene.children.map(obj => obj.name));
+    
+    if (cameraRef.current && rendererRef.current) {
+      // 선택된 오브젝트 중 새로운 오브젝트만 추가
+      const newObjects = selectedObjects.filter(({ id }) => !existingObjects.has(`Object_${id}`));
+      newObjects.forEach(({ geometry, color, id }) => {
         const material = new THREE.MeshBasicMaterial({ color });
         const mesh = new THREE.Mesh(geometry, material);
         mesh.name = `Object_${id}`; // 각 오브젝트를 구별할 수 있도록 이름 설정
-        return mesh;
+        scene.add(mesh);
       });
 
-      meshes.forEach(mesh => scene.add(mesh));
-
       // 드래그 컨트롤 설정
+      const allMeshes = selectedObjects.map(({ id }) => scene.getObjectByName(`Object_${id}`));
+      if (dragControlsRef.current) {
+        dragControlsRef.current.dispose();
+      }
       const dragControls = new DragControls(
-        meshes,
+        allMeshes,
         cameraRef.current,
         rendererRef.current.domElement
       );
@@ -163,14 +168,16 @@ const Page = () => {
 
       // 클린업 함수
       return () => {
-        dragControls.dispose(); // 드래그 컨트롤 해제
-        meshes.forEach(mesh => scene.remove(mesh)); // 장면에서 오브젝트 제거
+        if (dragControlsRef.current) {
+          dragControlsRef.current.dispose();
+          dragControlsRef.current = null;
+        }
       };
     }
   }, [selectedObjects]);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex">
       <div className="w-48 p-4 bg-gray-100">
         <h3 className="text-lg font-bold mb-2">Object Selector</h3>
         <ul className="space-y-2">
