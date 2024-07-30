@@ -4,6 +4,9 @@ import dekku.spring_dekku.domain.deskterior_post.model.dto.DeskteriorPostDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.DeskteriorImageDto;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorImage;
+import dekku.spring_dekku.domain.deskterior_post.model.type.Color;
+import dekku.spring_dekku.domain.deskterior_post.model.type.Job;
+import dekku.spring_dekku.domain.deskterior_post.model.type.Style;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostRepository;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorImageRepository;
 import dekku.spring_dekku.domain.deskterior_post.model.type.Status;
@@ -114,6 +117,13 @@ public class DeskteriorPostService {
     // 6. 제목에 특정 키워드를 포함하는 게시물 조회
     public List<DeskteriorPostDto> findByTitleContaining(String keyword) {
         return deskteriorPostRepository.findByTitleContaining(keyword).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    // 필터 적용하여 게시물 조회
+    public List<DeskteriorPostDto> findPostsByFilters(Style style, Color color, Job job) {
+        return deskteriorPostRepository.findPostsByFilters(style, color, job).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
