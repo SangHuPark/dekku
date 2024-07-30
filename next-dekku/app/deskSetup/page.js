@@ -107,7 +107,7 @@ export default function DeskSetupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="bg-gray-100 p-6">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-2xl font-bold mb-2">최근 인기 데스크셋업</h1>
         <h3 className="text-gray-400 mb-4">조회, 관심 급상승 (최근 일주일)</h3>

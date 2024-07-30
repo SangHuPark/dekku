@@ -41,7 +41,7 @@ export default function MainContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex h-96 justify-between mb-8">
           <Link
