@@ -60,7 +60,7 @@ public class DeskteriorPostService {
                 .userId(postDto.getUserId())
                 .viewCount(postDto.getViewCount())
                 .likeCount(postDto.getLikeCount())
-                .status(postDto.getStatus() != null ? postDto.getStatus() : Status.CLOSED) // Set a default status, 설정하지 않을 경우
+                .status(postDto.getStatus() != null ? postDto.getStatus() : Status.CLOSED) // 설정하지 않을 경우
                 .build();
 
         DeskteriorPost savedPost = deskteriorPostRepository.save(deskteriorPost);
