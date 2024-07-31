@@ -1,7 +1,7 @@
 package dekku.spring_dekku.domain.deskterior_post.service;
 
-import dekku.spring_dekku.domain.deskterior_post.model.dto.DeskteriorPostDto;
-import dekku.spring_dekku.domain.deskterior_post.model.dto.DeskteriorImageDto;
+import dekku.spring_dekku.domain.deskterior_post.dto.DeskteriorPostDto;
+import dekku.spring_dekku.domain.deskterior_post.dto.DeskteriorImageDto;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorImage;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostRepository;

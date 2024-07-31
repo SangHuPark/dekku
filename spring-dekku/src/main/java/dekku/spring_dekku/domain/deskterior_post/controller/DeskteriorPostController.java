@@ -1,7 +1,7 @@
 package dekku.spring_dekku.domain.deskterior_post.controller;
 
-import dekku.spring_dekku.domain.deskterior_post.model.dto.DeskteriorPostDto;
-import dekku.spring_dekku.domain.deskterior_post.model.dto.DeskteriorPostRequest;
+import dekku.spring_dekku.domain.deskterior_post.dto.DeskteriorPostDto;
+import dekku.spring_dekku.domain.deskterior_post.dto.DeskteriorPostRequest;
 import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
