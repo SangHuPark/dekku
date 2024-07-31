@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-const MouseControls = ({ camera, models, setActiveModel, controls, scene }) => {
+const MouseControls = ({ camera, models, setActiveModel, controls, scene, deskSize, deskHeight }) => {
   const raycaster = useRef(new THREE.Raycaster());
   const mouse = useRef(new THREE.Vector2());
   const plane = useRef(new THREE.Plane());
@@ -10,6 +10,33 @@ const MouseControls = ({ camera, models, setActiveModel, controls, scene }) => {
   const intersection = useRef(new THREE.Vector3());
   const gridHelper = useRef(null);
   const axesHelper = useRef(null);
+
+  const createCustomGrid = (sizeX, sizeZ, divisionsX, divisionsZ) => {
+    const grid = new THREE.Group();
+    const material = new THREE.LineBasicMaterial({ color: 0x000000 });
+    const stepX = sizeX / divisionsX;
+    const stepZ = sizeZ / divisionsZ;
+
+    for (let i = -divisionsX / 2; i <= divisionsX / 2; i++) {
+      const geometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(i * stepX, 0, -sizeZ / 2),
+        new THREE.Vector3(i * stepX, 0, sizeZ / 2),
+      ]);
+      const line = new THREE.Line(geometry, material);
+      grid.add(line);
+    }
+
+    for (let j = -divisionsZ / 2; j <= divisionsZ / 2; j++) {
+      const geometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(-sizeX / 2, 0, j * stepZ),
+        new THREE.Vector3(sizeX / 2, 0, j * stepZ),
+      ]);
+      const line = new THREE.Line(geometry, material);
+      grid.add(line);
+    }
+
+    return grid;
+  };
 
   useEffect(() => {
     const onPointerMove = (event) => {
@@ -21,7 +48,8 @@ const MouseControls = ({ camera, models, setActiveModel, controls, scene }) => {
 
       if (activeModel.current) {
         if (raycaster.current.ray.intersectPlane(plane.current, intersection.current)) {
-          activeModel.current.position.copy(intersection.current.sub(offset.current));
+          activeModel.current.position.x = intersection.current.x;
+          activeModel.current.position.z = intersection.current.z;
         }
       } else {
         const intersects = raycaster.current.intersectObjects(models, true);
@@ -54,34 +82,33 @@ const MouseControls = ({ camera, models, setActiveModel, controls, scene }) => {
         if (gridHelper.current) scene.remove(gridHelper.current);
         if (axesHelper.current) scene.remove(axesHelper.current);
 
-        gridHelper.current = new THREE.GridHelper(10, 10);
+        gridHelper.current = createCustomGrid(deskSize.x, deskSize.z, 10, 10); // 책상 크기로 CustomGrid 생성
         axesHelper.current = new THREE.AxesHelper(5);
 
-        gridHelper.current.position.copy(object.position);
+        gridHelper.current.position.set(0, deskHeight + 0.03, 0); // 책상 높이보다 0.01 높게 설정
         axesHelper.current.position.copy(object.position);
 
         scene.add(gridHelper.current);
         scene.add(axesHelper.current);
 
-        plane.current.setFromNormalAndCoplanarPoint(camera.getWorldDirection(plane.current.normal), intersects[0].point);
-        offset.current.copy(intersects[0].point).sub(object.position);
+        plane.current.setFromNormalAndCoplanarPoint(
+          camera.getWorldDirection(plane.current.normal),
+          object.position
+        );
 
-        document.body.style.cursor = 'grabbing';
-
-        controls.enabled = false; // 카메라 제어 비활성화
+        controls.enabled = false;
+        document.body.style.cursor = 'move';
       }
     };
 
     const onPointerUp = () => {
       if (activeModel.current) {
-        document.body.style.cursor = 'pointer';
-        activeModel.current = null;
         setActiveModel(null);
-
+        activeModel.current = null;
+        controls.enabled = true;
+        document.body.style.cursor = 'pointer';
         if (gridHelper.current) scene.remove(gridHelper.current);
         if (axesHelper.current) scene.remove(axesHelper.current);
-
-        controls.enabled = true; // 카메라 제어 활성화
       }
     };
 
@@ -94,7 +121,7 @@ const MouseControls = ({ camera, models, setActiveModel, controls, scene }) => {
       window.removeEventListener('pointerdown', onPointerDown);
       window.removeEventListener('pointerup', onPointerUp);
     };
-  }, [camera, models, setActiveModel, controls, scene]);
+  }, [camera, models, setActiveModel, controls, scene, deskSize, deskHeight]);
 
   return null;
 };

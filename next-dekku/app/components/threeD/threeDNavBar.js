@@ -1,8 +1,7 @@
-'use client';
-
 import SearchBar from './SearchBar';
 import ProductCard from './ProductCard';
 import products from './ProductList';
+import { v4 as uuidv4 } from 'uuid';
 
 const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searchTerm, onSearch }) => {
   const filteredProducts = products[selectedCategory].filter(product =>
@@ -42,7 +41,7 @@ const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searc
         </div>
         <div className="mt-2 grid grid-cols-2 gap-2 flex-grow overflow-y-auto">
           {filteredProducts.map((product, index) => (
-            <ProductCard key={index} {...product} addProduct={addProduct} />
+            <ProductCard key={index} {...product} addProduct={() => addProduct({ ...product, id: uuidv4() })} />
           ))}
           {filteredProducts.length === 0 && (
             <div className="col-span-2 text-center text-gray-500">No products found</div>
