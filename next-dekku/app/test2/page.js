@@ -105,20 +105,47 @@ const Page = () => {
       controls.dampingFactor = 0.25;
       controlsRef.current = controls;
 
+      // Raycaster 및 마우스 이벤트 설정
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+
+      const onPointerMove = (event) => {
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+      };
+
+      window.addEventListener("pointermove", onPointerMove);
+
       // 드래그 컨트롤 설정
       const dragControls = new DragControls(
         objectsArr.current,
         camera,
         renderer.domElement
       );
-      dragControls.addEventListener(
-        "dragstart",
-        (event) => (controls.enabled = false)
-      );
-      dragControls.addEventListener(
-        "dragend",
-        (event) => (controls.enabled = true)
-      );
+
+      dragControls.addEventListener("dragstart", () => {
+        controlsRef.current.enableRotate = false;
+        controlsRef.current.enableZoom = false;
+        controlsRef.current.enablePan = false;
+      });
+
+      dragControls.addEventListener("dragend", () => {
+        controlsRef.current.enableRotate = true;
+        controlsRef.current.enableZoom = true;
+        controlsRef.current.enablePan = true;
+      });
+
+      dragControls.addEventListener("drag", (event) => {
+        raycaster.setFromCamera(mouse, cameraRef.current);
+        const intersects = raycaster.intersectObject(planeRef.current);
+        if (intersects.length > 0) {
+          const intersection = intersects[0];
+          event.object.position.copy(intersection.point);
+          event.object.position.y = 0; // Y축 고정 (평면 위)
+        }
+      });
+
       dragControlsRef.current = dragControls;
 
       // 애니메이션 루프
@@ -171,6 +198,7 @@ const Page = () => {
       // 컴포넌트 언마운트 시 클린업
       return () => {
         window.removeEventListener("resize", handleResize);
+        window.removeEventListener("pointermove", onPointerMove);
         if (canvasRef.current && rendererRef.current) {
           canvasRef.current.removeChild(renderer.domElement);
         }
