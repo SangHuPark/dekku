@@ -27,6 +27,8 @@ public class DeskteriorPostService {
 
     // 1. 모든 게시물 조회
     public List<DeskteriorPostDto> findAll() {
+
+
         return deskteriorPostRepository.findAll().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -52,7 +54,7 @@ public class DeskteriorPostService {
                 .thumbnailUrl(postDto.getThumbnailUrl())
                 .content(postDto.getContent())
                 .createdAt(postDto.getCreatedAt())
-                .modifiedAt(postDto.getModifiedAt())
+                .modifiedAt(postDto.getModifiedAt())//
                 .deskteriorImage(savedImage)
                 .userId(postDto.getUserId())
                 .build();

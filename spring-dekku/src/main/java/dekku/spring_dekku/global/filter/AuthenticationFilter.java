@@ -1,7 +1,9 @@
 package dekku.spring_dekku.global.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dekku.spring_dekku.domain.member.model.dto.MemberDto;
 import dekku.spring_dekku.domain.member.model.dto.request.LoginRequestDto;
+import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.service.MemberService;
 import dekku.spring_dekku.infra.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -60,10 +62,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("인증 완료");
 
-        Principal principal = (Principal) authResult.get;
+        String email = ((Member) authResult.getPrincipal()).getEmail();
+        MemberDto memberDto = memberService.getMemberDtoByEmail(email);
 
-        String accessToken = jwtUtil.generateAccessToken(principal);
+        String accessToken = jwtUtil.generateAccessToken(memberDto.getEmail());
 
-        super.successfulAuthentication(request, response, chain, authResult);
+        response.addHeader("Access-Token", accessToken);
     }
 }

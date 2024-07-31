@@ -12,7 +12,6 @@ import java.util.Optional;
 
 public interface MemberService extends UserDetailsService {
     List<Member> getAllMembers();
-    Member saveMember(Member member);
     Optional<Member> getMemberById(Long id);
     void deleteMember(Long id);
     String login(LoginRequestDto loginRequestDto);
