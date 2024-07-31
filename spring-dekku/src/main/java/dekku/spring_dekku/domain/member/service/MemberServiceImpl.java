@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     private final JwtUtil jwtUtil;
 
@@ -59,7 +60,7 @@ public class MemberServiceImpl implements MemberService {
 
 //        member.setToken(token);
 //        memberRepository.save(member);
-        memberRepository.updateTokenByEmail(member.getEmail(), token);
+//        memberRepository.updateTokenByEmail(member.getEmail(), token);
 
         return jwtUtil.generateAccessToken(member.getName());
     }
@@ -85,11 +86,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member saveMember(Member member) {
-        return memberRepository.save(member);
-    }
-
-    @Override
     public Optional<Member> getMemberById(Long id) {
         return memberRepository.findById(id);
     }
@@ -102,9 +98,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberDto getMemberDtoByEmail(String email) {
 
-//        ModelMapper modelMapper
+        Member member = memberRepository.findByEmail(email);
+        ModelMapper modelMapper = new ModelMapper();
+        MemberDto memberDto = modelMapper.map(member, MemberDto.class);
 
-        return null;
+        return memberDto;
     }
 
 //    @Override

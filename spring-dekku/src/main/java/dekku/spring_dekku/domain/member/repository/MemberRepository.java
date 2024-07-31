@@ -12,15 +12,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Optional;
-
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByEmail(String email);
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE Member m SET m.token = :token WHERE m.email = :email")
-    void updateTokenByEmail(@Param("email") String email, @Param("token") String token);
+//    @Modifying
+//    @Transactional
+//    @Query("UPDATE Member m SET m.token = :token WHERE m.email = :email")
+//    void updateTokenByEmail(@Param("email") String email, @Param("token") String token);
 }
 
 

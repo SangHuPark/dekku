@@ -31,11 +31,11 @@ public class MemberController {
 	@PostMapping
 	public ResponseEntity signUp(@RequestBody CreateMemberRequestDto request) {
 
-		memberService.createMember(request);
+		CreateMemberResponseDto response = memberService.createMember(request);
 
 		return ResponseUtil.created(
 				Success.builder()
-						.data()
+						.data(response)
 						.build());
 	}
 

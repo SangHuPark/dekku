@@ -12,8 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -22,6 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
+
     private final MemberService customUserDetailsService;
 
     @Bean
@@ -49,23 +48,17 @@ public class SecurityConfig {
                         "/users/find-password", "/users/update-password", "/s3/**", "/test");
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
-    }
-
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder())
-                .and()
-                .build();
+
+        AuthenticationManagerBuilder sharedObject = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
+
+        sharedObject.userDetailsService(customUserDetailsService);
+        AuthenticationManager authenticationManager = sharedObject.build();
+
+        httpSecurity.authenticationManager(authenticationManager);
+
+        return authenticationManager;
     }
 
 
