@@ -14,7 +14,6 @@ public class CreateMemberRequestDto {
     private String password;
     private String name;
     private String nickname;
-    private String phoneNumber;
     private String image_url;
     private String created_at;
 
@@ -26,7 +25,6 @@ public class CreateMemberRequestDto {
                 .password(encryptPassword)
                 .name(this.name)
                 .nickname(this.nickname)
-                .phoneNumber(this.phoneNumber)
                 .image_url(image_url)
                 .build();
     }

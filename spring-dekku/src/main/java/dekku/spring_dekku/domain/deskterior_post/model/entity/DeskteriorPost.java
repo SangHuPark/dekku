@@ -1,78 +1,65 @@
 package dekku.spring_dekku.domain.deskterior_post.model.entity;
 
-import dekku.spring_dekku.domain.deskterior_post.model.type.Status;
-import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorImage;
-import lombok.*;
+import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
+import dekku.spring_dekku.domain.deskterior_post.model.entity.code.OpenStatus;
+import dekku.spring_dekku.domain.member.model.entity.Member;
+import dekku.spring_dekku.domain.member.model.entity.Like;
+import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
+import dekku.spring_dekku.global.model.entity.BaseEntity;
 import jakarta.persistence.*;
-import java.sql.Timestamp;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Table(name = "deskterior_posts")
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
-public class DeskteriorPost {
+@Table(name = "deskterior_posts")
+@Getter
+public class DeskteriorPost extends BaseEntity {
 
     @Id
-    @Column(name = "post_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "deskterior_post_id")
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @OneToMany(mappedBy = "deskteriorPost")
+    private List<DeskteriorPostImage> deskteriorPostImages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "deskteriorPost")
+    private List<Like> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "deskteriorPost")
+    private List<DeskteriorPostProductInfo> deskteriorPostProductInfos = new ArrayList<>();
+
     private String title;
 
-    @Column(length = 255)
-    private String thumbnailUrl;
-
-    @Column(columnDefinition = "TEXT")
     private String content;
 
-    private Timestamp createdAt;
+    private String thumbnailUrl;
 
-    private Timestamp modifiedAt;
+    private int viewCount;
 
-    private Long deskteriorImageId;
+    private int likeCount;
 
-    private Long userId;
+    @Enumerated(EnumType.STRING)
+    private OpenStatus openStatus;
 
     @Embedded
     private DeskteriorAttributes deskteriorAttributes;
 
-    @Column(name = "view_count", nullable = false)
-    private int viewCount;
-
-    @Column(name = "like_count", nullable = false)
-    private int likeCount;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private Status status;
-
     @Builder
-    public DeskteriorPost(String title, String thumbnailUrl, String content, Timestamp createdAt, Timestamp modifiedAt, DeskteriorImage deskteriorImage, DeskteriorAttributes deskteriorAttributes, int viewCount, int likeCount, Status status) {
+    public DeskteriorPost(String title, String content, String thumbnailUrl, OpenStatus openStatus) {
         this.title = title;
-        this.thumbnailUrl = thumbnailUrl;
         this.content = content;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
-        this.deskteriorImage = deskteriorImage;
-        this.deskteriorAttributes = deskteriorAttributes;
-        this.viewCount = viewCount;
-        this.likeCount = likeCount;
-        this.status = status;
-    }
-
-    public DeskteriorPost updatePost(String title, String thumbnailUrl, String content, Timestamp modifiedAt, DeskteriorImage deskteriorImage, DeskteriorAttributes deskteriorAttributes, int viewCount, int likeCount, Status status) {
-        this.title = title;
         this.thumbnailUrl = thumbnailUrl;
-        this.content = content;
-        this.modifiedAt = modifiedAt;
-        this.deskteriorImage = deskteriorImage;
-        this.deskteriorAttributes = deskteriorAttributes;
-        this.viewCount = viewCount;
-        this.likeCount = likeCount;
-        this.status = status;
-        return this;
+        this.openStatus = openStatus;
     }
 }
