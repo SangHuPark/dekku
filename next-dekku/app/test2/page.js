@@ -7,8 +7,8 @@ import { DragControls } from "three/examples/jsm/controls/DragControls";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 const objects = [
-  { name: "Cube", geometry: new THREE.BoxGeometry(), color: 0x00ff00 },
-  { name: "Sphere", geometry: new THREE.SphereGeometry(), color: 0x0000ff },
+  { name: "Car", modelPath: "/threedmodels/car_example.glb" },
+  { name: "Speaker", modelPath: "/threedmodels/speaker_example.glb" },
   // 추가 오브젝트
 ];
 
@@ -24,6 +24,41 @@ const Page = () => {
   const gridHelperRef = useRef(null); // 그리드 헬퍼 참조
   const planeRef = useRef(null); // 평면 참조
   const deskRef = useRef(null); // 책상 모델 참조
+  const loadedObjectsRef = useRef(new Map()); // 로딩된 오브젝트 참조
+  const objectsArr = useRef([]); // 모든 오브젝트 참조
+
+  // 헬퍼 함수: 선택된 물체를 장면에 추가
+  const addPrimitive = (objectType, objectName, geometry, material) => {
+    let mesh = new THREE.Mesh(geometry, material);
+    let object = new THREE.Group();
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+
+    object.add(mesh);
+
+    // Ensure the object gets a unique name
+    let highest = 0;
+    for (let i = 0; i < objectsArr.current.length; i++) {
+      const objCount = objectsArr.current.filter((obj) =>
+        obj.name.startsWith(objectName)
+      ).length;
+      if (
+        objectsArr.current[i].userData.objectName === objectName &&
+        objCount >= highest
+      ) {
+        highest = objCount + 1;
+      }
+    }
+
+    object.name = `${objectName}-${highest}`;
+    object.userData.type = objectType;
+    object.userData.objectName = objectName;
+
+    objectsArr.current.push(object);
+    sceneRef.current.add(object);
+
+    return object;
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -69,6 +104,22 @@ const Page = () => {
       controls.enableDamping = true;
       controls.dampingFactor = 0.25;
       controlsRef.current = controls;
+
+      // 드래그 컨트롤 설정
+      const dragControls = new DragControls(
+        objectsArr.current,
+        camera,
+        renderer.domElement
+      );
+      dragControls.addEventListener(
+        "dragstart",
+        (event) => (controls.enabled = false)
+      );
+      dragControls.addEventListener(
+        "dragend",
+        (event) => (controls.enabled = true)
+      );
+      dragControlsRef.current = dragControls;
 
       // 애니메이션 루프
       const animate = () => {
@@ -127,74 +178,26 @@ const Page = () => {
     }
   }, []);
 
+  // 선택된 오브젝트가 변경될 때마다 호출되는 useEffect
   useEffect(() => {
-    const scene = sceneRef.current;
-    const existingObjects = new Set(scene.children.map(obj => obj.name));
-    
-    if (cameraRef.current && rendererRef.current) {
-      // 선택된 오브젝트 중 새로운 오브젝트만 추가
-      const newObjects = selectedObjects.filter(({ id }) => !existingObjects.has(`Object_${id}`));
-      newObjects.forEach(({ geometry, color, id }) => {
-        const material = new THREE.MeshBasicMaterial({ color });
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.name = `Object_${id}`; // 각 오브젝트를 구별할 수 있도록 이름 설정
-        scene.add(mesh);
-      });
-
-      // 드래그 컨트롤 설정
-      const allMeshes = selectedObjects.map(({ id }) => scene.getObjectByName(`Object_${id}`));
-      if (dragControlsRef.current) {
-        dragControlsRef.current.dispose();
+    selectedObjects.forEach((obj) => {
+      if (!loadedObjectsRef.current.has(obj.id)) {
+        const loader = new GLTFLoader();
+        loader.load(obj.modelPath, (gltf) => {
+          const model = gltf.scene;
+          model.name = obj.name;
+          const group = new THREE.Group();
+          group.add(model);
+          group.userData.type = "GLTF";
+          group.userData.objectName = obj.name;
+          objectsArr.current.push(group);
+          sceneRef.current.add(group);
+          loadedObjectsRef.current.set(obj.id, group);
+          dragControlsRef.current.transformGroup = true;
+          dragControlsRef.current.objects = objectsArr.current;
+        });
       }
-      const dragControls = new DragControls(
-        allMeshes,
-        cameraRef.current,
-        rendererRef.current.domElement
-      );
-      dragControlsRef.current = dragControls;
-
-      const raycaster = new THREE.Raycaster();
-      const mouse = new THREE.Vector2();
-
-      const onPointerMove = (event) => {
-        const rect = rendererRef.current.domElement.getBoundingClientRect();
-        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-      };
-
-      window.addEventListener('pointermove', onPointerMove);
-
-      dragControls.addEventListener("dragstart", (event) => {
-        controlsRef.current.enableRotate = false;
-        controlsRef.current.enableZoom = false;
-        controlsRef.current.enablePan = false;
-      });
-
-      dragControls.addEventListener("dragend", (event) => {
-        controlsRef.current.enableRotate = true;
-        controlsRef.current.enableZoom = true;
-        controlsRef.current.enablePan = true;
-      });
-
-      dragControls.addEventListener("drag", (event) => {
-        raycaster.setFromCamera(mouse, cameraRef.current);
-        const intersects = raycaster.intersectObject(planeRef.current);
-        if (intersects.length > 0) {
-          const intersect = intersects[0];
-          event.object.position.copy(intersect.point).add(intersect.face.normal);
-          event.object.position.y = 0; // Y축 고정 (평면 위)
-        }
-      });
-
-      // 클린업 함수
-      return () => {
-        if (dragControlsRef.current) {
-          dragControlsRef.current.dispose();
-          dragControlsRef.current = null;
-        }
-        window.removeEventListener('pointermove', onPointerMove);
-      };
-    }
+    });
   }, [selectedObjects]);
 
   return (
@@ -207,7 +210,7 @@ const Page = () => {
               key={index}
               onClick={() => {
                 const id = Date.now(); // 각 오브젝트에 고유 ID 부여
-                setSelectedObjects(prev => [...prev, { ...obj, id }]);
+                setSelectedObjects((prev) => [...prev, { ...obj, id }]);
               }}
               className="cursor-pointer hover:bg-gray-200 p-2 rounded"
             >
@@ -221,17 +224,14 @@ const Page = () => {
           <h1 className="text-xl font-bold">3D Viewer</h1>
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded"
-            onClick={() => setIsBarOpen(prev => !prev)}
+            onClick={() => setIsBarOpen((prev) => !prev)}
           >
             {isBarOpen ? "Hide Selected Objects" : "Show Selected Objects"}
           </button>
           {isBarOpen && (
             <div className="flex space-x-4 overflow-x-auto">
               {selectedObjects.map((obj, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-300 p-2 rounded"
-                >
+                <div key={index} className="bg-gray-300 p-2 rounded">
                   {obj.name}
                 </div>
               ))}
