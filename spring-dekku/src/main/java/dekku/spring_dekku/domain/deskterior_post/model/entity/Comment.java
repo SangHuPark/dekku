@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +20,6 @@ public class Comment {
     private String author;
     private String content;
     private Date createdAt;
-    @Builder.Default
     private List<Reply> replies = new ArrayList<>();
 
     @Builder
