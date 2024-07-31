@@ -228,6 +228,22 @@ const Page = () => {
     });
   }, [selectedObjects]);
 
+  // 오브젝트 제거 핸들러
+  const handleRemoveObject = (id) => {
+    setSelectedObjects((prev) => {
+      const updatedObjects = prev.filter((obj) => obj.id !== id);
+      if (loadedObjectsRef.current.has(id)) {
+        const objectToRemove = loadedObjectsRef.current.get(id);
+        sceneRef.current.remove(objectToRemove);
+        loadedObjectsRef.current.delete(id);
+        objectsArr.current = objectsArr.current.filter(
+          (obj) => obj.userData.objectName !== objectToRemove.userData.objectName
+        );
+      }
+      return updatedObjects;
+    });
+  };
+
   return (
     <div className="flex">
       <div className="w-48 p-4 bg-gray-100">
@@ -248,19 +264,33 @@ const Page = () => {
         </ul>
       </div>
       <div className="flex flex-col">
-        <header className="bg-gray-800 text-white p-4 flex items-center space-x-4 overflow-x-auto">
-          <h1 className="text-xl font-bold">3D Viewer</h1>
+        <header className="flex justify-center bg-gray-800 text-white p-4 flex items-center space-x-4 overflow-x-auto">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded"
             onClick={() => setIsBarOpen((prev) => !prev)}
           >
-            {isBarOpen ? "Hide Selected Objects" : "Show Selected Objects"}
+            {isBarOpen ? (
+              <span className="inline-block transform rotate-180">&#9660;</span>
+            ) : (
+              <span className="inline-block">&#9660;</span>
+            )}
           </button>
           {isBarOpen && (
-            <div className="flex space-x-4 overflow-x-auto">
-              {selectedObjects.map((obj, index) => (
-                <div key={index} className="bg-gray-300 p-2 rounded">
-                  {obj.name}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {selectedObjects.map((obj) => (
+                <div
+                  key={obj.id}
+                  className="relative bg-gray-300 p-2 rounded cursor-pointer"
+                  onClick={() => handleRemoveObject(obj.id)}
+                >
+                  <img
+                    src={obj.modelPath} // 썸네일 이미지 경로 (모델 파일의 실제 이미지 경로로 변경 필요)
+                    alt={obj.name}
+                    className="w-32 h-32 object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gray-700 bg-opacity-50 flex items-center justify-center text-white text-sm">
+                    {obj.name}
+                  </div>
                 </div>
               ))}
             </div>
