@@ -29,7 +29,7 @@ export default function DeskSetupCard({ data }) {
             조회수 {data.views}
           </div>
         </div>
-        <div className="text-lg font-bold px-1 mb-1">{data.title}</div>
+        <div className="text-lg font-bold px-1 mb-1 truncate">{data.title}</div>
         <ul className="flex space-x-4 font-bold text-gray-400 px-2">
           <li className="flex items-center space-x-1">
             <img src="/like_icon.png" alt="like" className="w-4 h-4" />

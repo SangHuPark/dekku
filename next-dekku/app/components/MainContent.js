@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import '../styles/HomeContent.css';  // Make sure to create this CSS file for custom styles
+import '../styles/HomeContent.css';
 
 const images = [
   { src: "/notice1.jpg", alt: "Notice" },
@@ -41,7 +41,7 @@ export default function MainContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex h-96 justify-between mb-8">
           <Link
