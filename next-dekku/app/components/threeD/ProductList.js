@@ -20,8 +20,8 @@ const products = {
     { name: '키보드1', description: '기계식 키보드', image: 'https://via.placeholder.com/150', modelPath: 'path/to/keyboard1.glb', scale: [1, 1, 1] },
   ],
   '기타': [
-    { name: '자동차', description: '파란색 자동차', image: '/products_image/파란색자동차.png', modelPath: 'threedmodels/800_follower_special_hudson_hornet_downloadable.glb', scale: [0.2, 0.2, 0.2] },
-    { name: '마샬스피커', description: '마샬스피커', image: '/products_image/마샬스피커.png', modelPath: 'threedmodels/marshall.glb', scale: [0.04, 0.04, 0.04] }
+    { name: '자동차', description: '파란색 자동차', image: '/products_image/파란색자동차.png', modelPath: 'threedmodels/car_example.glb', scale: [0.2, 0.2, 0.2] },
+    { name: '마샬스피커', description: '마샬스피커', image: '/products_image/마샬스피커.png', modelPath: 'threedmodels/speaker_example.glb', scale: [0.04, 0.04, 0.04] }
   ],
 };
 
