@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import DeskSetupCard from "./DeskSetupCard"; // DeskSetupCard 컴포넌트를 가져옵니다
-import { datas } from "./data"; // 데이터 파일을 가져옵니다
+import { useEffect, useState, useRef } from "react";
+import DeskSetupCard from "./DeskSetupCard";
+import { datas } from "./data";
 import Link from "next/link";
+import SortDropdown from "./SortDropdown";
+import StyleFilter from "./StyleFilter";
+import ColorFilter from "./ColorFilter";
+import JobFilter from "./JobFilter";
 
 // 최근 일주일을 계산하는 함수
 const getOneWeekAgoDate = () => {
@@ -20,9 +24,11 @@ export default function DeskSetupPage() {
   const [sortOrder, setSortOrder] = useState("latest");
   const [styleFilter, setStyleFilter] = useState("all");
   const [colorFilter, setColorFilter] = useState("all");
-  const [jobFilter, setJobFilter] = useState("all"); // 직업 필터 상태 추가
+  const [jobFilter, setJobFilter] = useState("all");
   const [displayedCount, setDisplayedCount] = useState(9);
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
+
+  const loadMoreRef = useRef(null); // "Load More" 버튼의 ref
 
   useEffect(() => {
     const oneWeekAgo = getOneWeekAgoDate();
@@ -54,7 +60,7 @@ export default function DeskSetupPage() {
     if (colorFilter !== "all") {
       sortedData = sortedData.filter((data) => data.color === colorFilter);
     }
-    if (jobFilter !== "all") { // 직업 필터링
+    if (jobFilter !== "all") {
       sortedData = sortedData.filter((data) => data.job === jobFilter);
     }
 
@@ -104,6 +110,28 @@ export default function DeskSetupPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [filteredData, displayedCount]);
 
+  useEffect(() => {
+    // "Load More" 버튼이 뷰포트에 들어오는지 확인하기 위해 IntersectionObserver 사용
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && displayedCount < filteredData.length) {
+          loadMore();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [filteredData, displayedCount]);
+
   const loadMore = () => {
     setDisplayedCount((prevCount) =>
       Math.min(prevCount + 9, filteredData.length)
@@ -120,8 +148,6 @@ export default function DeskSetupPage() {
             <DeskSetupCard key={data.id} data={data} />
           ))}
         </div>
-
-        {/* <hr className="border-t-2 border-gray-400 mb-4" /> */}
 
         <div className="flex justify-between items-center mb-4">
           <h1 className="font-NanumBarunGothicOTF font-normal text-3xl">게시된 데스크셋업</h1>
@@ -143,70 +169,10 @@ export default function DeskSetupPage() {
 
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
-            <select
-              name="정렬"
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
-              className="font-NanumGothic font-bold p-2 bg-[#F5F5F5] text-[#757575]"
-            >
-              <option value="latest">최신순</option>
-              <option value="views">조회순</option>
-              <option value="likes">추천순</option>
-            </select>
-            <select
-              name="스타일"
-              value={styleFilter}
-              onChange={(e) => setStyleFilter(e.target.value)}
-              className="font-NanumGothic font-bold p-2 bg-[#F5F5F5] text-[#757575]"
-            >
-              <option value="all">스타일</option>
-              <option value="modern">모던</option>
-              <option value="minimal">미니멀</option>
-              <option value="retro">레트로</option>
-              <option value="lovely">러블리</option>
-              <option value="gamer">게이머</option>
-              <option value="study">서재</option>
-              <option value="natural">자연</option>
-              <option value="other">기타</option>
-            </select>
-            <select
-              name="컬러"
-              value={colorFilter}
-              onChange={(e) => setColorFilter(e.target.value)}
-              className="font-NanumGothic font-bold p-2 bg-[#F5F5F5] text-[#757575] w-20"
-            >
-              <option value="all">컬러</option>
-              <option value="black_white">블랙&화이트</option>
-              <option value="black">블랙</option>
-              <option value="white">화이트</option>
-              <option value="gray">그레이</option>
-              <option value="mint">민트</option>
-              <option value="blue">블루</option>
-              <option value="pink">핑크</option>
-              <option value="green">그린</option>
-              <option value="red">레드</option>
-              <option value="yellow">옐로우</option>
-              <option value="brown">브라운</option>
-              <option value="other">기타</option>
-            </select>
-            <select
-              name="직업"
-              value={jobFilter}
-              onChange={(e) => setJobFilter(e.target.value)}
-              className="font-NanumGothic font-bold p-2 bg-[#F5F5F5] text-[#757575] w-20"
-            >
-              <option value="all">직업</option>
-              <option value="office_worker">회사원</option>
-              <option value="developer">개발자</option>
-              <option value="architecture">건축</option>
-              <option value="designer">디자이너</option>
-              <option value="editor">편집자</option>
-              <option value="writer">작가</option>
-              <option value="freelancer">프리랜서</option>
-              <option value="homemaker">주부</option>
-              <option value="student">학생</option>
-              <option value="other">기타</option>
-            </select>
+            <SortDropdown sortOrder={sortOrder} setSortOrder={setSortOrder} />
+            <StyleFilter styleFilter={styleFilter} setStyleFilter={setStyleFilter} />
+            <ColorFilter colorFilter={colorFilter} setColorFilter={setColorFilter} />
+            <JobFilter jobFilter={jobFilter} setJobFilter={setJobFilter} />
           </div>
           <Link
             className="font-NanumGothic bg-[#FF6E30] text-white px-2 py-3 rounded-lg"
@@ -224,11 +190,12 @@ export default function DeskSetupPage() {
           ))}
         </div>
 
-        {displayedCount < filteredData.length && (
-          <button onClick={loadMore} className="text-blue-500 mt-4">
-            Load More
-          </button>
-        )}
+        <button
+          ref={loadMoreRef} // "Load More" 버튼에 ref를 설정
+          className="text-blue-500 mt-4"
+        >
+          Load More
+        </button>
       </div>
     </div>
   );
