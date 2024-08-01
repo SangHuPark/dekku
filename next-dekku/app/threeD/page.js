@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import ThreeDNavBar from '../components/threeD/threeDNavBar';
+import ThreeDNavBar from '../components/threeD/ThreeDNavBar';
 import SelectedProducts from '../components/threeD/SelectedProducts';
 import ThreeJSRenderer from '../components/threeD/ThreeJSRenderer';
 
@@ -31,16 +31,15 @@ const ThreeDPage = () => {
         searchTerm={searchTerm}
         onSearch={handleSearch}
       />
-      <div className="flex flex-col flex-grow relative border-l-2 border-gray-300">
-        <div className="h-1/5 overflow-auto">
+      <div className="h-full flex flex-col flex-grow relative border-l-2 border-gray-300">
+        <div className="h-40 relative">
           <SelectedProducts
             selectedProducts={selectedProducts}
             removeProduct={removeProduct}
           />
+
         </div>
-        <div className="flex-grow h-4/5 overflow-hidden">
-          <ThreeJSRenderer selectedProducts={selectedProducts} />
-        </div>
+        <ThreeJSRenderer selectedProducts={selectedProducts} />
       </div>
     </div>
   );

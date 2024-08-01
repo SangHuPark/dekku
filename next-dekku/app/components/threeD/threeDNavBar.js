@@ -1,7 +1,8 @@
+'use client';
+
 import SearchBar from './SearchBar';
 import ProductCard from './ProductCard';
 import products from './ProductList';
-import { v4 as uuidv4 } from 'uuid';
 
 const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searchTerm, onSearch }) => {
   const filteredProducts = products[selectedCategory].filter(product =>
@@ -18,15 +19,13 @@ const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searc
   };
 
   return (
-    <div className="flex h-full" style={{ width: '420px' }}>
-      <div className="bg-gray-100 p-2 w-1/7 border-r-2 border-gray-300">
-        <ul className="list-none p-0 flex flex-col mt-4 space-y-4">
+    <div className="flex flex-col">
+      <div className="bg-gray-100 p-2 w-full flex border-b-2 border-gray-300">
+        <ul className="list-none p-0 flex flex-row space-x-4">
           {Object.keys(products).map((category) => (
             <li key={category}>
               <button
-                className={`block w-full h-12 bg-gray-100 rounded hover:bg-gray-300 ${
-                  selectedCategory === category ? 'bg-gray-400' : ''
-                }`}
+                className={`block h-12 bg-gray-100 rounded hover:bg-gray-300 ${selectedCategory === category ? 'bg-gray-400' : ''}`}
                 onClick={() => setSelectedCategory(category)}
               >
                 <img src={categoryImages[category]} alt={category} className="h-full w-auto mx-auto" />
@@ -35,18 +34,16 @@ const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searc
           ))}
         </ul>
       </div>
-      <div className="flex-grow p-2 w-6/7 bg-white h-full overflow-hidden flex flex-col">
-        <div className="mb-2">
-          <SearchBar onSearch={onSearch} />
-        </div>
-        <div className="mt-2 grid grid-cols-2 gap-2 flex-grow overflow-y-auto">
-          {filteredProducts.map((product, index) => (
-            <ProductCard key={index} {...product} addProduct={() => addProduct({ ...product, id: uuidv4() })} />
-          ))}
-          {filteredProducts.length === 0 && (
-            <div className="col-span-2 text-center text-gray-500">No products found</div>
-          )}
-        </div>
+      <div className="p-2 bg-white w-full border-b-2 border-gray-300">
+        <SearchBar onSearch={onSearch} />
+      </div>
+      <div className="p-2 bg-white w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+        {filteredProducts.map((product, index) => (
+          <ProductCard key={index} {...product} addProduct={addProduct} />
+        ))}
+        {filteredProducts.length === 0 && (
+          <div className="col-span-full text-center text-gray-500">No products found</div>
+        )}
       </div>
     </div>
   );

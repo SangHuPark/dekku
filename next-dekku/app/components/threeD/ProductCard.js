@@ -1,10 +1,10 @@
 'use client';
 
-const ProductCard = ({ name, description, image, modelPath, scale, addProduct }) => {
+const ProductCard = ({ name, description, image, modelPath, scale, price, addProduct }) => {
   return (
     <div
-      className="border p-2 rounded w-40 h-56 relative flex flex-col items-center justify-between transition-transform duration-200 hover:scale-105 cursor-pointer"
-      onClick={() => addProduct({ name, modelPath, image, description, scale })}
+      className="w-132 h-196 relative flex flex-col items-center justify-between transition-transform duration-200 hover:scale-105 cursor-pointer"
+      onClick={() => addProduct({ name, modelPath, image, description, price, scale })}
     >
       <div className="w-full h-32 bg-gray-200 flex items-center justify-center mb-2">
         {image ? (
@@ -13,7 +13,11 @@ const ProductCard = ({ name, description, image, modelPath, scale, addProduct })
           <span className="text-gray-500 text-sm">No Image</span>
         )}
       </div>
-      <h3 className="text-sm mb-2 text-center">{name}</h3> 
+      <div className="text-center">
+        <p className="text-xs mb-1" style={{ fontSize: '12px' }}>{name}</p> 
+        <p className="text-xs text-gray-500" style={{ fontSize: '12px' }}>{description}</p>
+        <p className="text-xs text-gray-700" style={{ fontSize: '12px' }}>{price}</p>
+      </div>
     </div>
   );
 };
