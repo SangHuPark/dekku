@@ -9,7 +9,7 @@ export default function ColorFilter({ colorFilter, setColorFilter }) {
       name="컬러"
       value={colorFilter}
       onChange={(e) => setColorFilter(e.target.value)}
-      className="font-NanumGothic font-bold p-2 bg-[#F5F5F5] text-[#757575] w-20"
+      className="font-pretendard font-bold p-2 bg-[#F5F5F5] text-[#757575] w-20"
     >
       <option value="all">컬러</option>
       <option value="black_white">블랙&화이트</option>

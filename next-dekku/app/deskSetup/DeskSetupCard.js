@@ -11,11 +11,11 @@ export default function DeskSetupCard({ data }) {
               alt="profile"
               className="w-12 h-12 object-cover rounded-full"
             />
-            <div className="font-SUIT text-lg font-bold truncate">
+            <div className="font-pretendard text-lg font-bold truncate">
               {data.username}
             </div>
           </div>
-          <button className="font-SUIT rounded px-3 p-1 h-8 bg-[#77C3EB] text-white flex-shrink-0">
+          <button className="font-pretendard rounded px-3 p-1 h-8 bg-[#77C3EB] text-white flex-shrink-0">
             팔로우
           </button>
         </div>
@@ -25,19 +25,19 @@ export default function DeskSetupCard({ data }) {
             alt="desk"
             className="w-96 h-72 rounded-lg object-cover"
           />
-          <div className="font-SUIT absolute bottom-1.5 right-1.5 text-white bg-black bg-opacity-50 rounded px-2 py-1">
+          <div className="font-pretendard absolute bottom-1.5 right-1.5 text-white bg-black bg-opacity-50 rounded px-2 py-1">
             조회수 {data.views}
           </div>
         </div>
-        <div className="font-SUIT text-lg font-semibold px-1 mb-1 truncate">{data.title}</div>
+        <div className="font-pretendard text-lg font-semibold px-1 mb-1 truncate">{data.title}</div>
         <ul className="flex space-x-4 font-bold text-[#777777] px-1">
           <li className="flex items-center space-x-1">
             <img src="/like_icon.png" alt="like" className="w-5 h-5" />
-            <span className="font-SUIT font-light">{data.likes}</span>
+            <span className="font-pretendard font-light">{data.likes}</span>
           </li>
           <li className="flex items-center space-x-1">
             <img src="/comment_icon.png" alt="comment" className="w-5 h-5" />
-            <span className="font-SUIT font-light">{data.comments}</span>
+            <span className="font-pretendard font-light">{data.comments}</span>
           </li>
         </ul>
       </div>

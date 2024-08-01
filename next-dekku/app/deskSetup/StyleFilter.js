@@ -9,7 +9,7 @@ export default function StyleFilter({ styleFilter, setStyleFilter }) {
       name="스타일"
       value={styleFilter}
       onChange={(e) => setStyleFilter(e.target.value)}
-      className="font-NanumGothic font-bold p-2 bg-[#F5F5F5] text-[#757575]"
+      className="font-pretendard font-bold p-2 bg-[#F5F5F5] text-[#757575]"
     >
       <option value="all">스타일</option>
       <option value="modern">모던</option>

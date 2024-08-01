@@ -8,9 +8,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily:{
-        "NanumBarunGothicOTF": ["NanumBarunGothicOTF"],
-        "NanumGothic": ["NanumGothic"],
-        "SUIT": ["SUIT-Regular"]
+        "pretendard": ["Pretendard-Regular"]
       },
     },
   },

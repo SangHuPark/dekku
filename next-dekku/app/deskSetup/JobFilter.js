@@ -9,7 +9,7 @@ export default function JobFilter({ jobFilter, setJobFilter }) {
       name="직업"
       value={jobFilter}
       onChange={(e) => setJobFilter(e.target.value)}
-      className="font-NanumGothic font-bold p-2 bg-[#F5F5F5] text-[#757575] w-20"
+      className="font-pretendard font-bold p-2 bg-[#F5F5F5] text-[#757575] w-20"
     >
       <option value="all">직업</option>
       <option value="office_worker">회사원</option>
