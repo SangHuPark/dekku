@@ -141,7 +141,7 @@ export default function DeskSetupPage() {
   return (
     <div className="p-6">
       <div className="max-w-6xl mx-auto">
-        <h1 className="font-NanumBarunGothicOTF font-normal text-3xl mb-1">최근 데스크셋업 인기 순위</h1>
+        <h1 className="font-NanumBarunGothicOTF font-bold text-3xl mb-1">최근 데스크셋업 인기 순위</h1>
         <h3 className="font-NanumBarunGothicOTF font-light text-2xl text-[#A4A4A4] mb-4">이번주 인기 급상승</h3>
         <div className="grid grid-cols-3 gap-5 mb-12">
           {recentTopPosts.map((data) => (
@@ -150,7 +150,7 @@ export default function DeskSetupPage() {
         </div>
 
         <div className="flex justify-between items-center mb-4">
-          <h1 className="font-NanumBarunGothicOTF font-normal text-3xl">게시된 데스크셋업</h1>
+          <h1 className="font-NanumBarunGothicOTF font-bold text-3xl">게시된 데스크셋업</h1>
           <div className="relative flex items-center">
             <img
               src="/search.png"
