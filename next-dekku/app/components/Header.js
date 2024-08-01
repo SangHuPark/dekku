@@ -13,7 +13,7 @@ const Header = () => {
       <div className="max-w-6xl mx-auto flex justify-between items-center p-2">
         <div className="flex items-center">
           <Link href="/">
-            <img src="/logo.png" className="w-32" alt="Logo" />
+            <img src="/logo.png" className="w-20" alt="Logo" />
           </Link>
         </div>
         <div className="flex flex-col">
