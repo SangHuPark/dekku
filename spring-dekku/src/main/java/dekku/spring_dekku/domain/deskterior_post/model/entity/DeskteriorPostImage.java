@@ -21,4 +21,5 @@ public class DeskteriorPostImage {
     private DeskteriorPost deskteriorPost;
 
     private String imageUrl;
+
 }
