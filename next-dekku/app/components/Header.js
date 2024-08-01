@@ -9,7 +9,7 @@ const Header = () => {
 
   return (
     // bg-[#333] text-white
-    <header className="bg-gray-100 fixed top-0 w-full z-50"> 
+    <header className="fixed top-0 w-full z-50"> 
       <div className="max-w-6xl mx-auto flex justify-between items-center p-2">
         <div className="flex items-center">
           <Link href="/">
@@ -50,7 +50,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <hr className="border-t-2 border-gray-300" /> 
+      {/* <hr className="border-t-2 border-gray-300" />  */}
     </header>
   );
 };

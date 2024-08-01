@@ -1,25 +1,10 @@
 import Link from "next/link";
 
-export default function DeskSetupCard({ data }) {
+export default function DeskSetupCard({ data, isTopPost = false }) {
   return (
     <Link href={`/deskSetup/${data.id}`}>
       <div className="rounded-lg py-2 w-auto">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center space-x-2">
-            <img
-              src={data.profileImg}
-              alt="profile"
-              className="w-12 h-12 object-cover rounded-full"
-            />
-            <div className="font-pretendard text-lg font-bold truncate">
-              {data.username}
-            </div>
-          </div>
-          <button className="font-pretendard rounded px-3 p-1 h-8 bg-[#77C3EB] text-white flex-shrink-0">
-            팔로우
-          </button>
-        </div>
-        <div className="relative flex justify-center mb-3">
+        <div className="relative flex justify-center mb-2">
           <img
             src={data.imgSrc}
             alt="desk"
@@ -29,7 +14,26 @@ export default function DeskSetupCard({ data }) {
             조회수 {data.views}
           </div>
         </div>
-        <div className="font-pretendard text-lg font-semibold px-1 mb-1 truncate">{data.title}</div>
+        {!isTopPost && (
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center space-x-2">
+              <img
+                src={data.profileImg}
+                alt="profile"
+                className="w-12 h-12 object-cover rounded-full"
+              />
+              <div className="font-pretendard text-lg font-bold truncate">
+                {data.username}
+              </div>
+            </div>
+            <button className="font-pretendard rounded px-3 p-1 h-8 bg-[#77C3EB] text-white flex-shrink-0">
+              팔로우
+            </button>
+          </div>
+        )}
+        <div className="font-pretendard text-lg font-semibold px-1 mb-1 truncate">
+          {data.title}
+        </div>
         <ul className="flex space-x-4 font-bold text-[#777777] px-1">
           <li className="flex items-center space-x-1">
             <img src="/like_icon.png" alt="like" className="w-5 h-5" />
