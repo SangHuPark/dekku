@@ -20,6 +20,7 @@ export default function DeskSetupPage() {
   const [sortOrder, setSortOrder] = useState("latest");
   const [styleFilter, setStyleFilter] = useState("all");
   const [colorFilter, setColorFilter] = useState("all");
+  const [jobFilter, setJobFilter] = useState("all"); // 직업 필터 상태 추가
   const [displayedCount, setDisplayedCount] = useState(9);
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
 
@@ -53,6 +54,9 @@ export default function DeskSetupPage() {
     if (colorFilter !== "all") {
       sortedData = sortedData.filter((data) => data.color === colorFilter);
     }
+    if (jobFilter !== "all") { // 직업 필터링
+      sortedData = sortedData.filter((data) => data.job === jobFilter);
+    }
 
     // 검색 필터링
     if (searchTerm) {
@@ -81,7 +85,7 @@ export default function DeskSetupPage() {
     }
 
     setFilteredData(sortedData);
-  }, [sortOrder, styleFilter, colorFilter, allPosts, searchTerm]);
+  }, [sortOrder, styleFilter, colorFilter, jobFilter, allPosts, searchTerm]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -107,20 +111,20 @@ export default function DeskSetupPage() {
   };
 
   return (
-    <div className="bg-gray-100 p-6">
+    <div className="p-6">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold mb-2">최근 인기 데스크셋업</h1>
-        <h3 className="text-gray-400 mb-4">조회, 관심 급상승 (최근 일주일)</h3>
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <h1 className="font-NanumBarunGothicOTF font-normal text-3xl mb-1">최근 데스크셋업 인기 순위</h1>
+        <h3 className="font-NanumBarunGothicOTF font-light text-2xl text-[#A4A4A4] mb-4">이번주 인기 급상승</h3>
+        <div className="grid grid-cols-3 gap-5 mb-12">
           {recentTopPosts.map((data) => (
             <DeskSetupCard key={data.id} data={data} />
           ))}
         </div>
 
-        <hr className="border-t-2 border-gray-400 mb-4" />
+        {/* <hr className="border-t-2 border-gray-400 mb-4" /> */}
 
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">모든 데스크셋업 게시글</h1>
+          <h1 className="font-NanumBarunGothicOTF font-normal text-3xl">게시된 데스크셋업</h1>
           <div className="relative flex items-center">
             <img
               src="/search.png"
@@ -143,7 +147,7 @@ export default function DeskSetupPage() {
               name="정렬"
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
-              className="p-2 bg-gray-50 text-gray-400 border rounded"
+              className="font-NanumGothic font-bold p-2 bg-[#F5F5F5] text-[#757575]"
             >
               <option value="latest">최신순</option>
               <option value="views">조회순</option>
@@ -153,9 +157,9 @@ export default function DeskSetupPage() {
               name="스타일"
               value={styleFilter}
               onChange={(e) => setStyleFilter(e.target.value)}
-              className="p-2 bg-gray-50 text-gray-400 border rounded"
+              className="font-NanumGothic font-bold p-2 bg-[#F5F5F5] text-[#757575]"
             >
-              <option value="all">모든 스타일</option>
+              <option value="all">스타일</option>
               <option value="modern">모던</option>
               <option value="minimal">미니멀</option>
               <option value="retro">레트로</option>
@@ -169,9 +173,9 @@ export default function DeskSetupPage() {
               name="컬러"
               value={colorFilter}
               onChange={(e) => setColorFilter(e.target.value)}
-              className="p-2 bg-gray-50 text-gray-400 border rounded"
+              className="font-NanumGothic font-bold p-2 bg-[#F5F5F5] text-[#757575] w-20"
             >
-              <option value="all">모든 컬러</option>
+              <option value="all">컬러</option>
               <option value="black_white">블랙&화이트</option>
               <option value="black">블랙</option>
               <option value="white">화이트</option>
@@ -185,12 +189,30 @@ export default function DeskSetupPage() {
               <option value="brown">브라운</option>
               <option value="other">기타</option>
             </select>
+            <select
+              name="직업"
+              value={jobFilter}
+              onChange={(e) => setJobFilter(e.target.value)}
+              className="font-NanumGothic font-bold p-2 bg-[#F5F5F5] text-[#757575] w-20"
+            >
+              <option value="all">직업</option>
+              <option value="office_worker">회사원</option>
+              <option value="developer">개발자</option>
+              <option value="architecture">건축</option>
+              <option value="designer">디자이너</option>
+              <option value="editor">편집자</option>
+              <option value="writer">작가</option>
+              <option value="freelancer">프리랜서</option>
+              <option value="homemaker">주부</option>
+              <option value="student">학생</option>
+              <option value="other">기타</option>
+            </select>
           </div>
           <Link
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="font-NanumGothic bg-[#FF6E30] text-white px-2 py-3 rounded-lg"
             href="/deskSetup/create"
           >
-            글쓰기
+            나의 데스크셋업 공유하기
           </Link>
         </div>
 

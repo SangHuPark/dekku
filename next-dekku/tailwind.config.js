@@ -6,7 +6,13 @@ module.exports = {
     "./pages/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily:{
+        "NanumBarunGothicOTF": ["NanumBarunGothicOTF"],
+        "NanumGothic": ["NanumGothic"],
+        "SUIT": ["SUIT-Regular"]
+      },
+    },
   },
   plugins: [],
 }

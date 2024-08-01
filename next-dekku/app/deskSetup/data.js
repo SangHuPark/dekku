@@ -367,7 +367,7 @@ export const datas = [
     id: 29,
     imgSrc: "/desk2.jpg",
     profileImg: "/profile_icon2.png",
-    username: "GamerDen",
+    username: "집사냥이",
     introduce: "게임을 위한 완벽한 공간 설계에 열정적인 사람입니다.",
     title: "게임을 위한 완벽한 공간",
     content: "게임을 위한 완벽한 공간. 게임을 즐기기 위한 모든 요소가 포함된 데스크셋업입니다.",
