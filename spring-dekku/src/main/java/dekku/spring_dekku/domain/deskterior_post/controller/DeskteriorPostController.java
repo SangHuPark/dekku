@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,22 +22,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(name = "/api/deskterior-post")
 public class DeskteriorPostController {
 
-    @Operation(summary = "3D 저장")
+    @Operation(summary = "게시글 저장")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "3D 저장 성공",
+                    description = "게시글 저장 성공",
                     content = @Content(schema = @Schema(implementation = CreateDeskteriorPostResponseDto.class))
             )
     })
     @PostMapping("")
-    public ResponseEntity createDeskteriorPost(@RequestBody CreateDeskteriorPostRequestDto request) {
+    public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorPostRequestDto request) {
 
-        CreateDeskteriorPostResponseDto dto = new CreateDeskteriorPostResponseDto(request.getTitle(), request.getContent());
+        CreateDeskteriorPostResponseDto response = new CreateDeskteriorPostResponseDto(request.title(), request.content());
 
-        return ResponseUtil.ok(
+        return ResponseUtil.created(
                 Success.builder()
-                        .data(dto)
+                        .data(response)
                         .build()
         );
     }

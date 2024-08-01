@@ -4,7 +4,6 @@ import dekku.spring_dekku.global.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,16 +22,14 @@ public class ExceptionAdviceHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({BaseException.class})
     protected ResponseEntity<ErrorResponse> handleBaseException(BaseException exception, WebRequest request) {
 
-
-
         return ResponseEntity
                 .status(exception.getErrorCode().getCode())
                 .body(ErrorResponse
                         .builder(exception, exception.getErrorCode().getCode(), exception.getMessage())
-                        .instance(URI.create(
-                                ((ServletWebRequest) request)
-                                        .getRequest()
-                                        .getRequestURI()))
+//                        .instance(URI.create(
+//                                ((ServletWebRequest) request)
+//                                        .getRequest()
+//                                        .getRequestURI()))
                         .build());
     }
 
@@ -43,11 +40,10 @@ public class ExceptionAdviceHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
 
-
         return ResponseEntity
                 .status(status)
                 .body(ErrorResponse
-                        .builder(exception, status, exception.getMessage())
+                        .builder(exception, status, exception.getFieldError().getDefaultMessage())
                         .instance(URI.create(
                                 ((ServletWebRequest) request)
                                     .getRequest()
