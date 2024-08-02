@@ -1,35 +1,44 @@
 'use client';
 
 import { useState } from 'react';
+import ProductCard from './ProductCard';
 
 const SelectedProducts = ({ selectedProducts, removeProduct }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
-    <div className="p-2 overflow-auto">
-      <button 
-        className="bg-blue-500 text-white px-4 py-2 rounded mb-2"
-        onClick={toggleCollapse}
-      >
-        {isCollapsed ? '펼치기' : '접기'}
-      </button>
-      {!isCollapsed && (
-        <div>
-          {selectedProducts.map((product, index) => (
-            <div key={index} className="flex justify-between items-center border p-2 mb-2 rounded">
-              <div>
-                <h3 className="text-lg">{product.name}</h3>
-                <p className="text-sm text-gray-500">{product.description}</p>
+    <div className="relative">
+      <div className="absolute top-0 left-0 right-0 bg-white shadow-lg p-2 flex flex-col items-start" style={{ zIndex: 10 }}>
+        {/* 접기펴기 버튼 */}
+        <button
+          className="bg-white text-black px-2 py-1 rounded mt-2"
+          onClick={toggleDropdown}
+          style={{ alignSelf: 'center', marginTop: '10px' }}
+        >
+          {isDropdownOpen ? '▲' : '▼'}
+        </button>
+        {/* 폈을 때 나오는 현재 선택 상품 리스트 */}
+        <div className={`transition-transform duration-300 ${isDropdownOpen ? 'max-h-screen' : 'max-h-0 overflow-hidden'}`} style={{ width: '100%' }}>
+          <div className="flex gap-4 mt-1 overflow-x-auto overflow-y-hidden whitespace-nowrap" style={{ padding: '1px', boxSizing: 'border-box' }}>
+            {selectedProducts.map((product, index) => (
+              <div key={index} className="relative flex-shrink-0 inline-block" style={{ width: '150px' }}>
+                <ProductCard {...product} small />
+                <button 
+                  className="absolute top-3 right-5 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center z-10"
+                  onClick={(e) => { e.stopPropagation(); removeProduct(index); }}
+                  style={{ transform: 'translate(50%, -50%)' }}
+                >
+                  ×
+                </button>
               </div>
-              <button className="text-red-500" onClick={() => removeProduct(index)}>Remove</button>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

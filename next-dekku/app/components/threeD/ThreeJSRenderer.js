@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import MouseControls from './MouseControls';
+import TransformControls from './TransformControls';
 import { v4 as uuidv4 } from 'uuid';
 
 const ThreeJSRenderer = ({ selectedProducts }) => {
@@ -23,21 +24,11 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
     models.forEach(model => {
       data[model.userData.uniqueId] = {
         position: model.position.clone(),
-        scale: model.scale.clone()
+        scale: model.scale.clone(),
+        rotation: model.rotation.clone(),
       };
     });
     setModelData(data);
-  };
-
-  // 모델의 위치와 스케일 복원
-  const restoreModelData = (models) => {
-    models.forEach(model => {
-      const data = modelData[model.userData.uniqueId];
-      if (data) {
-        model.position.copy(data.position);
-        model.scale.copy(data.scale);
-      }
-    });
   };
 
   // 씬 초기화
@@ -62,7 +53,7 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
     setRenderer(renderer);
 
     // 조명 추가
-    const ambientLight = new THREE.AmbientLight(0x404040, 2);
+    const ambientLight = new THREE.AmbientLight(0x404040, 10);
     scene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
     directionalLight.position.set(10, 10, 10);
@@ -124,7 +115,7 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
             console.log(`Assigned unique ID: ${uniqueId}`);
 
             // 모델을 특정 위치에 고정하여 생성 (예: 화면의 중심)
-            const fixedPosition = { x: 0, y: deskHeight + 0.01, z: 0 };
+            const fixedPosition = { x: 0, y: deskHeight + 0.02, z: 0 };
             model.userData = { id: product.id, uniqueId, product }; // 고유 ID와 제품 정보 저장
 
             // 저장된 위치와 스케일 복원
@@ -132,6 +123,7 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
             if (data) {
               model.position.copy(data.position);
               model.scale.copy(data.scale);
+              model.rotation.copy(data.rotation);
             } else {
               model.position.set(fixedPosition.x, fixedPosition.y, fixedPosition.z); // 특정 위치 설정
               model.scale.set(...scale);
@@ -149,6 +141,11 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
           });
         }
       });
+
+      console.log(models);
+      console.log(existingModelIds);
+      console.log(selectedProducts);
+      console.log(selectedProductIds);
 
       // 제거된 모델 처리
       models.forEach((model) => {
@@ -178,15 +175,24 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
     };
   }, [camera, renderer]);
 
-  const handleRotationChange = (event) => {
+  const handleRotationChange = (rotationY) => {
     if (activeModel) {
-      const rotationY = event.target.value;
       activeModel.rotation.y = THREE.MathUtils.degToRad(rotationY);
     }
   };
 
+  const handleHeightChange = (height) => {
+    if (activeModel) {
+      activeModel.position.y = parseFloat(height);
+    }
+  };
+
+  const handleCloseTransformControls = () => {
+    setActiveModel(null);
+  };
+
   return (
-    <div ref={mountRef} style={{ width: '100%', height: '100%' }}>
+    <div ref={mountRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
       {scene && camera && (
         <>
           <MouseControls
@@ -194,6 +200,7 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
             models={models}
             setActiveModel={(model) => {
               if (model && model.userData) {
+                console.log('Setting active model:', model);
                 setModels(prevModels => {
                   const updatedModels = prevModels.map(m =>
                     m.userData.uniqueId === model.userData.uniqueId ? model : m
@@ -210,17 +217,12 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
             deskHeight={deskHeight} // 책상 높이 전달
           />
           {activeModel && (
-            <div style={{ position: 'absolute', top: '10px', left: '10px', backgroundColor: 'white', padding: '10px', borderRadius: '5px' }}>
-              <label>제자리에서 제품 회전: </label>
-              <input
-                type="range"
-                min="0"
-                max="360"
-                defaultValue="0"
-                onChange={handleRotationChange}
-              />
-              <span>{activeModel.rotation.y}</span>
-            </div>
+            <TransformControls
+              activeModel={activeModel}
+              onRotateChange={handleRotationChange}
+              onHeightChange={handleHeightChange}
+              onClose={handleCloseTransformControls}
+            />
           )}
         </>
       )}

@@ -10,6 +10,9 @@ module.exports = {
       fontFamily:{
         pretendard: ['var(--font-pretendard)']
       },
+      fontSize: {
+        '12px': '12px',
+      }
     },
   },
   plugins: [],
