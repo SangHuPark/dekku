@@ -31,18 +31,6 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
     setModelData(data);
   };
 
-  // 모델의 위치와 스케일 복원
-  // const restoreModelData = (models) => {
-  //   models.forEach(model => {
-  //     const data = modelData[model.userData.uniqueId];
-  //     if (data) {
-  //       model.position.copy(data.position);
-  //       model.scale.copy(data.scale);
-  //       model.rotation.copy(data.rotation);
-  //     }
-  //   });
-  // };
-
   // 씬 초기화
   useEffect(() => {
     const mount = mountRef.current;
@@ -199,8 +187,12 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
     }
   };
 
+  const handleCloseTransformControls = () => {
+    setActiveModel(null);
+  };
+
   return (
-    <div ref={mountRef} style={{ width: '100%', height: '100%' }}>
+    <div ref={mountRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
       {scene && camera && (
         <>
           <MouseControls
@@ -208,6 +200,7 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
             models={models}
             setActiveModel={(model) => {
               if (model && model.userData) {
+                console.log('Setting active model:', model);
                 setModels(prevModels => {
                   const updatedModels = prevModels.map(m =>
                     m.userData.uniqueId === model.userData.uniqueId ? model : m
@@ -228,8 +221,7 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
               activeModel={activeModel}
               onRotateChange={handleRotationChange}
               onHeightChange={handleHeightChange}
-              minHeight={deskHeight + 0.01} // 최소 높이 설정
-              step={1} // 높이 조절 단계 설정
+              onClose={handleCloseTransformControls}
             />
           )}
         </>

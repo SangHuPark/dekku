@@ -34,13 +34,13 @@ const ThreeDPage = () => {
         onSearch={handleSearch}
       />
       <div className="flex flex-col flex-grow relative border-l-2 border-gray-300">
-        <div className="h-1/5 overflow-auto">
+        <div className="h-1/7">
           <SelectedProducts
             selectedProducts={selectedProducts}
             removeProduct={removeProduct}
           />
         </div>
-        <div className='flex-grow h-4/5 overflow-hidden'>
+        <div className='flex-grow h-6/7 overflow-hidden'>
           <ThreeJSRenderer selectedProducts={selectedProducts} />
         </div>
       </div>
