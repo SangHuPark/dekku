@@ -13,6 +13,13 @@ const SelectedProducts = ({ selectedProducts, removeProduct }) => {
   return (
     <div className="relative">
       <div className="absolute top-0 left-0 right-0 bg-white shadow-lg p-2 flex flex-col items-start" style={{ zIndex: 10 }}>
+        <button
+          className="bg-black text-white px-2 py-1 rounded mt-2"
+          onClick={toggleDropdown}
+          style={{ alignSelf: 'center', marginTop: '10px' }}
+        >
+          {isDropdownOpen ? '▲' : '▼'}
+        </button>
         <div className={`transition-transform duration-300 ${isDropdownOpen ? 'max-h-screen' : 'max-h-0 overflow-hidden'}`} style={{ width: '100%' }}>
           <div className="flex gap-4 mt-2">
             {selectedProducts.map((product, index) => (
@@ -31,13 +38,6 @@ const SelectedProducts = ({ selectedProducts, removeProduct }) => {
             ))}
           </div>
         </div>
-        <button
-          className="bg-black text-white px-2 py-1 rounded mt-2"
-          onClick={toggleDropdown}
-          style={{ alignSelf: 'center', marginTop: '10px' }}
-        >
-          {isDropdownOpen ? '▲' : '▼'}
-        </button>
       </div>
     </div>
   );

@@ -22,6 +22,8 @@ const ThreeDPage = () => {
     setSelectedProducts(selectedProducts.filter((_, i) => i !== index));
   };
 
+  console.log(selectedProducts);
+
   return (
     <div className="flex h-screen overflow-hidden">
       <ThreeDNavBar
@@ -31,15 +33,16 @@ const ThreeDPage = () => {
         searchTerm={searchTerm}
         onSearch={handleSearch}
       />
-      <div className="h-full flex flex-col flex-grow relative border-l-2 border-gray-300">
-        <div className="h-40 relative">
+      <div className="flex flex-col flex-grow relative border-l-2 border-gray-300">
+        <div className="h-1/5 overflow-auto">
           <SelectedProducts
             selectedProducts={selectedProducts}
             removeProduct={removeProduct}
           />
-
         </div>
-        <ThreeJSRenderer selectedProducts={selectedProducts} />
+        <div className='flex-grow h-4/5 overflow-hidden'>
+          <ThreeJSRenderer selectedProducts={selectedProducts} />
+        </div>
       </div>
     </div>
   );

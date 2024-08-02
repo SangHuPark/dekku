@@ -32,16 +32,16 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
   };
 
   // 모델의 위치와 스케일 복원
-  const restoreModelData = (models) => {
-    models.forEach(model => {
-      const data = modelData[model.userData.uniqueId];
-      if (data) {
-        model.position.copy(data.position);
-        model.scale.copy(data.scale);
-        model.rotation.copy(data.rotation);
-      }
-    });
-  };
+  // const restoreModelData = (models) => {
+  //   models.forEach(model => {
+  //     const data = modelData[model.userData.uniqueId];
+  //     if (data) {
+  //       model.position.copy(data.position);
+  //       model.scale.copy(data.scale);
+  //       model.rotation.copy(data.rotation);
+  //     }
+  //   });
+  // };
 
   // 씬 초기화
   useEffect(() => {
@@ -153,6 +153,11 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
           });
         }
       });
+
+      console.log(models);
+      console.log(existingModelIds);
+      console.log(selectedProducts);
+      console.log(selectedProductIds);
 
       // 제거된 모델 처리
       models.forEach((model) => {
