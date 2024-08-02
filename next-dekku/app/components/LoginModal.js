@@ -47,7 +47,7 @@ export default function LoginModal({ showModal, setShowModal }) {
               </button>
             </div>
             <div className="flex justify-center mb-8">
-              <img src="/logo_black.png" alt="Logo" className="w-40"/>
+              <img src="/logo.png" alt="Logo" className="w-40"/>
             </div>
             <div className="sm:flex sm:items-start">
               <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">

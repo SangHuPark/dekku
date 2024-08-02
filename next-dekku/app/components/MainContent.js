@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import '../styles/HomeContent.css';
+import "../styles/HomeContent.css";
 
 const images = [
   { src: "/notice1.jpg", alt: "Notice" },
@@ -42,61 +42,22 @@ export default function MainContent() {
 
   return (
     <div className="p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex h-96 justify-between mb-8">
-          <Link
-            href={"/threeD"}
-            className="flex-1 relative p-4 rounded-xl shadow-md text-lg font-bold mr-4 overflow-hidden flex items-start justify-center"
-            style={{
-              background: "linear-gradient(to bottom, #D9D9D9, #737373)",
-            }}
-          >
-            <h1 className="absolute top-0 left-0 p-4 font-bold text-xl w-full">
-              나만의 3D 데스크를 디자인하세요
-            </h1>
-            <img
-              src="/mainImg1.png"
-              className="h-72 w-auto mt-12"
-              alt="3D Desk"
-            />
+      <div className="max-w-6xl mx-auto">
+        <div className="flex space-x-4 h-auto justify-between mb-8">
+          <Link href="/" className="flex-grow bg-[#EFEAEA] rounded-xl p-6 text-2xl font-extrabold">
+            나만의 3D 데스크를 디자인하세요.
           </Link>
-          <div className="w-1/2 flex flex-col">
-            <Link
-              href={"/deskSetup"}
-              className="flex-grow relative p-4 rounded-xl shadow-md text-lg font-bold mb-4 flex items-center justify-center"
-              style={{
-                background: "linear-gradient(to bottom, #D9D9D9, #737373)",
-              }}
-            >
-              <h1 className="absolute top-0 left-0 p-4 font-bold text-xl ">
-                데스크 셋업
-              </h1>
-              <img
-                src="/mainImg2.png"
-                className="h-40 w-auto object-cover rounded-xl mt-6"
-                alt="Desk Setup"
-              />
+          <div className="flex-grow flex flex-col justify-between space-y-4">
+            <Link href="/" className="h-64 flex-grow bg-[#EFEAEA] rounded-xl p-6 text-4xl font-extrabold text-white bg-[url('/home_image_1.png')] bg-cover">
+              데스크 셋업
             </Link>
-            <Link
-              href={"/deskSetup/create"}
-              className="flex-grow-0 relative p-4 rounded-xl shadow-md text-lg font-bold h-1/4 flex items-center justify-center"
-              style={{
-                background: "linear-gradient(to bottom, #D9D9D9, #737373)",
-              }}
-            >
-              <h1 className="absolute top-0 left-0 p-4 font-bold text-xl ">
-                글쓰기
-              </h1>
-              <img
-                src="/mainImg3.png"
-                className="h-24 w-auto object-cover rounded-xl mt-2"
-                alt="Writing"
-              />
+            <Link href="/" className="h-64 flex-grow bg-[#EFEAEA] rounded-xl p-6 text-2xl font-extrabold">
+              사람들에게 데스크 셋업을 물어보세요.
             </Link>
           </div>
         </div>
         <h1 className="text-2xl font-bold mb-4">Notice & Event</h1>
-        <div className="relative bg-gray-100 h-60 overflow-visible">
+        <div className="relative bg-gray-100 h-64 overflow-visible">
           <div className="relative h-full overflow-hidden">
             <TransitionGroup className="relative h-full">
               <CSSTransition
@@ -114,15 +75,13 @@ export default function MainContent() {
           </div>
           <button
             onClick={handlePrev}
-            className="absolute -left-5 top-1/2 transform -translate-y-1/2 bg-white text-black shadow w-10 h-10 rounded-full focus:outline-none flex items-center justify-center"
-            style={{ zIndex: 1 }}
+            className="absolute -left-5 top-1/2 z-10 transform -translate-y-1/2 bg-white text-black shadow w-10 h-10 rounded-full focus:outline-none flex items-center justify-center"
           >
             <img src="/chevron-left.png" className="w-4 h-4" />
           </button>
           <button
             onClick={handleNext}
-            className="absolute -right-5 top-1/2 transform -translate-y-1/2 bg-white text-black shadow w-10 h-10 rounded-full focus:outline-none flex items-center justify-center"
-            style={{ zIndex: 1 }}
+            className="absolute -right-5 top-1/2 z-10 transform -translate-y-1/2 bg-white text-black shadow w-10 h-10 rounded-full focus:outline-none flex items-center justify-center"
           >
             <img src="/chevron-right.png" className="w-4 h-4" />
           </button>
@@ -132,9 +91,7 @@ export default function MainContent() {
                 key={index}
                 onClick={() => handleDotClick(index)}
                 className={`w-3 h-3 rounded-full ${
-                  index === currentIndex
-                    ? "bg-gray-600"
-                    : "bg-gray-300"
+                  index === currentIndex ? "bg-gray-600" : "bg-gray-300"
                 }`}
               />
             ))}

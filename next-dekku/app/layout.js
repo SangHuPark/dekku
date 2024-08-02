@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
         className={`${pretendard.variable} min-h-screen flex flex-col font-pretendard`}
       >
         <Header />
-        <main className="mt-20 flex-grow">{children}</main>
+        <main className="mt-16 flex-grow bg-[#ECE3D0]">{children}</main>
         <Footer />
       </body>
     </html>
