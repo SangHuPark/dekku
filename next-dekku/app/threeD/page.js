@@ -4,6 +4,7 @@ import { useState } from 'react';
 import ThreeDNavBar from '../components/threeD/ThreeDNavBar';
 import SelectedProducts from '../components/threeD/SelectedProducts';
 import ThreeJSRenderer from '../components/threeD/ThreeJSRenderer';
+import CompleteBtn from '../components/threeD/CompleteBtn';
 
 const ThreeDPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('모니터');
@@ -42,6 +43,7 @@ const ThreeDPage = () => {
         </div>
         <div className='flex-grow h-6/7 overflow-hidden'>
           <ThreeJSRenderer selectedProducts={selectedProducts} />
+          <CompleteBtn selectedProducts={selectedProducts} />
         </div>
       </div>
     </div>
