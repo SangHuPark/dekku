@@ -2,7 +2,7 @@ package dekku.spring_dekku.domain.deskterior_post.model.entity.attribute;
 
 public enum Job {
     NON_SELECT,
-    OFFICEWORKER,
+    OFFICE_WORKER,
     DEVELOPER,
     ARCHITECT,
     DESIGNER,

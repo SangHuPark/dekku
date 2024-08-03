@@ -7,10 +7,7 @@ import dekku.spring_dekku.domain.member.model.entity.Like;
 import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
 import dekku.spring_dekku.global.model.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,20 +27,20 @@ public class DeskteriorPost extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "deskteriorPost")
+    private String thumnailUrl;
+
+    @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeskteriorPostImage> deskteriorPostImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "deskteriorPost")
     private List<Like> likes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "deskteriorPost")
+    @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeskteriorPostProductInfo> deskteriorPostProductInfos = new ArrayList<>();
 
     private String title;
 
     private String content;
-
-    private String thumbnailUrl;
 
     private int viewCount;
 
@@ -56,17 +53,32 @@ public class DeskteriorPost extends BaseEntity {
     private DeskteriorAttributes deskteriorAttributes;
 
     @Builder
-    public DeskteriorPost(Member member, String title, String content, DeskteriorAttributes deskteriorAttributes, List<DeskteriorPostProductInfo> deskteriorPostProductInfos, OpenStatus openStatus) {
+    public DeskteriorPost(Member member, String title, String content, DeskteriorAttributes deskteriorAttributes, OpenStatus openStatus) {
 
         this.member = member;
         this.title = title;
         this.content = content;
         this.deskteriorAttributes = deskteriorAttributes;
-        this.thumbnailUrl = deskteriorPostImages.get(0).getImageUrl();
-        this.deskteriorPostProductInfos = deskteriorPostProductInfos;
         this.openStatus = openStatus;
 
         this.viewCount = 0;
         this.likeCount = 0;
     }
+
+    public void insertDeskteriorPostImages(DeskteriorPostImage deskteriorPostImage) {
+        this.deskteriorPostImages.add(deskteriorPostImage);
+
+        if (deskteriorPostImage.getDeskteriorPost() != this) {
+            deskteriorPostImage.setDeskteriorPost(this);
+        }
+    }
+
+    public void insertDeskteriorPostProductInfos(DeskteriorPostProductInfo deskteriorPostProductInfo) {
+        this.deskteriorPostProductInfos.add(deskteriorPostProductInfo);
+
+        if (deskteriorPostProductInfo.getDeskteriorPost() != this) {
+            deskteriorPostProductInfo.setDeskteriorPost(this);
+        }
+    }
+
 }
