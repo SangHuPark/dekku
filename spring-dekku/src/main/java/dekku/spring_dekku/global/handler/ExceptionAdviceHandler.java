@@ -26,10 +26,10 @@ public class ExceptionAdviceHandler extends ResponseEntityExceptionHandler {
                 .status(exception.getErrorCode().getCode())
                 .body(ErrorResponse
                         .builder(exception, exception.getErrorCode().getCode(), exception.getMessage())
-//                        .instance(URI.create(
-//                                ((ServletWebRequest) request)
-//                                        .getRequest()
-//                                        .getRequestURI()))
+                        .instance(URI.create(
+                                ((ServletWebRequest) request)
+                                        .getRequest()
+                                        .getRequestURI()))
                         .build());
     }
 
@@ -50,4 +50,6 @@ public class ExceptionAdviceHandler extends ResponseEntityExceptionHandler {
                                     .getRequestURI()))
                         .build());
     }
+
+
 }

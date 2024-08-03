@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Schema(name = "객체 업로드 주소 발행 요청 DTO", description = "객체 업로드에 필요한 정보")
 public class CreatePresignedUrlRequestDto {
 
-    @Schema(description = "객체 주인 식별자(프로필 사진 : 유저 식별자 / 3D, 게시글 : 게시글 식별자)")
+    @Schema(description = "객체 주인 식별자(프로필 사진 : 유저 식별자 / 게시글 : 게시글 식별자)")
     @NotBlank(message = "식별자를 입력해주세요.")
     private String id;
 
@@ -20,8 +20,8 @@ public class CreatePresignedUrlRequestDto {
     @NotBlank(message = "업로드 할 파일 개수를 입력해주세요.")
     private int fileCount;
 
-    @Schema(description = "폴더 이름", example = "3d")
-    @NotBlank(message = "객체를 저장할 폴더 이름(profile / 3d)을 입력해주세요.")
+    @Schema(description = "폴더 이름", example = "post")
+    @NotBlank(message = "객체를 저장할 폴더 이름(profile / post)을 입력해주세요.")
     private String directory;
 
 }

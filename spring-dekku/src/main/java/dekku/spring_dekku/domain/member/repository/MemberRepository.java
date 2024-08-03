@@ -1,19 +1,26 @@
 package dekku.spring_dekku.domain.member.repository;
 
-//import com.trip.domain.authorization.model.dto.response.LoginReqDto;
-//import com.trip.domain.authorization.model.dto.response.LogoutReqDto;
-//import com.trip.domain.member.model.dto.request.MemberSignUpReqDto;
-//import com.trip.domain.member.model.entity.Member;
-
 import dekku.spring_dekku.domain.member.model.entity.Member;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByEmail(String email);
+
+    Member findByUsername(String username);
+
+    @Modifying
+    @Query(value = "UPDATE Member m set m.nickname=:nickname, m.ageRange=:ageRange, m.gender=:gender " +
+            "WHERE m.username= :username")
+    void update(String username, String nickname, Integer ageRange, String gender);
+
+    @Modifying
+    @Query(value = "UPDATE Member m set m.name=:name, m.email=:email " +
+            "WHERE m.username= :username")
+    void renewMemberInfo(String username, String name, String email);
 
 //    @Modifying
 //    @Transactional

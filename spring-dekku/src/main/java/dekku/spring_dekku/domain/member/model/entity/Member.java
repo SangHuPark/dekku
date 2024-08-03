@@ -1,9 +1,6 @@
 package dekku.spring_dekku.domain.member.model.entity;
 
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
-import dekku.spring_dekku.domain.member.model.entity.code.AgeRange;
-import dekku.spring_dekku.domain.member.model.entity.code.Gender;
-import dekku.spring_dekku.domain.member.model.entity.code.MemberRole;
 import dekku.spring_dekku.global.model.entity.BaseEntity;
 import lombok.*;
 
@@ -22,11 +19,11 @@ public class Member extends BaseEntity {
 	@Column(name = "member_id")
 	private Long id;
 
+	@Column(nullable = false)
+	private String username; // provider + provider id
+
 	@Column(nullable = false, unique = true)
 	private String email;
-
-	@Column(nullable = false)
-	private String password;
 
 	@Column(nullable = false)
 	private String name;
@@ -36,19 +33,14 @@ public class Member extends BaseEntity {
 
 	private String image_url;
 
-	private String deleted_at;
-
     @Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private MemberRole role;
+	private String role;
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private Gender gender;
+	private String gender;
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private AgeRange ageRange;
+	private Integer ageRange;
 
 	@OneToMany(mappedBy = "member")
 	/**
@@ -69,21 +61,17 @@ public class Member extends BaseEntity {
 	private List<Follow> followers = new ArrayList<>();
 
     @Builder
-	public Member(String email, String password, String name, String nickname, String image_url, Gender gender, AgeRange ageRange) {
+	public Member(String username, String name, String email, String image_url, String role) {
+		this.username = username;
 		this.email = email;
-		this.password = password;
 		this.name = name;
-		this.nickname = nickname;
-		this.gender = gender;
-		this.ageRange = ageRange;
+		this.nickname = this.name;
+		this.gender = "";
+		this.ageRange = 20;
 
 		// service 에서 처리
 		this.image_url = image_url;
-		this.role = MemberRole.COMMON;
-	}
-
-	public void updateDeletedAt(String deleted_at) {
-		this.deleted_at = deleted_at;
+		this.role = role;
 	}
 
 }

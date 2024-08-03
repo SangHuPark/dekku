@@ -25,7 +25,8 @@ public class S3Controller {
             summary = "객체 업로드를 위한 주소 발행",
             description = "사진과 동영상 등을 저장하기 위해 미리 서명된 주소를 받는다. <br>"
                     + "- 프로필 사진 | [id = 유저 식별자] / [path = profile] <br>"
-                    + "- 게시글 사진 | [id = 게시글 식별자] / [path = 3d] <br>"
+                    + "- 게시글 사진 | [id = 게시글 식별자] / [path = post] <br>"
+                    + "- 3d 사진 | [id = 3d 식별자] / [path = 3d] <br>"
     )
     @PostMapping("/presigned-url")
     public ResponseEntity createPresignedUrl(@RequestBody CreatePresignedUrlRequestDto request) {
