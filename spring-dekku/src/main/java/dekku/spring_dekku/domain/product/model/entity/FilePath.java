@@ -1,5 +1,7 @@
 package dekku.spring_dekku.domain.product.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class FilePath {
 
     @Id
@@ -19,5 +22,11 @@ public class FilePath {
     private String path;
 
     @OneToOne(mappedBy = "filePath", fetch = FetchType.LAZY)
+    @JsonBackReference
     private Product product;
+
+    public FilePath(String path) {
+        this.path = path;
+    }
+
 }
