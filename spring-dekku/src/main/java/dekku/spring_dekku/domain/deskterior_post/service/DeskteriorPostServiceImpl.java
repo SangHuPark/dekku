@@ -1,5 +1,6 @@
 package dekku.spring_dekku.domain.deskterior_post.service;
 
+import dekku.spring_dekku.domain.deskterior_post.exception.NotExistsDeskteriorPostException;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.request.CreateDeskteriorPostRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.CreateDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
@@ -81,11 +82,10 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
             newDeskteriorPost.insertDeskteriorPostProductInfos(deskteriorPostProductInfo);
         }
 
-        DeskteriorPost deskteriorPost = deskteriorPostRepository.save(newDeskteriorPost);
+        DeskteriorPost savedDeskteriorPost = deskteriorPostRepository.save(newDeskteriorPost);
 
 //        CreateDeskteriorPostResponseDto response = modelMapper.map(deskteriorPost, CreateDeskteriorPostResponseDto.class);
-
-        CreateDeskteriorPostResponseDto response = new CreateDeskteriorPostResponseDto(deskteriorPost.getTitle(), deskteriorPost.getContent());
+        CreateDeskteriorPostResponseDto response = new CreateDeskteriorPostResponseDto(savedDeskteriorPost.getTitle(), savedDeskteriorPost.getContent());
 
         return response;
     }
@@ -103,5 +103,13 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
         }
 
         return deskteriorPosts;
+    }
+
+    @Override
+    public DeskteriorPost findById(Long id) {
+        DeskteriorPost foundDeskteriorPost = deskteriorPostRepository.findById(id)
+                .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
+
+        return foundDeskteriorPost;
     }
 }

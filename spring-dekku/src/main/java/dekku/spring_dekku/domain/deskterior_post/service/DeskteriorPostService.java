@@ -12,4 +12,6 @@ public interface DeskteriorPostService {
     CreateDeskteriorPostResponseDto addDeskteriorPost(String email, CreateDeskteriorPostRequestDto requestDto);
 
     List<DeskteriorPost> findAll();
+
+    DeskteriorPost findById(Long id);
 }

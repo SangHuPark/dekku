@@ -24,7 +24,8 @@ public enum ErrorCode {
      * {@code 404 Not Found}
      */
     NOT_EXISTS_USER(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다."),
-    NOT_EXISTS_PRODUCT(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다.");
+    NOT_EXISTS_PRODUCT(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다."),
+    NOT_EXISTS_DESKTERIOR_POST(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다.");
 
     private HttpStatus code;
     private String message;

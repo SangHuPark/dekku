@@ -1,6 +1,6 @@
 package dekku.spring_dekku.domain.product.model.entity;
 
-import dekku.spring_dekku.global.model.entity.DeskteriorPost;
+import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import jakarta.persistence.*;
 import lombok.*;
 

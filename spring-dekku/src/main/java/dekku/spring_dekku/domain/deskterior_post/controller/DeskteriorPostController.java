@@ -56,23 +56,53 @@ public class DeskteriorPostController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "조회 요청 실패"
+                    description = "모든 게시글 조회 요청 실패"
             )
-//            ,
-//            @ApiResponse(
-//                    responseCode = "404",
-//                    description = "존재하지 않는 계정"
-//            )
+            ,
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "존재하지 않는 계정"
+            )
     })
-    @Parameter(name = "phoneNumber", description = "찾고 싶은 계정", example = "01012345678")
-    @GetMapping("/find-password")
+//    @Parameter(name = "phoneNumber", description = "찾고 싶은 계정", example = "01012345678")
+    @GetMapping("")
     public ResponseEntity findAllDeskteriorPost(
-            @RequestParam @Pattern(regexp = "^010\\d{8}$", message = "올바른 형식이 아닙니다.") String phoneNumber
+//            @RequestParam @Pattern(regexp = "^010\\d{8}$", message = "올바른 형식이 아닙니다.") String phoneNumber
     ) {
 
         return ResponseUtil.ok(
                 Success.builder()
                         .data(deskteriorPostService.findAll())
+                        .build());
+
+    }
+
+    @Operation(summary = "단일 게시글 조회")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청 완료",
+                    content = @Content(schema = @Schema(implementation = FindDeskteriorPostResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "단일 게시글 조회 요청 실패"
+            )
+            ,
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "존재하지 않는 계정"
+            )
+    })
+//    @Parameter(name = "phoneNumber", description = "찾고 싶은 계정", example = "01012345678")
+    @GetMapping("/{postId}")
+    public ResponseEntity findDeskteriorPost(
+            @PathVariable Long postId
+    ) {
+
+        return ResponseUtil.ok(
+                Success.builder()
+                        .data(deskteriorPostService.findById(postId))
                         .build());
 
     }
