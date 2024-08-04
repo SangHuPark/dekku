@@ -12,7 +12,7 @@ const SelectedProducts = ({ selectedProducts, removeProduct }) => {
 
   return (
     <div className="relative">
-      <div className="absolute top-0 left-0 right-0 bg-white shadow-lg p-2 flex flex-col items-start" style={{ zIndex: 10 }}>
+      <div className="absolute top-0 left-0 right-0 shadow-lg p-2 flex flex-col items-start" style={{ zIndex: 10 }}>
         {/* 접기펴기 버튼 */}
         <button
           className="bg-white text-black px-2 py-1 rounded mt-2"

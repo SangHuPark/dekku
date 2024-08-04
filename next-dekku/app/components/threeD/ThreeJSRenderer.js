@@ -20,15 +20,28 @@ const ThreeJSRenderer = ({ selectedProducts }) => {
 
   // 모델의 위치와 스케일 저장
   const saveModelData = (models) => {
-    const data = {};
-    models.forEach(model => {
-      data[model.userData.uniqueId] = {
-        position: model.position.clone(),
-        scale: model.scale.clone(),
-        rotation: model.rotation.clone(),
-      };
-    });
+    const data = models.map(model => ({
+      id: model.userData.id,
+      uniqueId: model.userData.uniqueId,
+      position: model.position.toArray(),
+      scale: model.scale.toArray(),
+      rotation: model.rotation.toArray(),
+      modelPath: model.userData.product.modelPath,
+    }));
     setModelData(data);
+    localStorage.setItem('sceneState', JSON.stringify(data)); // 로컬 스토리지에 저장
+  };
+
+  // 모델의 위치와 스케일 복원
+  const restoreModelData = (models, data) => {
+    models.forEach(model => {
+      const modelData = data.find(item => item.uniqueId === model.userData.uniqueId);
+      if (modelData) {
+        model.position.fromArray(modelData.position);
+        model.scale.fromArray(modelData.scale);
+        model.rotation.fromArray(modelData.rotation);
+      }
+    });
   };
 
   // 씬 초기화
