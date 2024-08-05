@@ -20,13 +20,13 @@ public record CreateProductRequestDto (
         @NotNull(message = "파트너스 링크는 NULL일 수 없습니다.") // 파트너스 링크
         String salesLink,
 
-        @NotNull(message = "모델 존재 여부를 선택해주세요.") // 모델 존재 여부
-        ExistStatus existStatus,
+//        @NotNull(message = "모델 존재 여부를 선택해주세요.") // 모델 존재 여부
+//        ExistStatus existStatus,
 
         @NotNull(message = "제품 카테고리를 선택해주세요.") // 제품 카테고리
         Category category,
 
-        @NotBlank(message = "내부 3D 파일 경로는 공백일 수 없습니다.") // 내부 3D 파일 경로
+        @NotNull(message = "내부 3D 파일 경로는 NULL일 수 없습니다.") // 내부 3D 파일 경로
         String filePath
 ) {
         public CreateProductRequestDto {
