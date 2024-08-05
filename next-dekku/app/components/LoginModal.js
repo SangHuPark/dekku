@@ -70,6 +70,7 @@ export default function LoginModal({ showModal, setShowModal }) {
 
     try {
       const response = await fetch("/api/posts", {
+      const response = await fetch("/api/posts", {
         method: "POST",
         body: formData,
       });
@@ -79,8 +80,14 @@ export default function LoginModal({ showModal, setShowModal }) {
       } else {
         throw new Error('Login failed');
       }
+      if (response.ok) {
+        router.push("/");
+      } else {
+        throw new Error('Login failed');
+      }
     } catch (error) {
       console.error("Error:", error);
+      alert('Login error: ' + error.message); // 피드백 제공
       alert('Login error: ' + error.message); // 피드백 제공
     }
   };
