@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import LoginModal from "../components/LoginModal";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const Header = () => {
-  const [showModal, setShowModal] = useState(false);
+  const { data: session } = useSession();
 
   return (
     <header className="fixed top-0 w-full z-50 bg-white px-4 py-8">
@@ -25,13 +24,20 @@ const Header = () => {
               <Link href="/deskSetup">Desk Setup</Link>
             </li>
             <li>
-              <button
-                className="flex items-center"
-                onClick={() => setShowModal(true)}
-              >
-                <img src="/profile.png" />
-              </button>
-              <LoginModal showModal={showModal} setShowModal={setShowModal} />
+              <div>
+                {!session ? (
+                  <>
+                    <button onClick={() => signIn("kakao")}>
+                      Login with Kakao
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p>Welcome, {session.user.name}</p>
+                    <button onClick={() => signOut()}>Sign out</button>
+                  </>
+                )}
+              </div>
             </li>
           </ul>
         </nav>
