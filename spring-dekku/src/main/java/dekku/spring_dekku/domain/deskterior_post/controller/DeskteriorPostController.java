@@ -38,6 +38,8 @@ public class DeskteriorPostController {
     @PostMapping("")
     public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorPostRequestDto request) {
 
+        System.out.println("post");
+
         CreateDeskteriorPostResponseDto response = deskteriorPostService.addDeskteriorPost("tkdgn407", request);
 
         return ResponseUtil.created(
