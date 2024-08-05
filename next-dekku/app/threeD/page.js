@@ -1,29 +1,36 @@
-'use client';
+"use client"; // 클라이언트 컴포넌트로 명시
 
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation'; // next/navigation 모듈 사용
 import ThreeDNavBar from '../components/threeD/ThreeDNavBar';
 import SelectedProducts from '../components/threeD/SelectedProducts';
 import ThreeJSRenderer from '../components/threeD/ThreeJSRenderer';
-import CompleteBtn from '../components/threeD/CompleteBtn';
 
 const ThreeDPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState('모니터');
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('모니터'); // 선택된 카테고리 상태
+  const [selectedProducts, setSelectedProducts] = useState([]); // 선택된 제품 상태
+  const [searchTerm, setSearchTerm] = useState(''); // 검색어 상태
+  const router = useRouter(); // next/navigation의 useRouter 사용
 
+  // 검색어 변경 핸들러
   const handleSearch = (term) => {
     setSearchTerm(term);
   };
 
+  // 제품 추가 핸들러
   const addProduct = (product) => {
     setSelectedProducts([...selectedProducts, product]);
   };
 
+  // 제품 제거 핸들러
   const removeProduct = (index) => {
     setSelectedProducts(selectedProducts.filter((_, i) => i !== index));
   };
 
-  console.log(selectedProducts);
+  // 완성 핸들러
+  const handleComplete = () => {
+    router.push('/threeDafter'); // 썸네일을 쿼리 파라미터로 전달하지 않음
+  };
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -42,8 +49,7 @@ const ThreeDPage = () => {
           />
         </div>
         <div className='flex-grow h-6/7 overflow-hidden'>
-          <ThreeJSRenderer selectedProducts={selectedProducts} />
-          <CompleteBtn selectedProducts={selectedProducts} />
+          <ThreeJSRenderer selectedProducts={selectedProducts} onComplete={handleComplete} />
         </div>
       </div>
     </div>

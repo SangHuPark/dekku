@@ -85,7 +85,7 @@ const MouseControls = ({ camera, models, setActiveModel, controls, scene, deskSi
         gridHelper.current = createCustomGrid(deskSize.x, deskSize.z, 10, 10); // 책상 크기로 CustomGrid 생성
         axesHelper.current = new THREE.AxesHelper(5);
 
-        gridHelper.current.position.set(0, deskHeight + 0.03, 0); // 책상 높이보다 0.01 높게 설정
+        gridHelper.current.position.set(0, deskHeight + 0.03, -1.5); // 책상 높이보다 0.01 높게 설정
         axesHelper.current.position.copy(object.position);
 
         scene.add(gridHelper.current);

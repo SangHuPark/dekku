@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import products from '../threeD/ProductList'; // 각 모델의 스케일 값을 가져오기 위해 제품 리스트를 임포트
 
 const Head = ({ onSave, onShare }) => {
@@ -14,62 +13,72 @@ const Head = ({ onSave, onShare }) => {
   useEffect(() => {
     const mount = mountRef.current;
 
-    // 씬 생성
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xffffff); // 배경 색상을 흰색으로 설정
+    scene.background = new THREE.Color(0xffffff);
     setScene(scene);
 
-    // 카메라 생성
-    const camera = new THREE.PerspectiveCamera(50, mount.clientWidth / mount.clientHeight, 0.1, 1000);
-    camera.position.set(0, 2, 4); // 카메라 위치 조정 (X, Y, Z)
-    camera.lookAt(0, 1, 0); // 카메라가 씬의 중심을 바라보도록 설정
+    const camera = new THREE.PerspectiveCamera(27, mount.clientWidth / mount.clientHeight, 0.01, 1000);
+    camera.position.set(0, 4, 5); // 카메라를 더 가깝게 조정
     setCamera(camera);
 
-    // 렌더러 생성
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     mount.appendChild(renderer.domElement);
     setRenderer(renderer);
 
-    // 조명 추가
-    const ambientLight = new THREE.AmbientLight(0x404040, 2); // 주변 광 조명
+    const ambientLight = new THREE.AmbientLight(0x404040, 2);
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 2); // 방향성 광 조명
-    directionalLight.position.set(10, 10, 10);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+    directionalLight.position.set(0, 10, 10);
     scene.add(directionalLight);
 
-    // OrbitControls 추가
-    const controls = new OrbitControls(camera, renderer.domElement);
-
-    // 책상 모델 로드
     const deskLoader = new GLTFLoader();
     deskLoader.load('threedmodels/ssafydesk.glb', (gltf) => {
       const desk = gltf.scene;
-      desk.position.set(0, 0, 0); // 책상을 씬의 중앙에 배치
-      desk.scale.set(3, 3, 3); // 책상의 크기를 조정
+
+      // 중심점 설정
+      const box = new THREE.Box3().setFromObject(desk);
+      const center = box.getCenter(new THREE.Vector3());
+      desk.position.sub(center);
+
+      // 위치 조정
+      desk.position.set(0, -3, -1.5); // 모델을 더 아래로 이동
+      desk.scale.set(3, 3, 3); // 모델 크기를 키움
       scene.add(desk);
       setDesk(desk);
 
-      // 로컬 스토리지에서 상태 불러오기
       const storedSceneState = localStorage.getItem('sceneState');
       if (storedSceneState) {
         const parsedState = JSON.parse(storedSceneState);
-        loadModels(parsedState, scene, desk); // 모델을 배치
+        loadModels(parsedState, scene, desk);
       }
     });
 
     const animate = () => {
       requestAnimationFrame(animate);
-      if (scene.children.length > 0) {
-        scene.rotation.y += 0.01; // 모든 모델이 함께 회전
+
+      if (camera) {
+        const time = Date.now() * 0.0005; // 회전 속도를 줄이기 위해 0.0005로 설정
+        camera.position.x = 5 * Math.cos(time); // 카메라 궤도를 더 좁게 조정
+        camera.position.z = 5 * Math.sin(time) - 1.5; // 책상의 z 위치에 맞춤
+        camera.lookAt(new THREE.Vector3(0, -1.5, -1.5)); // 책상의 위치로 바라봄
       }
-      controls.update();
+
       renderer.render(scene, camera);
     };
 
     animate();
 
+    const handleResize = () => {
+      camera.aspect = mount.clientWidth / mount.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(mount.clientWidth, mount.clientHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+
     return () => {
+      window.removeEventListener('resize', handleResize);
       mount.removeChild(renderer.domElement);
     };
   }, []);
@@ -81,7 +90,7 @@ const Head = ({ onSave, onShare }) => {
         return product.scale;
       }
     }
-    return [1, 1, 1]; // 기본 스케일 값
+    return [1, 1, 1];
   };
 
   const loadModels = (sceneState, scene, desk) => {
@@ -94,12 +103,10 @@ const Head = ({ onSave, onShare }) => {
         const model = gltf.scene;
         model.position.fromArray(modelData.position);
         model.rotation.fromArray(modelData.rotation);
-
-        // 각 모델의 지정된 스케일을 적용
         model.scale.fromArray(modelData.scale);
 
-        // 모델의 위치를 책상 위로 설정
-        model.position.y = deskHeight + 0.02; // 책상 위에 모델을 배치
+        model.position.y = deskHeight + 0.02;
+        model.position.z = -1.5; // 모델의 z 위치를 책상과 맞춤
         model.userData = { modelPath: modelData.modelPath };
 
         scene.add(model);
@@ -134,7 +141,7 @@ const Head = ({ onSave, onShare }) => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto grid grid-cols-2 gap-4" style={{ paddingBottom: '5px', height: '350px', padding: '32px 0 5px' }}>
+    <div className="max-w-6xl mx-auto grid grid-cols-2 gap-4" style={{ paddingBottom: '60px', height: '350px', padding: '24px 0 60px' }}>
       <div className="flex flex-col justify-center items-start">
         <p className="text-xl font-bold mb-2">Good! 훌륭한 데스크 입니다!</p>
         <div className="flex">
