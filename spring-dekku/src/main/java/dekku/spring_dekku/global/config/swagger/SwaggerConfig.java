@@ -1,11 +1,12 @@
 package dekku.spring_dekku.global.config.swagger;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+
 
 import java.util.Arrays;
 
@@ -17,7 +18,7 @@ public class SwaggerConfig {
 
         Server localServer = new Server();
         localServer.setDescription("local");
-        localServer.setUrl("http://localhost");
+        localServer.setUrl("http://localhost:8080");
 
 
         return new OpenAPI()
@@ -28,8 +29,9 @@ public class SwaggerConfig {
 
     private Info getInfo() {
         return new Info()
-                .title("SSAFY TRIP API")
-                .description("SSAFY TRIP DOCS");
+                .title("SSAFY Dekku API")
+                .description("SSAFY Dekku DOCS")
+                .version("v1.0.0");
     }
 
 
