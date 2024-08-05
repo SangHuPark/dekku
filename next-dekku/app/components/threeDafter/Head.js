@@ -9,6 +9,7 @@ const Head = ({ onSave, onShare }) => {
   const [camera, setCamera] = useState(null);
   const [renderer, setRenderer] = useState(null);
   const [desk, setDesk] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -114,29 +115,72 @@ const Head = ({ onSave, onShare }) => {
     });
   };
 
-  const handleSave = () => {
-    const currentSceneState = scene.children.map(child => ({
-      modelPath: child.userData.modelPath,
-      position: child.position.toArray(),
-      rotation: child.rotation.toArray(),
-      scale: child.scale.toArray()
-    }));
-    localStorage.setItem('sceneState', JSON.stringify(currentSceneState));
+  const handleSave = async () => {
+    // 로컬 스토리지에서 씬 상태 가져오기
+    const storedSceneState = localStorage.getItem('sceneState');
+    if (!storedSceneState) {
+      console.error("No scene state found in localStorage.");
+      return;
+    }
+
+    // Presigned URL 생성 요청
+    let presignedUrl;
+    try {
+      const presignedResponse = await fetch("http://localhost:8080/api/s3/presigned-url", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          id: "sceneState", // 고유 식별자. 필요에 따라 변경하세요.
+          fileCount: 1,
+          directory: "3d"
+        })
+      });
+
+      if (!presignedResponse.ok) {
+        const errorMessage = await presignedResponse.text();
+        console.error("Error:", errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      const presignedData = await presignedResponse.json();
+      presignedUrl = presignedData.data.preSignedUrl[0];
+
+      console.log("Presigned URL:", presignedUrl);
+    } catch (error) {
+      console.error("Failed to fetch presigned URL:", error);
+    }
+
+    // S3에 파일 업로드 (주석 처리)
+    // const sceneStateBlob = new Blob([storedSceneState], { type: 'application/json' });
+    // const uploadResponse = await fetch(presignedUrl, {
+    //   method: "PUT",
+    //   headers: {
+    //     "Content-Type": 'application/json'
+    //   },
+    //   body: sceneStateBlob
+    // });
+
+    // if (!uploadResponse.ok) {
+    //   const errorMessage = await uploadResponse.text();
+    //   console.error("Error:", errorMessage);
+    //   throw new Error(errorMessage);
+    // }
+
+    // const uploadedFileUrl = presignedUrl.split("?")[0];
+    // console.log("Uploaded file URL:", uploadedFileUrl);
+    // setImageUrl(uploadedFileUrl);
+
     if (onSave) {
       onSave();
     }
   };
 
-  const handleShare = () => {
-    const currentSceneState = scene.children.map(child => ({
-      modelPath: child.userData.modelPath,
-      position: child.position.toArray(),
-      rotation: child.rotation.toArray(),
-      scale: child.scale.toArray()
-    }));
-    localStorage.setItem('sceneState', JSON.stringify(currentSceneState));
+  const handleShare = async () => {
+    await handleSave();
     if (onShare) {
-      onShare();
+      onShare(imageUrl);
     }
   };
 

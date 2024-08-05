@@ -62,7 +62,9 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
       modelPath: model.userData.product.modelPath,
     }));
     localStorage.setItem('sceneState', JSON.stringify(data));
+    console.log(data)
   };
+
 
   // 썸네일 캡처 및 로컬 스토리지에 저장
   const captureThumbnail = () => {
