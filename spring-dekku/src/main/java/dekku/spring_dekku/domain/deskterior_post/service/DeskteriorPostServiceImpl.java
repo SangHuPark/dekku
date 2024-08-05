@@ -97,7 +97,7 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
         List<FindDeskteriorPostResponseDto> response = new ArrayList<>();
 
         for (DeskteriorPost deskteriorPost : deskteriorPosts) {
-            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto();
+            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost.getId(), deskteriorPost.getMember().getId());
 //            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost.getId(), deskteriorPost.getMember().getId());
             response.add(findDeskteriorPostResponseDto);
         }
