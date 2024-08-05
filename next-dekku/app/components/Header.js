@@ -8,7 +8,7 @@ const Header = () => {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-white px-6 py-4">
+    <header className="fixed top-0 w-full z-50 bg-white px-4 py-8">
       <div className="max-w-6xl mx-auto flex justify-between">
         <div className="flex items-center">
           <Link href="/">
@@ -19,13 +19,10 @@ const Header = () => {
         <nav className="flex items-center">
           <ul className="flex items-center space-x-8 text-lg">
             <li>
-              <Link href="/threeD">3D 데꾸</Link>
+              <Link href="/threeD">3D Desk</Link>
             </li>
             <li>
-              <Link href="/deskSetup">데스크셋업</Link>
-            </li>
-            <li>
-              <Link href="/">커뮤니티</Link>
+              <Link href="/deskSetup">Desk Setup</Link>
             </li>
             <li>
               <button
