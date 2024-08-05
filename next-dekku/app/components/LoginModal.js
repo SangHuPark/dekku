@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-const KAKAO_APP_KEY = '49e8b661f0b102fb6d48af8f9d51ae58'; // 환경 변수 사용
+const KAKAO_APP_KEY = "7aae0bb5ff500183e99e7c6c538603d9"; // 환경 변수 사용
 
 export default function LoginModal({ showModal, setShowModal }) {
   const [id, setId] = useState("");
@@ -65,8 +65,6 @@ export default function LoginModal({ showModal, setShowModal }) {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append("id", id);
-    formData.append("password", password);
 
     try {
       const response = await fetch("/api/posts", {
@@ -77,20 +75,13 @@ export default function LoginModal({ showModal, setShowModal }) {
       if (response.ok) {
         router.push("/");
       } else {
-        throw new Error('Login failed');
-      }
-      if (response.ok) {
-        router.push("/");
-      } else {
-        throw new Error('Login failed');
+        throw new Error("Login failed");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert('Login error: ' + error.message); // 피드백 제공
-      alert('Login error: ' + error.message); // 피드백 제공
+      alert("Login error: " + error.message); // 피드백 제공
     }
   };
-
 
   return (
     showModal && (
@@ -128,6 +119,7 @@ export default function LoginModal({ showModal, setShowModal }) {
                   >
                     <div className="w-full">
                       <button
+                        type="button"
                         onClick={handleKakaoLogin}
                         className="shadow w-full inline-flex justify-center items-center px-4 py-4 border border-transparent text-2xl font-medium rounded-md shadow-sm text-black bg-[#FDDC3F] hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
                       >
@@ -140,8 +132,8 @@ export default function LoginModal({ showModal, setShowModal }) {
                       </button>
                     </div>
                     <div className="w-full">
-                      <button
-                        href="http://localhost:8080/oauth2/authorization/naver"
+                    <button
+                        type="button"
                         className="shadow w-full inline-flex justify-center items-center px-4 py-4 border border-transparent text-2xl font-medium rounded-md shadow-sm text-white bg-[#03C75A] hover:bg-[#04A94D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                       >
                         <img
