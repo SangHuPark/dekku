@@ -1,12 +1,66 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+const KAKAO_APP_KEY = '49e8b661f0b102fb6d48af8f9d51ae58'; // 환경 변수 사용
+
+
 
 export default function LoginModal({ showModal, setShowModal }) {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    const loadKakaoSdk = () => {
+      // Kakao SDK 스크립트가 이미 페이지에 존재하는지 확인
+      if (document.getElementById('kakao-sdk')) return;
+  
+      const script = document.createElement('script');
+      script.id = 'kakao-sdk';
+      script.src = 'https://developers.kakao.com/sdk/js/kakao.js';
+      script.onload = () => {
+        // 스크립트 로드 완료 후 초기화
+        window.Kakao.init(KAKAO_APP_KEY);
+        console.log('Kakao SDK loaded and initialized');
+      };
+      document.head.appendChild(script);
+    };
+  
+    if (!window.Kakao) {
+      loadKakaoSdk();
+    } else {
+      if (!window.Kakao.isInitialized()) {
+        window.Kakao.init(KAKAO_APP_KEY);
+      }
+    }
+  }, []);
+  
+
+  const handleKakaoLogin = () => {
+    window.Kakao.Auth.login({
+      success: function(authObj) {
+        console.log('Kakao login success. Auth object:', authObj);
+        // 백엔드와의 세션 관리나 인증을 추가할 수 있습니다
+        fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token: authObj.access_token }),
+        }).then(() => {
+          router.push('/'); // 성공적인 통합 후 홈으로 리다이렉트
+        }).catch((error) => {
+          console.error('Backend auth failed:', error);
+        });
+      },
+      fail: function(err) {
+        console.error('Failed to login with Kakao:', err);
+        alert('로그인 실패: ' + err.error_description); // 피드백 제공
+      }
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,14 +70,19 @@ export default function LoginModal({ showModal, setShowModal }) {
     formData.append("password", password);
 
     try {
-      await fetch("/api/posts", {
+      const response = await fetch("/api/posts", {
         method: "POST",
         body: formData,
       });
 
-      router.push("/");
+      if (response.ok) {
+        router.push("/");
+      } else {
+        throw new Error('Login failed');
+      }
     } catch (error) {
       console.error("Error:", error);
+      alert('Login error: ' + error.message); // 피드백 제공
     }
   };
 
@@ -96,6 +155,7 @@ export default function LoginModal({ showModal, setShowModal }) {
                     <div className="w-full">
                       <button
                         type="button"
+                        onClick={handleKakaoLogin}
                         className="shadow w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
                       >
                         카카오 로그인
