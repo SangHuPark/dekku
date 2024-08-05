@@ -1,27 +1,47 @@
-pipeline{
+pipeline {
     agent any
 
-    stages{
-        stage('Build'){
-            steps{
-                script{
-                    sh 'chmod +x ./spring-dekku/gradlew'
-                    sh './spring-dekku/gradlew clean build -x test'
-                    sh 'chmod +x ./spring-dekku/docker_install.sh'
-                    sh './spring-dekku/docker_install.sh'
+    environment {
+        DOCKER_COMPOSE_FILE = 'docker-compose.yml'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://lab.ssafy.com/s11-webmobile2-sub2/S11P12A306.git'
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                script {
+                    sh "docker-compose -f ${DOCKER_COMPOSE_FILE} build"
                 }
             }
         }
-        stage('Deploy'){
-            steps{
-                script{
-                    sh 'docker build -t backend-jenkins .'
-                    sh 'docker rm -f backend-jenkins'
-                    sh 'docker run -d --name backend-jenkins -p 8080:8080 backend-jenkins'
-//                     sh 'docker build --build-arg JASYPT_KEY=${JASYPT_KEY} -t backend-jenkins .'
-//                     sh 'docker rm -f backend-jenkins'
-//                     sh 'docker run -d --name backend-jenkins -p 8080:8080 backend-jenkins'
+
+        stage('Run Docker Containers') {
+            steps {
+                script {
+                    sh "docker-compose -f ${DOCKER_COMPOSE_FILE} up -d"
                 }
+            }
+        }
+
+        stage('Clean Up') {
+            steps {
+                script {
+                    sh "docker-compose -f ${DOCKER_COMPOSE_FILE} down"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                sh "docker-compose -f ${DOCKER_COMPOSE_FILE} down --volumes"
             }
         }
     }
