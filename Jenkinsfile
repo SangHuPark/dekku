@@ -5,7 +5,7 @@ pipeline{
         stage('Build'){
             steps{
                 script{
-                    sh 'chmod +x gradlew'
+                    sh 'chmod +x ./spring-dekku/gradlew'
                     sh './spring-dekku/gradlew clean build -x test'
                     sh 'chmod +x ./spring-dekku/docker_install.sh'
                     sh './spring-dekku/docker_install.sh'
