@@ -3,13 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* TailwindCSS 유틸리티를 사용하는 스타일
-body {
-  @apply font-sans;
-  margin: 0;
-  padding: 0;
-} */
-
 /* 카테고리 바의 고정 크기를 설정 */
 .category-container {
   display: flex;

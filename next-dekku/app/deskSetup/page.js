@@ -1,27 +1,34 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import DeskSetupCard from './DeskSetupCard'; // DeskSetupCard 컴포넌트를 가져옵니다
-import { datas } from './data'; // 데이터 파일을 가져옵니다
-import Link from 'next/link';
+import { useEffect, useState, useRef } from "react";
+import DeskSetupCard from "./DeskSetupCard";
+import { datas } from "./data";
+import Link from "next/link";
+import SortDropdown from "./SortDropdown";
+import StyleFilter from "./StyleFilter";
+import ColorFilter from "./ColorFilter";
+import JobFilter from "./JobFilter";
 
 // 최근 일주일을 계산하는 함수
 const getOneWeekAgoDate = () => {
   const today = new Date();
   const oneWeekAgo = new Date(today);
   oneWeekAgo.setDate(today.getDate() - 7);
-  return oneWeekAgo.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 반환
+  return oneWeekAgo.toISOString().split("T")[0]; // YYYY-MM-DD 형식으로 반환
 };
 
 export default function DeskSetupPage() {
   const [recentTopPosts, setRecentTopPosts] = useState([]);
   const [allPosts, setAllPosts] = useState(datas);
   const [filteredData, setFilteredData] = useState(datas);
-  const [sortOrder, setSortOrder] = useState('latest');
-  const [styleFilter, setStyleFilter] = useState('all');
-  const [colorFilter, setColorFilter] = useState('all');
+  const [sortOrder, setSortOrder] = useState("latest");
+  const [styleFilter, setStyleFilter] = useState("all");
+  const [colorFilter, setColorFilter] = useState("all");
+  const [jobFilter, setJobFilter] = useState("all");
   const [displayedCount, setDisplayedCount] = useState(9);
-  const [searchTerm, setSearchTerm] = useState(''); // 검색어 상태
+  const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
+
+  const loadMoreRef = useRef(null); // "Load More" 버튼의 ref
 
   useEffect(() => {
     const oneWeekAgo = getOneWeekAgoDate();
@@ -34,8 +41,8 @@ export default function DeskSetupPage() {
       .map((post) => ({
         ...post,
         score:
-          parseInt(post.views.replace(/,/g, '')) *
-          parseInt(post.likes.replace(/,/g, '')),
+          parseInt(post.views.replace(/,/g, "")) *
+          parseInt(post.likes.replace(/,/g, "")),
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, 3); // 상위 3개 선택
@@ -47,11 +54,14 @@ export default function DeskSetupPage() {
     let sortedData = [...allPosts];
 
     // 필터링
-    if (styleFilter !== 'all') {
+    if (styleFilter !== "all") {
       sortedData = sortedData.filter((data) => data.style === styleFilter);
     }
-    if (colorFilter !== 'all') {
+    if (colorFilter !== "all") {
       sortedData = sortedData.filter((data) => data.color === colorFilter);
+    }
+    if (jobFilter !== "all") {
+      sortedData = sortedData.filter((data) => data.job === jobFilter);
     }
 
     // 검색 필터링
@@ -64,24 +74,24 @@ export default function DeskSetupPage() {
     }
 
     // 정렬
-    if (sortOrder === 'latest') {
+    if (sortOrder === "latest") {
       sortedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    } else if (sortOrder === 'likes') {
+    } else if (sortOrder === "likes") {
       sortedData.sort(
         (a, b) =>
-          parseInt(b.likes.replace(/,/g, '')) -
-          parseInt(a.likes.replace(/,/g, ''))
+          parseInt(b.likes.replace(/,/g, "")) -
+          parseInt(a.likes.replace(/,/g, ""))
       );
-    } else if (sortOrder === 'views') {
+    } else if (sortOrder === "views") {
       sortedData.sort(
         (a, b) =>
-          parseInt(b.views.replace(/,/g, '')) -
-          parseInt(a.views.replace(/,/g, ''))
+          parseInt(b.views.replace(/,/g, "")) -
+          parseInt(a.views.replace(/,/g, ""))
       );
     }
 
     setFilteredData(sortedData);
-  }, [sortOrder, styleFilter, colorFilter, allPosts, searchTerm]);
+  }, [sortOrder, styleFilter, colorFilter, jobFilter, allPosts, searchTerm]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -94,10 +104,32 @@ export default function DeskSetupPage() {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
     // 컴포넌트가 언마운트 될 때 스크롤 이벤트 핸들러 제거
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [filteredData, displayedCount]);
+
+  useEffect(() => {
+    // "Load More" 버튼이 뷰포트에 들어오는지 확인하기 위해 IntersectionObserver 사용
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && displayedCount < filteredData.length) {
+          loadMore();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
   }, [filteredData, displayedCount]);
 
   const loadMore = () => {
@@ -107,22 +139,29 @@ export default function DeskSetupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold mb-2">최근 인기 데스크셋업</h1>
-        <h3 className="text-gray-400 mb-4">조회, 관심 급상승 (최근 일주일)</h3>
-        <div className="flex justify-center space-x-2 mb-6">
-          {recentTopPosts.map((data) => (
-            <DeskSetupCard key={data.id} data={data} />
-          ))}
+    <div className="">
+      <div className="bg-[#F6F7FB] pt-6 pb-6">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="font-bold text-3xl mt-3 mb-3">
+            최근 데스크 셋업 인기 순위
+          </h1>
+          <h3 className="text-2xl text-[#A4A4A4] mb-6">이번주 인기 급상승</h3>
+          <div className="grid grid-cols-3 gap-5">
+            {recentTopPosts.map((data) => (
+              <DeskSetupCard key={data.id} data={data} isTopPost={true} />
+            ))}
+          </div>
         </div>
-
-        <hr className="border-t-2 border-gray-400 mb-4" />
-
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">모든 데스크셋업 게시글</h1>
+      </div>
+      <div className="max-w-6xl mx-auto">
+        <div className="flex justify-between items-center mt-6 mb-6">
+          <h1 className="font-bold text-3xl">게시된 데스크 셋업</h1>
           <div className="relative flex items-center">
-            <img src="/search.png" alt="Search" className="absolute left-3 w-4 h-4" />
+            <img
+              src="/search.png"
+              alt="Search"
+              className="absolute left-3 w-4 h-4"
+            />
             <input
               type="text"
               placeholder="검색..."
@@ -133,64 +172,28 @@ export default function DeskSetupPage() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-2">
-            <select
-              name="정렬"
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
-              className="p-2 bg-gray-50 text-gray-400 border rounded"
-            >
-              <option value="latest">최신순</option>
-              <option value="views">조회순</option>
-              <option value="likes">추천순</option>
-            </select>
-            <select
-              name="스타일"
-              value={styleFilter}
-              onChange={(e) => setStyleFilter(e.target.value)}
-              className="p-2 bg-gray-50 text-gray-400 border rounded"
-            >
-              <option value="all">모든 스타일</option>
-              <option value="modern">모던</option>
-              <option value="minimal">미니멀</option>
-              <option value="retro">레트로</option>
-              <option value="lovely">러블리</option>
-              <option value="gamer">게이머</option>
-              <option value="study">서재</option>
-              <option value="natural">자연</option>
-              <option value="other">기타</option>
-            </select>
-            <select
-              name="컬러"
-              value={colorFilter}
-              onChange={(e) => setColorFilter(e.target.value)}
-              className="p-2 bg-gray-50 text-gray-400 border rounded"
-            >
-              <option value="all">모든 컬러</option>
-              <option value="black_white">블랙&화이트</option>
-              <option value="black">블랙</option>
-              <option value="white">화이트</option>
-              <option value="gray">그레이</option>
-              <option value="mint">민트</option>
-              <option value="blue">블루</option>
-              <option value="pink">핑크</option>
-              <option value="green">그린</option>
-              <option value="red">레드</option>
-              <option value="yellow">옐로우</option>
-              <option value="brown">브라운</option>
-              <option value="other">기타</option>
-            </select>
+            <SortDropdown sortOrder={sortOrder} setSortOrder={setSortOrder} />
+            <StyleFilter
+              styleFilter={styleFilter}
+              setStyleFilter={setStyleFilter}
+            />
+            <ColorFilter
+              colorFilter={colorFilter}
+              setColorFilter={setColorFilter}
+            />
+            <JobFilter jobFilter={jobFilter} setJobFilter={setJobFilter} />
           </div>
           <Link
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-[#FF6E30] text-white px-2 py-3 rounded-lg"
             href="/deskSetup/create"
           >
-            글쓰기
+            나의 데스크 셋업 공유하기
           </Link>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-5">
           {filteredData.slice(0, displayedCount).map((data) => (
             <div key={data.id}>
               <DeskSetupCard data={data} />
@@ -198,11 +201,12 @@ export default function DeskSetupPage() {
           ))}
         </div>
 
-        {displayedCount < filteredData.length && (
-          <button onClick={loadMore} className="text-blue-500 mt-4">
-            Load More
-          </button>
-        )}
+        <button
+          ref={loadMoreRef} // "Load More" 버튼에 ref를 설정
+          className="text-blue-500 mt-3"
+        >
+          Load More
+        </button>
       </div>
     </div>
   );

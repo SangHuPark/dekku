@@ -14,7 +14,7 @@ export default function Details({ params }) {
   const nextPostId = postId < datas.length ? postId + 1 : null;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
         {/* <Link className="" href={"/deskSetup"}>목록으로</Link> */}
         <h1 className="text-3xl font-bold mb-2">{data.title}</h1>
