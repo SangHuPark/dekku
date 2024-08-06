@@ -59,6 +59,7 @@ pipeline{
                     sh 'chmod +x gradlew'
                     sh './gradlew clean build'
                     sh 'chmod +x ./docker_install.sh'
+                    sh 'cd ..'
                     sh './docker_install.sh'
                 }
             }
