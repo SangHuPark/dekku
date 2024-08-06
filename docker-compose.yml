@@ -10,15 +10,15 @@ services:
       - 8080:8080
     environment:
       - TZ=Asia/Seoul
-  client:
-    container_name: client
-    build:
-      context: ./next-dekku
-      # dockerfile: Dockerfile.dev
-    ports:
-      - 3000:3000
-    depends_on:
-      - server
+  # client:
+  #   container_name: client
+  #   build:
+  #     context: ./next-dekku
+  #     # dockerfile: Dockerfile.dev
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     - server
   # nginx:
   #   container_name: nginx
   #   build: ./.nginx
