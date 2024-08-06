@@ -1,11 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
-import accessToken from "./accessToken";
+import { useEffect, useState } from "react";
 
 const Header = () => {
-  const { data: session } = useSession();
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = urlParams.get("token");
+    if (tokenFromUrl) {
+      setToken(tokenFromUrl);
+      // 여기서 token을 로컬 스토리지에 저장하거나 상태 관리 라이브러리에 저장할 수 있습니다.
+      localStorage.setItem("kakaoToken", tokenFromUrl);
+    }
+  }, []);
 
   return (
     <header className="fixed top-0 w-full z-50 bg-white px-4 py-8">
@@ -26,18 +35,12 @@ const Header = () => {
             </li>
             <li>
               <div>
-                {!session ? (
-                  <>
-                    <button onClick={() => signIn("kakao")}>
-                      Login with Kakao
-                    </button>
-                  </>
+                {token ? (
+                  <p>로그인됨. 토큰: {token}</p>
                 ) : (
-                  <>
-                    <p>Welcome, {session.user.name}</p>
-                    <button onClick={() => signOut()}>Sign out</button>
-                    <div>Access Token : {session.accessToken}</div>
-                  </>
+                  <a href="http://localhost:8080/oauth2/authorization/kakao">
+                    카카오 로그인
+                  </a>
                 )}
               </div>
             </li>
