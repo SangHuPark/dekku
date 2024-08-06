@@ -67,8 +67,8 @@ pipeline{
         stage('Deploy'){
             steps{
                 script{
-                    sh 'docker build -t jenkins-test .'
-                    sh 'docker rm -f jenkins-test'
+                    sh 'docker rm -f jenkins-test || true'
+                    sh 'docker build -t jenkins-test spring-dekku'
                     sh 'docker run -d --name jenkins-test -p 8080:8080 jenkins-test'
                 }
             }

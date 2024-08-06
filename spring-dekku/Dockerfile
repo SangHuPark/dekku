@@ -12,7 +12,7 @@ COPY ./spring-dekku /spring-dekku
 
 # 컨테이너가 시작될 때, 실행할 명령어 설정
 CMD ["./gradlew", "clean", "build"]
-CMD ["sleep", "360000"]
+# CMD ["sleep", "360000"]
 
 # FROM openjdk:17-jdk-slim as builder
 
