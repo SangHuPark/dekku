@@ -21,27 +21,22 @@ public class CustomOAuth2Member implements OAuth2User {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return memberDto.getRole();
-            }
-        });
+        collection.add((GrantedAuthority) memberDto::role);
         return collection;
     }
 
     @Override
     public String getName() {
-        return memberDto.getName();
+        return memberDto.name();
     }
 
     public String getUsername(){
-        return memberDto.getUsername();
+        return memberDto.username();
     }
     public String getEmail(){
-        return memberDto.getEmail();
+        return memberDto.email();
     }
     public Integer getAgeRange(){
-        return memberDto.getAgeRange();
+        return memberDto.ageRange();
     }
 }
