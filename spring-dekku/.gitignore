@@ -2,7 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,intellij,java
 
 # YML File
-src/main/resources/*.yml
+#src/main/resources/*.yml
 src/test/resources/*.yml
 
 # jacoco
