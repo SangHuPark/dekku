@@ -8,8 +8,8 @@ pipeline{
                     sh 'cd spring-dekku'
                     sh 'chmod +x gradlew'
                     sh './gradlew clean build'
-                    sh 'chmod +x ./docker_install.sh'
                     sh 'cd ..'
+                    sh 'chmod +x ./docker_install.sh'
                     sh './docker_install.sh'
                 }
             }
