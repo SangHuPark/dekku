@@ -7,49 +7,16 @@ import TransformControls from './TransformControls';
 import { v4 as uuidv4 } from 'uuid';
 
 const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
-  const mountRef = useRef(null); // 3D 씬을 마운트할 DOM 요소 참조
-  const controlsRef = useRef(null); // OrbitControls 참조
-  const [deskHeight, setDeskHeight] = useState(0); // 책상 높이 상태
-  const [deskSize, setDeskSize] = useState({ x: 0, z: 0 }); // 책상 크기 상태
-  const [models, setModels] = useState([]); // 현재 씬에 있는 모델들 상태
-  const [scene, setScene] = useState(null); // 3D 씬 상태
-  const [camera, setCamera] = useState(null); // 카메라 상태
-  const [renderer, setRenderer] = useState(null); // 렌더러 상태
-  const [modelData, setModelData] = useState({}); // 모델 데이터 상태
-  const [activeModel, setActiveModel] = useState(null); // 현재 활성화된 모델 상태
-
-  // 로컬 스토리지에서 모델 데이터 복원
-  const restoreModelData = (scene) => {
-    const storedData = localStorage.getItem('sceneState');
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-
-      if (!Array.isArray(parsedData)) {
-        console.error('Invalid sceneState data:', parsedData);
-        return;
-      }
-
-      const loader = new GLTFLoader();
-      parsedData.forEach(data => {
-        if (!data.modelPath) {
-          console.error('Missing modelPath in data:', data);
-          return;
-        }
-        loader.load(data.modelPath, (gltf) => {
-          const model = gltf.scene;
-          model.position.fromArray(data.position || [0, 0, 0]);
-          model.scale.fromArray(data.scale || [1, 1, 1]);
-          model.rotation.fromArray(data.rotation || [0, 0, 0]);
-          model.userData = { id: data.id, uniqueId: data.uniqueId, product: { modelPath: data.modelPath } };
-
-          setModels(prevModels => [...prevModels, model]);
-          scene.add(model);
-        }, undefined, (error) => {
-          console.error('Error loading model:', data.modelPath, error);
-        });
-      });
-    }
-  };
+  const mountRef = useRef(null);
+  const controlsRef = useRef(null);
+  const [deskHeight, setDeskHeight] = useState(0);
+  const [deskSize, setDeskSize] = useState({ x: 0, z: 0 });
+  const [models, setModels] = useState([]);
+  const [scene, setScene] = useState(null);
+  const [camera, setCamera] = useState(null);
+  const [renderer, setRenderer] = useState(null);
+  const [modelData, setModelData] = useState({});
+  const [activeModel, setActiveModel] = useState(null);
 
   // 모델의 위치와 스케일을 로컬 스토리지에 저장
   const saveModelData = () => {
@@ -62,38 +29,73 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
       modelPath: model.userData.product.modelPath,
     }));
     localStorage.setItem('sceneState', JSON.stringify(data));
-    console.log(data)
+    console.log(data);
   };
-
 
   // 썸네일 캡처 및 로컬 스토리지에 저장
   const captureThumbnail = () => {
-    renderer.render(scene, camera); // 씬을 렌더링
-    const thumbnail = renderer.domElement.toDataURL('image/png'); // 썸네일을 데이터 URL로 변환
-    localStorage.setItem('thumbnail', thumbnail); // 로컬 스토리지에 썸네일 저장
+    renderer.render(scene, camera);
+    const thumbnail = renderer.domElement.toDataURL('image/png');
+    localStorage.setItem('thumbnail', thumbnail);
     return thumbnail;
+  };
+
+  const fetchModelData = async (url) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch file from S3");
+      }
+      const data = await response.json();
+      console.log("Fetched JSON data:", data); // JSON 데이터를 확인하는 로그 추가
+      return data;
+    } catch (error) {
+      console.error("Error fetching JSON file:", error);
+    }
+  };
+
+  // 저장된 모델 로드
+  const loadModelsFromData = (data, scene, loader) => {
+    data.forEach(modelData => {
+      loader.load(modelData.modelPath, (gltf) => {
+        const model = gltf.scene;
+        model.position.fromArray(modelData.position);
+        model.scale.fromArray(modelData.scale);
+        model.rotation.fromArray(modelData.rotation);
+        model.userData = {
+          id: modelData.id,
+          uniqueId: modelData.uniqueId,
+          product: { modelPath: modelData.modelPath }
+        };
+        setModels(prevModels => [...prevModels, model]);
+        scene.add(model);
+        console.log("Model loaded and added to scene:", modelData); // 모델 로드 및 씬 추가 확인
+      }, undefined, (error) => {
+        console.error(`An error happened while loading the model: ${modelData.modelPath}`, error);
+      });
+    });
   };
 
   // 씬 초기화
   useEffect(() => {
     const mount = mountRef.current;
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xdddddd); // 배경색 설정
+    scene.background = new THREE.Color(0xdddddd);
     setScene(scene);
 
     const camera = new THREE.PerspectiveCamera(20, mount.clientWidth / mount.clientHeight, 0.1, 1000);
-    camera.position.set(0, 10, -10); // 카메라 위치 설정
-    camera.lookAt(0, 10, 0); // 카메라가 바라볼 위치 설정
+    camera.position.set(0, 10, -10);
+    camera.lookAt(0, 10, 0);
     setCamera(camera);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(mount.clientWidth, mount.clientHeight); // 렌더러 크기 설정
-    mount.appendChild(renderer.domElement); // 렌더러 DOM 요소 추가
+    renderer.setSize(mount.clientWidth, mount.clientHeight);
+    mount.appendChild(renderer.domElement);
     setRenderer(renderer);
 
-    const ambientLight = new THREE.AmbientLight(0x404040, 10); // 주변광 설정
+    const ambientLight = new THREE.AmbientLight(0x404040, 10);
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 2); // 방향성 조명 설정
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
     directionalLight.position.set(0, 10, 10);
     scene.add(directionalLight);
 
@@ -103,30 +105,35 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
     const loader = new GLTFLoader();
     loader.load('/threedmodels/ssafydesk.glb', (gltf) => {
       const desk = gltf.scene;
-      desk.position.set(0, 0, -1.5); // 책상 위치 설정
-      desk.scale.set(3, 3, 3); // 책상 크기 설정
+      desk.position.set(0, 0, -1.5);
+      desk.scale.set(3, 3, 3);
 
       const box = new THREE.Box3().setFromObject(desk);
-      const deskHeight = box.max.y - box.min.y; // 책상 높이 계산
-      const deskSize = { x: box.max.x - box.min.x, z: box.max.z - box.min.z }; // 책상 크기 계산
+      const deskHeight = box.max.y - box.min.y;
+      const deskSize = { x: box.max.x - box.min.x, z: box.max.z - box.min.z };
       setDeskHeight(deskHeight);
       setDeskSize(deskSize);
 
-      scene.add(desk); // 씬에 책상 추가
-    });
+      scene.add(desk);
+      console.log("Desk model loaded and added to scene."); // 데스크 모델 로드 확인
 
-    restoreModelData(scene); // 로컬 스토리지에서 모델 데이터 복원
+      // JSON URL로부터 모델 데이터 로드
+      const jsonUrl = 'https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/3d/1/2dae89d1-2d02-4497-b468-8e977af962b9';
+      fetchModelData(jsonUrl).then(data => {
+        loadModelsFromData(data, scene, loader);
+      });
+    });
 
     const animate = () => {
       requestAnimationFrame(animate);
-      controls.update(); // 컨트롤 업데이트
-      renderer.render(scene, camera); // 씬 렌더링
+      controls.update();
+      renderer.render(scene, camera);
     };
 
-    animate(); // 애니메이션 시작
+    animate();
 
     return () => {
-      mount.removeChild(renderer.domElement); // 컴포넌트 언마운트 시 렌더러 DOM 요소 제거
+      mount.removeChild(renderer.domElement);
     };
   }, []);
 
@@ -159,6 +166,7 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
 
             setModels(prevModels => [...prevModels, model]);
             scene.add(model);
+            console.log("Selected product model loaded and added to scene:", product); // 선택된 제품 모델 로드 확인
           }, undefined, (error) => {
             console.error(`An error happened while loading the model: ${product.modelPath}`, error);
           });
@@ -170,6 +178,7 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
         if (!selectedProductIds.includes(model.userData.id)) {
           scene.remove(model);
           setModels(prevModels => prevModels.filter(m => m.userData.id !== model.userData.id));
+          console.log("Removed model from scene:", model.userData.id); // 모델 제거 확인
         }
       });
     }
@@ -214,10 +223,10 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
 
   // 완성 버튼 클릭 핸들러
   const handleComplete = () => {
-    saveModelData(); // 모델 데이터 저장
-    const thumbnail = captureThumbnail(); // 썸네일 캡처
-    localStorage.setItem('selectedProducts', JSON.stringify(selectedProducts)); // 선택한 제품 목록 저장
-    onComplete(); // 부모 컴포넌트로 알림
+    saveModelData();
+    const thumbnail = captureThumbnail();
+    localStorage.setItem('selectedProducts', JSON.stringify(selectedProducts));
+    onComplete();
   };
 
   return (

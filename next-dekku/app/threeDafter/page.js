@@ -24,7 +24,7 @@ const ThreeDAfter = () => {
   }, []);
 
   const handleSave = () => {
-    router.push('/mypage');
+    router.push('/threeD');
   };
 
   const handleShare = () => {

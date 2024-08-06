@@ -97,7 +97,7 @@ const Head = ({ onSave, onShare }) => {
   const loadModels = (sceneState, scene, desk) => {
     const loader = new GLTFLoader();
     const deskBox = new THREE.Box3().setFromObject(desk);
-    const deskHeight = deskBox.max.y;
+    const deskHeight = deskBox.max.y - deskBox.min.y; // 책상의 높이를 계산
 
     sceneState.forEach((modelData) => {
       loader.load(modelData.modelPath, (gltf) => {
@@ -106,8 +106,9 @@ const Head = ({ onSave, onShare }) => {
         model.rotation.fromArray(modelData.rotation);
         model.scale.fromArray(modelData.scale);
 
-        model.position.y = deskHeight + 0.02;
-        model.position.z = -1.5; // 모델의 z 위치를 책상과 맞춤
+        // 모델의 y 위치를 deskHeight를 기준으로 조정
+        model.position.y = deskBox.min.y + modelData.position[1]; // 책상의 y 위치를 기준으로 모델의 y 위치를 조정
+        model.position.z = modelData.position[2]; // 모델의 z 위치를 설정
         model.userData = { modelPath: modelData.modelPath };
 
         scene.add(model);
@@ -132,7 +133,7 @@ const Head = ({ onSave, onShare }) => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          id: "sceneState", // 고유 식별자. 필요에 따라 변경하세요.
+          id: "memberId", // 고유 식별자. 필요에 따라 변경하세요. 로그인 정보에서 유저아이디 가져와서 보내기
           fileCount: 1,
           directory: "3d"
         })
@@ -152,25 +153,25 @@ const Head = ({ onSave, onShare }) => {
       console.error("Failed to fetch presigned URL:", error);
     }
 
-    // S3에 파일 업로드 (주석 처리)
-    // const sceneStateBlob = new Blob([storedSceneState], { type: 'application/json' });
-    // const uploadResponse = await fetch(presignedUrl, {
-    //   method: "PUT",
-    //   headers: {
-    //     "Content-Type": 'application/json'
-    //   },
-    //   body: sceneStateBlob
-    // });
+    // S3에 파일 업로드
+    const sceneStateBlob = new Blob([storedSceneState], { type: 'application/json' });
+    const uploadResponse = await fetch(presignedUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": 'application/json'
+      },
+      body: sceneStateBlob
+    });
 
-    // if (!uploadResponse.ok) {
-    //   const errorMessage = await uploadResponse.text();
-    //   console.error("Error:", errorMessage);
-    //   throw new Error(errorMessage);
-    // }
+    if (!uploadResponse.ok) {
+      const errorMessage = await uploadResponse.text();
+      console.error("Error:", errorMessage);
+      throw new Error(errorMessage);
+    }
 
-    // const uploadedFileUrl = presignedUrl.split("?")[0];
-    // console.log("Uploaded file URL:", uploadedFileUrl);
-    // setImageUrl(uploadedFileUrl);
+    const uploadedFileUrl = presignedUrl.split("?")[0];
+    console.log("Uploaded file URL:", uploadResponse.url);
+    setImageUrl(uploadedFileUrl);
 
     if (onSave) {
       onSave();
