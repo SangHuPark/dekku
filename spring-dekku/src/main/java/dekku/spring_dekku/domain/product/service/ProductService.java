@@ -4,6 +4,8 @@ import dekku.spring_dekku.domain.product.model.dto.request.CreateProductRequestD
 import dekku.spring_dekku.domain.product.model.dto.response.CreateProductResponseDto;
 import dekku.spring_dekku.domain.product.model.entity.FilePath;
 import dekku.spring_dekku.domain.product.model.entity.Product;
+import dekku.spring_dekku.domain.product.model.entity.code.Category;
+import dekku.spring_dekku.domain.product.model.entity.code.ExistStatus;
 import dekku.spring_dekku.domain.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,19 +29,20 @@ public class ProductService {
                 .price(requestDto.price())
                 .imageUrl(requestDto.imageUrl())
                 .salesLink(requestDto.salesLink())
-                .existStatus(requestDto.existStatus())
                 .category(requestDto.category())
                 .filePath(filePath)
                 .build();
 
         Product savedProduct = productRepository.save(product);
 
+        ExistStatus existStatus = determineExistStatus(savedProduct.getFilePath().getPath());
+
         return new CreateProductResponseDto(
                 savedProduct.getName(),
                 savedProduct.getPrice(),
                 savedProduct.getImageUrl(),
                 savedProduct.getSalesLink(),
-                savedProduct.getExistStatus(),
+                existStatus,
                 savedProduct.getCategory(),
                 savedProduct.getFilePath().getPath()
         );
@@ -50,12 +53,14 @@ public class ProductService {
         List<CreateProductResponseDto> productResponseDtos = new ArrayList<>();
 
         for (Product product : products) {
+            ExistStatus existStatus = determineExistStatus(product.getFilePath().getPath());
+
             CreateProductResponseDto dto = new CreateProductResponseDto(
                     product.getName(),
                     product.getPrice(),
                     product.getImageUrl(),
                     product.getSalesLink(),
-                    product.getExistStatus(),
+                    existStatus,
                     product.getCategory(),
                     product.getFilePath().getPath()
             );
@@ -63,5 +68,32 @@ public class ProductService {
         }
 
         return productResponseDtos;
+    }
+
+    public List<CreateProductResponseDto> getProductsByCategory(Category category) {
+        List<Product> products = productRepository.findProductsByCategory(category);
+        List<CreateProductResponseDto> productResponseDtos = new ArrayList<>();
+
+        for (Product product : products) {
+            ExistStatus existStatus = determineExistStatus(product.getFilePath().getPath());
+
+            CreateProductResponseDto dto = new CreateProductResponseDto(
+                    product.getName(),
+                    product.getPrice(),
+                    product.getImageUrl(),
+                    product.getSalesLink(),
+                    existStatus,
+                    product.getCategory(),
+                    product.getFilePath().getPath()
+            );
+            productResponseDtos.add(dto);
+        }
+
+        return productResponseDtos;
+    }
+
+    // ExistStatus 처리 로직
+    private ExistStatus determineExistStatus(String path) {
+        return (path != null && !path.isEmpty()) ? ExistStatus.EXIST : ExistStatus.NOT_EXIST;
     }
 }
