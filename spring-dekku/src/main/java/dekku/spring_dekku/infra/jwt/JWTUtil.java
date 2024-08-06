@@ -1,4 +1,4 @@
-package dekku.spring_dekku.domain.member.jwt;
+package dekku.spring_dekku.infra.jwt;
 
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
@@ -21,6 +21,7 @@ public class JWTUtil {
     private Long refreshExpireTime;
     @Value("${spring.jwt.accessExpiredTime}")
     private Long accessExpireTime;
+
 
     public JWTUtil(@Value("${spring.jwt.secret}") String secret, MemberRepository memberRepository) {
         String algorithm = Jwts.SIG.HS256.key().build().getAlgorithm();
