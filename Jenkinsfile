@@ -6,10 +6,10 @@ pipeline{
             steps{
                 script{
                     sh 'cd spring-dekku'
-                    sh 'chmod +x gradlew'
+                    // sh 'chmod +x gradlew'
                     sh './gradlew clean build'
                     sh 'cd ..'
-                    sh 'chmod +x ./docker_install.sh'
+                    // sh 'chmod +x ./docker_install.sh'
                     sh './docker_install.sh'
                 }
             }
