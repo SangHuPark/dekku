@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useLogin } from "./AuthContext";
 
 const Header = () => {
   const [token, setToken] = useState(null);
-
+  const { isLoggedIn, loginUser } = useLogin();
+  
   useEffect(() => {
+
     const urlParams = new URLSearchParams(window.location.search);
     const tokenFromUrl = urlParams.get("token");
     if (tokenFromUrl) {
@@ -43,6 +46,7 @@ const Header = () => {
                   </a>
                 )}
               </div>
+              <div> {isLoggedIn && <span>{loginUser}님 환영합니다.</span>}</div>
             </li>
           </ul>
         </nav>
