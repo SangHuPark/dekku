@@ -3,6 +3,7 @@ package dekku.spring_dekku.domain.member.service.oauth2;
 import dekku.spring_dekku.domain.member.model.dto.*;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
+import dekku.spring_dekku.domain.member.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -18,6 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final MemberRepository memberRepository;
+    private final RedisService redisService;
 
     @Transactional
     @Override
@@ -28,14 +30,13 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         String clientName = userRequest.getClientRegistration().getClientName();
 
-        OAuth2Response response = null;
+        OAuth2Response response;
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
         // 존재하는 provider 인지 확인
         if (clientName.equals("naver")) {
             response = new NaverResponse(attributes);
         } else if(clientName.equals("kakao")) {
-            System.out.println(attributes.toString());
             response = new KakaoResponse(attributes);
         } else{
             return null;
@@ -43,7 +44,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         // provider name + provider Id 로 username(식별자) 생성
         String username = response.getProvider() + " " + response.getProviderId();
-        CustomOAuth2Member customOAuth2Member = null;
+        CustomOAuth2Member customOAuth2Member;
         String role = "ROLE_USER";
 
         // DB save
@@ -59,6 +60,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         customOAuth2Member = new CustomOAuth2Member(memberDto);
 
+        String accessToken = userRequest.getAccessToken().getTokenValue();
+        redisService.setSocialAccessToken(username, accessToken);
+
         // 서버 내부에서 사용하기 위한 인증 정보
         return customOAuth2Member;
     }
@@ -72,12 +76,13 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         Member isExist = memberRepository.findByUsername(username);
 
         if (isExist != null) {
-            memberRepository.renewMemberInfo(username, response.getName(), response.getEmail());
+            memberRepository.renewMemberInfo(username, response.getName(), response.getEmail(), response.getImageUrl());
         } else {
             Member member = Member.builder()
                     .username(username)
                     .name(response.getName())
                     .email(response.getEmail())
+                    .imageUrl(response.getImageUrl())
                     .role(role)
                     .build();
             memberRepository.save(member);

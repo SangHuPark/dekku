@@ -16,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,6 +24,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.Collections;
 
 @Configuration
 @RequiredArgsConstructor
@@ -43,9 +47,9 @@ public class SecurityConfig {
 
                 .csrf(CsrfConfigurer::disable)
 
-                .formLogin((form) -> form.disable())
+                .formLogin(AbstractHttpConfigurer::disable)
 
-                .cors(cors -> cors.disable());
+                .cors(AbstractHttpConfigurer::disable);
 
         httpSecurity
                 .oauth2Login((oauth2) -> oauth2
@@ -64,9 +68,23 @@ public class SecurityConfig {
         // 인가되지 않은 사용자에 대한 exception
         httpSecurity.exceptionHandling((exception) ->
                 exception
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        }));
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED)));
+
+        //CORS Issue
+        httpSecurity
+                .cors((cors) -> cors.configurationSource(request -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000/"));
+                    configuration.setAllowedMethods(Collections.singletonList("*"));
+                    configuration.setAllowCredentials(true);
+                    configuration.setAllowedHeaders(Collections.singletonList("*"));
+                    configuration.setMaxAge(3600L);
+
+                    configuration.setExposedHeaders(Collections.singletonList("access"));
+
+                    return configuration;
+                }));
 
         // jwt filter
         httpSecurity
@@ -92,8 +110,7 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**")
                 .requestMatchers(
                         "/auth/**", "/sign-up/**", "/verification/**",
-                        "/users/find-password", "/users/update-password", "/s3/**", "/test")
-                .requestMatchers("/api/**");
+                        "/users/find-password", "/users/update-password", "/s3/**", "/test");
     }
 
 
