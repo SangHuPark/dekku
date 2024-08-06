@@ -26,4 +26,9 @@ public class Follow extends BaseEntity {
     @JoinColumn(name = "to_member_id")
     @JsonIgnore
     private Member toMember;
+
+    public Follow(Member fromMember, Member toMember) {
+        this.fromMember = fromMember;
+        this.toMember = toMember;
+    }
 }
