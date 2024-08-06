@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+import accessToken from "./accessToken";
 
 const Header = () => {
   const { data: session } = useSession();
@@ -35,6 +36,7 @@ const Header = () => {
                   <>
                     <p>Welcome, {session.user.name}</p>
                     <button onClick={() => signOut()}>Sign out</button>
+                    <div>Access Token : {session.accessToken}</div>
                   </>
                 )}
               </div>
