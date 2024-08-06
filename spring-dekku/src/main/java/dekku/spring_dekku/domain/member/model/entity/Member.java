@@ -31,6 +31,9 @@ public class Member extends BaseEntity {
 	@Column(nullable = false, unique = true)
 	private String nickname;
 
+	@Column(nullable = false, unique = true)
+	private String introduction;
+
 	private String image_url;
 
     @Column(nullable = false)
