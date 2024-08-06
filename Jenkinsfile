@@ -9,6 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
+                    credentialsId: 'ssafy',
                     url: 'https://lab.ssafy.com/s11-webmobile2-sub2/S11P12A306.git'
             }
         }
