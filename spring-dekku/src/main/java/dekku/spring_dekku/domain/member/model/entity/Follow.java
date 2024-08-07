@@ -1,6 +1,5 @@
 package dekku.spring_dekku.domain.member.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import dekku.spring_dekku.global.model.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -19,12 +18,10 @@ public class Follow extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_member_id")
-    @JsonIgnore
     private Member fromMember;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_member_id")
-    @JsonIgnore
     private Member toMember;
 
     public Follow(Member fromMember, Member toMember) {

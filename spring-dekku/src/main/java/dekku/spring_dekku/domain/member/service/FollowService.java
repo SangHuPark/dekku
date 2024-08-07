@@ -1,7 +1,8 @@
+// FollowService.java
 package dekku.spring_dekku.domain.member.service;
 
-import dekku.spring_dekku.domain.member.model.dto.response.FollowerListResponseDto;
-import dekku.spring_dekku.domain.member.model.dto.response.FollowingListResponseDto;
+import dekku.spring_dekku.domain.member.model.dto.response.CreateFollowerListResponseDto;
+import dekku.spring_dekku.domain.member.model.dto.response.CreateFollowingListResponseDto;
 import dekku.spring_dekku.domain.member.model.entity.Follow;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.FollowRepository;
@@ -21,58 +22,80 @@ public class FollowService {
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
 
-    public FollowingListResponseDto getFollowingList(Long toMemberId) {
-        Member member = memberRepository.findById(toMemberId)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+    // 팔로잉 목록
+    public List<CreateFollowingListResponseDto> getFollowingList(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다"));
 
-        List<Follow> follows = followRepository.findByFromMember(member);
-        List<Member> followingList = new ArrayList<>();
-        for (Follow follow : follows) {
-            followingList.add(follow.getToMember());
+        List<CreateFollowingListResponseDto> followingList = new ArrayList<>();
+        for (Follow follow : member.getFollowings()) {
+            Member toMember = follow.getToMember();
+            CreateFollowingListResponseDto dto = new CreateFollowingListResponseDto(
+                    toMember.getNickname(),
+                    toMember.getImage_url()
+            );
+            followingList.add(dto);
         }
 
-        return new FollowingListResponseDto(followingList);
+        return followingList;
     }
 
-    public FollowerListResponseDto getFollowerList(Long fromMemberId) {
-        Member member = memberRepository.findById(fromMemberId)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+    // 팔로워 목록
+    public List<CreateFollowerListResponseDto> getFollowerList(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다"));
 
-        List<Follow> follows = followRepository.findByToMember(member);
-        List<Member> followerList = new ArrayList<>();
-        for (Follow follow : follows) {
-            followerList.add(follow.getFromMember());
+        List<CreateFollowerListResponseDto> followingList = new ArrayList<>();
+        for (Follow follow : member.getFollowers()) {
+            Member fromMember = follow.getFromMember();
+            CreateFollowerListResponseDto dto = new CreateFollowerListResponseDto(
+                    fromMember.getNickname(),
+                    fromMember.getImage_url()
+            );
+            followingList.add(dto);
         }
 
-        return new FollowerListResponseDto(followerList);
+        return followingList;
     }
 
+    // 팔로우
     @Transactional
     public void follow(Long fromMemberId, Long toMemberId) {
         Member fromMember = memberRepository.findById(fromMemberId)
-                .orElseThrow(() -> new RuntimeException("From Member not found"));
+                .orElseThrow(() -> new RuntimeException("팔로우할 회원이 존재하지 않습니다"));
         Member toMember = memberRepository.findById(toMemberId)
-                .orElseThrow(() -> new RuntimeException("To Member not found"));
+                .orElseThrow(() -> new RuntimeException("팔로우 받을 회원이 존재하지 않습니다"));
 
-        boolean alreadyFollowing = followRepository.findByFromMemberAndToMember(fromMember, toMember).isPresent();
-        if (alreadyFollowing) {
-            throw new RuntimeException("Already following this member");
+        for (Follow follow : fromMember.getFollowings()) {
+            if (follow.getToMember().equals(toMember)) {
+                throw new RuntimeException("이미 팔로우한 회원입니다");
+            }
         }
 
         Follow follow = new Follow(fromMember, toMember);
         followRepository.save(follow);
     }
 
+    // 언팔로우
     @Transactional
     public void unfollow(Long fromMemberId, Long toMemberId) {
         Member fromMember = memberRepository.findById(fromMemberId)
-                .orElseThrow(() -> new RuntimeException("From Member not found"));
+                .orElseThrow(() -> new RuntimeException("언팔로우할 회원이 존재하지 않습니다"));
         Member toMember = memberRepository.findById(toMemberId)
-                .orElseThrow(() -> new RuntimeException("To Member not found"));
+                .orElseThrow(() -> new RuntimeException("언팔로우 당할 회원이 존재하지 않습니다"));
 
-        Follow follow = followRepository.findByFromMemberAndToMember(fromMember, toMember)
-                .orElseThrow(() -> new RuntimeException("Follow relationship not found"));
+        Follow followToRemove = null;
+        for (Follow follow : fromMember.getFollowings()) {
+            if (follow.getToMember().equals(toMember)) {
+                followToRemove = follow;
+                break;
+            }
+        }
 
-        followRepository.delete(follow);
+        if (followToRemove == null) {
+            throw new RuntimeException("팔로우 관계가 존재하지 않습니다");
+        }
+
+        followRepository.delete(followToRemove);
     }
 }
