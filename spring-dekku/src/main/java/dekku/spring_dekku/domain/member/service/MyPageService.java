@@ -5,7 +5,7 @@ import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostReposi
 import dekku.spring_dekku.domain.member.model.dto.response.CreateMyPageResponseDto;
 import dekku.spring_dekku.domain.member.model.entity.Like;
 import dekku.spring_dekku.domain.member.model.entity.Member;
-import dekku.spring_dekku.domain.member.repository.FollowRepository;
+import dekku.spring_dekku.domain.member.repository.FollowCountRepository;
 import dekku.spring_dekku.domain.member.repository.LikeRepository;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.List;
 public class MyPageService {
 
     private final MemberRepository memberRepository;
-    private final FollowRepository followRepository;
+    private final FollowCountRepository followCountRepository;
     private final DeskteriorPostRepository deskteriorPostRepository;
     private final LikeRepository likeRepository;
 
@@ -29,8 +29,8 @@ public class MyPageService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("Member not found"));
 
-        int followingCount = followRepository.countByFromMember(member);
-        int followerCount = followRepository.countByToMember(member);
+        int followingCount = followCountRepository.countByFromMember(member);
+        int followerCount = followCountRepository.countByToMember(member);
 
         // memberId에 해당하는 DeskteriorPost 가져오기
         List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findByMemberId(memberId);
@@ -44,7 +44,7 @@ public class MyPageService {
 
         return new CreateMyPageResponseDto(
                 member.getNickname(),
-                member.getImage_url(),
+                member.getImageUrl(),
                 member.getIntroduction(),
                 followingCount,
                 followerCount,
