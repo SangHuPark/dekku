@@ -24,7 +24,8 @@ const ThreeDPage = () => {
 
   // 제품 제거 핸들러
   const removeProduct = (index) => {
-    setSelectedProducts(selectedProducts.filter((_, i) => i !== index));
+    const updatedProducts = selectedProducts.filter((_, i) => i !== index);
+    setSelectedProducts(updatedProducts);
   };
 
   // 완성 핸들러
@@ -49,7 +50,11 @@ const ThreeDPage = () => {
           />
         </div>
         <div className='flex-grow h-6/7 overflow-hidden'>
-          <ThreeJSRenderer selectedProducts={selectedProducts} onComplete={handleComplete} />
+          <ThreeJSRenderer 
+            selectedProducts={selectedProducts} 
+            setSelectedProducts={setSelectedProducts} 
+            onComplete={handleComplete} 
+          />
         </div>
       </div>
     </div>

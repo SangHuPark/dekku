@@ -6,7 +6,7 @@ import MouseControls from './MouseControls';
 import TransformControls from './TransformControls';
 import { v4 as uuidv4 } from 'uuid';
 
-const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
+const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) => {
   const mountRef = useRef(null);
   const controlsRef = useRef(null);
   const [deskHeight, setDeskHeight] = useState(0);
@@ -15,7 +15,6 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
   const [scene, setScene] = useState(null);
   const [camera, setCamera] = useState(null);
   const [renderer, setRenderer] = useState(null);
-  const [modelData, setModelData] = useState({});
   const [activeModel, setActiveModel] = useState(null);
 
   // 모델의 위치와 스케일을 로컬 스토리지에 저장
@@ -57,19 +56,34 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
   // 저장된 모델 로드
   const loadModelsFromData = (data, scene, loader) => {
     data.forEach(modelData => {
+      console.log("modelData:", modelData); // modelData를 콘솔에 출력
+
       loader.load(modelData.modelPath, (gltf) => {
         const model = gltf.scene;
-        model.position.fromArray(modelData.position);
-        model.scale.fromArray(modelData.scale);
-        model.rotation.fromArray(modelData.rotation);
+        if (modelData.position && modelData.scale && modelData.rotation) {
+          model.position.fromArray(modelData.position);
+          model.scale.fromArray(modelData.scale);
+          model.rotation.fromArray(modelData.rotation);
+        }
         model.userData = {
           id: modelData.id,
-          uniqueId: modelData.uniqueId,
-          product: { modelPath: modelData.modelPath }
+          uniqueId: uuidv4(), // 고유한 UUID 생성
+          product: modelData
         };
         setModels(prevModels => [...prevModels, model]);
+        setSelectedProducts(prevProducts => [...prevProducts, {
+          id: modelData.id,
+          name: modelData.name,
+          description: modelData.description,
+          image: modelData.image,
+          modelPath: modelData.modelPath,
+          scale: modelData.scale,
+          uniqueId: model.userData.uniqueId, // 고유한 UUID 설정
+          position: modelData.position,
+          rotation: modelData.rotation
+        }]);
         scene.add(model);
-        console.log("Model loaded and added to scene:", modelData); // 모델 로드 및 씬 추가 확인
+        console.log("Model loaded and added to scene:", modelData);
       }, undefined, (error) => {
         console.error(`An error happened while loading the model: ${modelData.modelPath}`, error);
       });
@@ -115,10 +129,9 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
       setDeskSize(deskSize);
 
       scene.add(desk);
-      console.log("Desk model loaded and added to scene."); // 데스크 모델 로드 확인
+      console.log("Desk model loaded and added to scene.");
 
-      // JSON URL로부터 모델 데이터 로드
-      const jsonUrl = 'https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/3d/1/2dae89d1-2d02-4497-b468-8e977af962b9';
+      const jsonUrl = 'https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/3d/memberId/ef43e90f-182b-40f7-b4e9-9d228ffd6be8';
       fetchModelData(jsonUrl).then(data => {
         loadModelsFromData(data, scene, loader);
       });
@@ -135,7 +148,7 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
     return () => {
       mount.removeChild(renderer.domElement);
     };
-  }, []);
+  }, []); // 빈 배열로 두어 컴포넌트가 마운트될 때 한 번만 실행되도록 함
 
   // 선택된 제품 목록이 변경될 때마다 모델 로드
   useEffect(() => {
@@ -154,11 +167,10 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
             const fixedPosition = { x: 0, y: deskHeight + 0.02, z: -1.5 };
             model.userData = { id: product.id, uniqueId, product };
 
-            const data = modelData[uniqueId];
-            if (data) {
-              model.position.copy(data.position);
-              model.scale.copy(data.scale);
-              model.rotation.copy(data.rotation);
+            if (product.position && product.scale && product.rotation) {
+              model.position.fromArray(product.position);
+              model.scale.fromArray(product.scale);
+              model.rotation.fromArray(product.rotation);
             } else {
               model.position.set(fixedPosition.x, fixedPosition.y, fixedPosition.z);
               model.scale.set(...scale);
@@ -166,7 +178,7 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
 
             setModels(prevModels => [...prevModels, model]);
             scene.add(model);
-            console.log("Selected product model loaded and added to scene:", product); // 선택된 제품 모델 로드 확인
+            console.log("Selected product model loaded and added to scene:", product);
           }, undefined, (error) => {
             console.error(`An error happened while loading the model: ${product.modelPath}`, error);
           });
@@ -178,7 +190,7 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
         if (!selectedProductIds.includes(model.userData.id)) {
           scene.remove(model);
           setModels(prevModels => prevModels.filter(m => m.userData.id !== model.userData.id));
-          console.log("Removed model from scene:", model.userData.id); // 모델 제거 확인
+          console.log("Removed model from scene:", model.userData.id);
         }
       });
     }
@@ -206,6 +218,11 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
   const handleRotationChange = (rotationY) => {
     if (activeModel) {
       activeModel.rotation.y = THREE.MathUtils.degToRad(rotationY);
+      setSelectedProducts(prevProducts => prevProducts.map(product =>
+        product.id === activeModel.userData.id
+          ? { ...product, rotation: activeModel.rotation.toArray() }
+          : product
+      ));
     }
   };
 
@@ -213,6 +230,11 @@ const ThreeJSRenderer = ({ selectedProducts, onComplete }) => {
   const handleHeightChange = (height) => {
     if (activeModel) {
       activeModel.position.y = parseFloat(height);
+      setSelectedProducts(prevProducts => prevProducts.map(product =>
+        product.id === activeModel.userData.id
+          ? { ...product, position: activeModel.position.toArray() }
+          : product
+      ));
     }
   };
 
