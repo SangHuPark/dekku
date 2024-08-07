@@ -1,18 +1,20 @@
 package dekku.spring_dekku.domain.follow.service;
 
-import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
-import dekku.spring_dekku.domain.follow.model.dto.FollowerDto;
-import dekku.spring_dekku.domain.follow.model.dto.FollowingDto;
+import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowerListResponseDto;
+import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowingListResponseDto;
 import dekku.spring_dekku.domain.follow.model.entity.Follow;
-import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.follow.repository.FollowRepository;
+import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
+import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -23,75 +25,66 @@ public class FollowService {
     private final FollowRepository followRepository;
 
     @Transactional
-    public List<FollowerDto> getAllFollowers(String token) {
+    public List<CreateFollowerListResponseDto> getFollowerList(String token) {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member member = memberRepository.findByUsername(username);
         if (member == null) {
             throw new RuntimeException("사용자를 찾을 수 없습니다.");
         }
+        List<Follow> followerEntities = followRepository.findByFromMember(member);
+        List<CreateFollowerListResponseDto> followers = new ArrayList<>();
 
-        return member.getFollowers().stream()
-                .map(follow -> {
-                    Member follower = follow.getFromMember();
-                    return new FollowerDto(
-                            follower.getId(),
-                            follower.getUsername(),
-                            follower.getName(),
-                            follower.getEmail(),
-                            follower.getImageUrl()
-                    );
-                })
-                .collect(Collectors.toList());
+        for (Follow follower : followerEntities) {
+            Member fromMember = follower.getFromMember();
+            CreateFollowerListResponseDto dto = new CreateFollowerListResponseDto(
+                    fromMember.getNickname(),
+                    fromMember.getImageUrl()
+            );
+            followers.add(dto);
+        }
+        return followers;
     }
 
     @Transactional
-    public List<FollowingDto> getAllFollowings(String token) {
+    public List<CreateFollowingListResponseDto> getFollowingList(String token) {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member member = memberRepository.findByUsername(username);
         if (member == null) {
             throw new RuntimeException("사용자를 찾을 수 없습니다.");
         }
+        List<Follow> followingEntities = followRepository.findByFromMember(member);
+        List<CreateFollowingListResponseDto> followings = new ArrayList<>();
 
-        return member.getFollowings().stream()
-                .map(follow -> {
-                    Member following = follow.getToMember();
-                    return new FollowingDto(
-                            following.getId(),
-                            following.getUsername(),
-                            following.getName(),
-                            following.getEmail(),
-                            following.getImageUrl()
-                    );
-                })
-                .collect(Collectors.toList());
+        for (Follow following : followingEntities) {
+            Member toMember = following.getToMember();
+            CreateFollowingListResponseDto dto = new CreateFollowingListResponseDto(
+                    toMember.getNickname(),
+                    toMember.getImageUrl()
+            );
+            followings.add(dto);
+        }
+        return followings;
     }
 
     @Transactional
-    public boolean toggleFollow(String token, Long targetId) {
+    public void follow(String token, Long toMemberId) {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member fromMember = memberRepository.findByUsername(username);
-        Member toMember = memberRepository.findById(targetId).orElseThrow(() -> new IllegalArgumentException("대상 사용자를 찾을 수 없습니다."));
+        Member toMember = memberRepository.findById(toMemberId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        Follow follow = new Follow(fromMember, toMember);
+        followRepository.save(follow);
+    }
 
-        if (toMember.equals(fromMember)) {
-            throw new IllegalArgumentException("자신을 팔로우할 수 없습니다.");
-        }
-
-        boolean isFollowing = followRepository.existsByFromMemberAndToMember(fromMember, toMember);
-
-        if (isFollowing) {
-            // 이미 팔로우 중이면 언팔로우
-            Follow follow = followRepository.findByFromMemberAndToMember(fromMember, toMember)
-                    .orElseThrow(() -> new IllegalStateException("팔로우 관계를 찾을 수 없습니다."));
-            followRepository.delete(follow);
-            return false; // 언팔로우 수행
-        } else {
-            // 팔로우 중이 아니면 새로운 팔로우 관계 생성
-            Follow follow = Follow.builder()
-                    .fromMember(fromMember)
-                    .toMember(toMember)
-                    .build();
-            followRepository.save(follow);
-            return true; // 팔로우 수행
+    @Transactional
+    public void unfollow(String token, Long toMemberId) {
+        String username = jwtTokenProvider.getKeyFromClaims(token, "username");
+        Member fromMember = memberRepository.findByUsername(username);
+        Member toMember = memberRepository.findById(toMemberId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        Optional<Follow> followOptional = followRepository.findByFromMemberAndToMember(fromMember, toMember);
+        if (followOptional.isPresent()) {
+            followRepository.delete(followOptional.get());
         }
     }
 }
