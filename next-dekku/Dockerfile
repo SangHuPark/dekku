@@ -1,13 +1,17 @@
-# FROM node:18.13-alpine as builder
+FROM node:20.15.1-alpine AS build
 
 # 작업 폴더를 만들고 npm 설치
-# WORKDIR /usr/src/app
-# COPY package.json /usr/src/app/package.json
-# RUN npm install --force
+WORKDIR /app
+
+COPY package.json .
+COPY package-lock.json .
+
+RUN npm ci
 
 # 소스를 작업폴더로 복사하고 빌드
-# COPY . /usr/src/app
-# RUN npm run build
+COPY . /app
+
+RUN npm run build
 
 # FROM nginx:alpine
 # nginx의 기본 설정을 삭제하고 앱에서 설정한 파일을 복사
