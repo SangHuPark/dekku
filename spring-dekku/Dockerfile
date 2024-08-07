@@ -1,24 +1,11 @@
-# FROM ubuntu:22.04
+FROM gradle:7.6.4-jdk-focal AS build
 
-# EXPOSE 8080
+WORKDIR /app
 
-# RUN apt-get update && apt-get install -y openjdk-17-jdk
+COPY build.gradle settings.gradle ./
 
-# # 작업 디렉토리 설정
-# WORKDIR /spring-dekku
+RUN gradle dependencies --no-daemon
 
-# # 전체 소스 코드 복사
-# COPY ./spring-dekku /spring-dekku
+COPY . /app
 
-# # 컨테이너가 시작될 때, 실행할 명령어 설정
-# CMD ["./gradlew", "clean", "build"]
-# # CMD ["sleep", "360000"]
-
-FROM openjdk:17-jdk-slim
-
-ARG JAR_FILE=build/libs/*.jar
-# jar 파일 복제
-COPY ${JAR_FILE} app.jar
-
-# 실행 명령어
-ENTRYPOINT ["java", "-jar", "app.jar"]
+RUN gradle clean build --no-daemon

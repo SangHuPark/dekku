@@ -3,6 +3,8 @@ package dekku.spring_dekku.domain.deskterior_post.controller;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.request.CreateDeskteriorPostRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.CreateDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
+import dekku.spring_dekku.domain.deskterior_post.model.dto.response.UpdateDeskteriorPostRequestDto;
+import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
 import dekku.spring_dekku.global.model.dto.Success;
 import dekku.spring_dekku.global.util.ResponseUtil;
@@ -107,4 +109,29 @@ public class DeskteriorPostController {
 
     }
 
+    // 게시글 수정
+    @Operation(summary = "게시글 수정")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "게시글 수정 성공",
+                    content = @Content(schema = @Schema(implementation = FindDeskteriorPostResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "게시글 수정 요청 실패"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "존재하지 않는 게시글"
+            )
+    })
+    @PutMapping("/{postId}")
+    public ResponseEntity updateDeskteriorPost(@PathVariable Long postId, @RequestBody @Valid UpdateDeskteriorPostRequestDto request) {
+        DeskteriorPost updatedDeskteriorPost = deskteriorPostService.updateDeskteriorPost(postId, request);
+        return ResponseUtil.ok(
+                Success.builder()
+                        .data(updatedDeskteriorPost)
+                        .build());
+    }
 }
