@@ -11,6 +11,7 @@ import dekku.spring_dekku.domain.deskterior_post.model.entity.code.OpenStatus;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public record CreateDeskteriorPostRequestDto(
 
         Job job,
 
-        @NotBlank
+        @NotNull
         List<String> deskteriorPostImages,
 
         @JsonSerialize(using = ToStringSerializer.class)
