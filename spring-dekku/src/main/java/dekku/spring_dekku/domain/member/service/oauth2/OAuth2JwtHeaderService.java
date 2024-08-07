@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 public class OAuth2JwtHeaderService {
     public String oauth2JwtHeaderSet(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
+
+        System.out.println("OAuth2JwtHeaderService.java -> " + cookies);
+
         String access = null;
 
         if(cookies == null){

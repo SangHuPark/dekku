@@ -9,12 +9,14 @@ export default function LoginModal({ showModal, setShowModal }) {
           <div className="fixed inset-0 transition-opacity" aria-hidden="true">
             <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
           </div>
+
           <span
             className="hidden sm:inline-block sm:align-middle sm:h-screen"
             aria-hidden="true"
           >
             &#8203;
           </span>
+
           <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6">
             <div className="flex justify-end items-center mb-4">
               <button
@@ -30,23 +32,24 @@ export default function LoginModal({ showModal, setShowModal }) {
             <div className="sm:flex sm:items-start">
               <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
                 <div className="mt-2 w-full">
-                  <form className="flex flex-col items-center space-y-2 w-full">
+                  <div className="flex flex-col items-center space-y-2 w-full">
                     <div className="w-full">
                       <a
                         href="http://localhost:8080/oauth2/authorization/kakao"
-                        style={{
-                          textDecoration: "none",
-                          color: "blue",
-                          fontSize: "18px",
-                        }}
+                        className="shadow w-full inline-flex justify-center items-center px-4 py-4 border border-transparent text-2xl font-medium rounded-md text-black bg-[#FDDC3F] hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
                       >
-                        카카오로 로그인
+                        <img
+                          src="/kakao_icon.svg"
+                          className="absolute left-10 w-10 h-10 items-start"
+                          alt="kakao"
+                        />
+                        카카오 로그인
                       </a>
                     </div>
                     <div className="w-full">
-                      <button
-                        type="button"
-                        className="shadow w-full inline-flex justify-center items-center px-4 py-4 border border-transparent text-2xl font-medium rounded-md shadow-sm text-white bg-[#03C75A] hover:bg-[#04A94D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                      <a
+                        href="http://localhost:8080/oauth2/authorization/naver"
+                        className="shadow w-full inline-flex justify-center items-center px-4 py-4 border border-transparent text-2xl font-medium rounded-md text-white bg-[#03C75A] hover:bg-[#04A94D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                       >
                         <img
                           src="/naver_icon.svg"
@@ -54,9 +57,9 @@ export default function LoginModal({ showModal, setShowModal }) {
                           alt="naver"
                         />
                         네이버 로그인
-                      </button>
+                      </a>
                     </div>
-                  </form>
+                  </div>
                 </div>
               </div>
             </div>

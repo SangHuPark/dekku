@@ -1,7 +1,6 @@
-"use client"; // Ensures this component runs only on the client-side
+import React, { createContext, useContext, useState, useEffect } from "react";
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-
+// 로그인 상태 전역적으로 쓰기 위해 context API 사용 -> prop drilling을 피함
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
@@ -9,22 +8,20 @@ const AuthProvider = ({ children }) => {
   const [loginUser, setLoginUser] = useState(null);
 
   useEffect(() => {
-    // This code runs only on the client-side
-    const storedAccessToken = window.localStorage.getItem('access');
-    const storedName = window.localStorage.getItem('name');
+    // 클라이언트 사이드에서만 실행됨
+    const accessToken = window.localStorage.getItem("access");
+    const userName = window.localStorage.getItem("name");
 
-    setIsLoggedIn(!!storedAccessToken);
-    setLoginUser(storedName);
+    setIsLoggedIn(!!accessToken);
+    setLoginUser(userName);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, loginUser }}>
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, loginUser, setLoginUser }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Custom hook to use auth context
 export const useLogin = () => useContext(AuthContext);
-
 export default AuthProvider;
