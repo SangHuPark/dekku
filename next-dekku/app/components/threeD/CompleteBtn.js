@@ -2,15 +2,17 @@
 
 import { useRouter } from 'next/navigation';
 
-const CompleteBtn = ({ selectedProducts }) => {
+const CompleteBtn = ({ scene, captureThumbnail, saveModelData }) => {
   const router = useRouter();
 
   const handleComplete = () => {
-    // 선택된 상품 정보를 로컬 스토리지에 저장
-    const sceneState = JSON.parse(localStorage.getItem('sceneState'));
-    localStorage.setItem('selectedProducts', JSON.stringify(selectedProducts));
-    localStorage.setItem('sceneState', JSON.stringify(sceneState));
-    // 완성 후 페이지로 이동
+    if (scene) {
+      saveModelData();
+      const thumbnail = captureThumbnail();
+      console.log('Thumbnail stored:', thumbnail);
+      localStorage.setItem('thumbnail', thumbnail);
+    }
+
     router.push('/threeDafter');
   };
 

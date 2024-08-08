@@ -5,6 +5,8 @@ import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
 import dekku.spring_dekku.domain.member.service.RedisService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -17,6 +19,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final MemberRepository memberRepository;
     private final RedisService redisService;
@@ -32,6 +35,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         OAuth2Response response;
         Map<String, Object> attributes = oAuth2User.getAttributes();
+
+//        System.out.println(clientName);
+        log.info(userRequest.toString());
 
         // 존재하는 provider 인지 확인
         if (clientName.equals("naver")) {
@@ -74,6 +80,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private void saveOrUpdate(OAuth2Response response, String username, String role) {
         // DB 조회
         Member isExist = memberRepository.findByUsername(username);
+
+        log.info("here --> " + response.getName() + " && " + username + " && " + response.getProvider());
 
         if (isExist != null) {
             memberRepository.renewMemberInfo(username, response.getName(), response.getEmail(), response.getImageUrl());
