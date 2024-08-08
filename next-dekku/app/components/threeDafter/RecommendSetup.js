@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const RecommendSetup = ({ posts = [] }) => {
   return (
-    <div className="max-w-6xl mx-auto p-8">
+    <div className="max-w-6xl mx-auto pb-40">
       <h2 className="text-3xl mb-4">유사한 게시글</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
         {posts.map((post) => (

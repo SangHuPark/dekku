@@ -1,16 +1,15 @@
 package dekku.spring_dekku.domain.member.model.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import dekku.spring_dekku.domain.member.model.entity.Follow;
 
-@Getter
-@Setter
-@AllArgsConstructor
-public class CreateMemberResponseDto {
+import java.util.List;
 
-    private String email;
-    private String nickname;
-    private String image_url;
-
-}
+public record CreateMemberResponseDto (
+    String username,
+    String email,
+    String name,
+    String nickname,
+    String gender,
+    List<Follow> followings,
+    List<Follow> followers
+) {}

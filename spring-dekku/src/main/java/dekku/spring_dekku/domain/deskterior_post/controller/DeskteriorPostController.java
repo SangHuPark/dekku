@@ -1,66 +1,110 @@
 package dekku.spring_dekku.domain.deskterior_post.controller;
 
-import dekku.spring_dekku.domain.deskterior_post.model.dto.DeskteriorPostDto;
-import dekku.spring_dekku.domain.deskterior_post.model.dto.DeskteriorPostRequest;
+import dekku.spring_dekku.domain.deskterior_post.model.dto.request.CreateDeskteriorPostRequestDto;
+import dekku.spring_dekku.domain.deskterior_post.model.dto.response.CreateDeskteriorPostResponseDto;
+import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
+import dekku.spring_dekku.global.model.dto.Success;
+import dekku.spring_dekku.global.util.ResponseUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
+@Tag(name = "데스크테리어 게시판 관련 API")
 @RestController
-@RequestMapping("/api/deskterior_posts")
-@Tag(name = "Deskterior Post APIS")
+@RequestMapping("/api/deskterior-post")
+@RequiredArgsConstructor
 public class DeskteriorPostController {
 
     private final DeskteriorPostService deskteriorPostService;
 
-    @Autowired
-    public DeskteriorPostController(DeskteriorPostService deskteriorPostService) {
-        this.deskteriorPostService = deskteriorPostService;
+    @Operation(summary = "게시글 저장")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "게시글 저장 성공",
+                    content = @Content(schema = @Schema(implementation = CreateDeskteriorPostResponseDto.class))
+            )
+    })
+    @PostMapping("")
+    public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorPostRequestDto request) {
+
+        CreateDeskteriorPostResponseDto response = deskteriorPostService.addDeskteriorPost("tkdgn407", request);
+
+        return ResponseUtil.created(
+                Success.builder()
+                        .data(response)
+                        .build()
+        );
     }
 
-    // 1. 모든 게시물 조회
-    @GetMapping
-    public ResponseEntity<List<DeskteriorPostDto>> getAllPosts() {
-        List<DeskteriorPostDto> posts = deskteriorPostService.findAll();
-        return ResponseEntity.ok(posts);
+    @Operation(summary = "모든 게시글 조회")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청 완료",
+                    content = @Content(schema = @Schema(implementation = FindDeskteriorPostResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "모든 게시글 조회 요청 실패"
+            )
+            ,
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "존재하지 않는 계정"
+            )
+    })
+//    @Parameter(name = "phoneNumber", description = "찾고 싶은 계정", example = "01012345678")
+    @GetMapping("")
+    public ResponseEntity findAllDeskteriorPost(
+//            @RequestParam @Pattern(regexp = "^010\\d{8}$", message = "올바른 형식이 아닙니다.") String phoneNumber
+    ) {
+
+        return ResponseUtil.ok(
+                Success.builder()
+                        .data(deskteriorPostService.findAll())
+                        .build());
+
     }
 
-    // 2. ID로 게시물 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<DeskteriorPostDto> getPostById(@PathVariable Long id) {
-        DeskteriorPostDto post = deskteriorPostService.findById(id);
-        return ResponseEntity.ok(post);
+    @Operation(summary = "단일 게시글 조회")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청 완료",
+                    content = @Content(schema = @Schema(implementation = FindDeskteriorPostResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "단일 게시글 조회 요청 실패"
+            )
+            ,
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "존재하지 않는 계정"
+            )
+    })
+//    @Parameter(name = "phoneNumber", description = "찾고 싶은 계정", example = "01012345678")
+    @GetMapping("/{postId}")
+    public ResponseEntity findDeskteriorPost(
+            @PathVariable Long postId
+    ) {
+
+        return ResponseUtil.ok(
+                Success.builder()
+                        .data(deskteriorPostService.findById(postId))
+                        .build());
+
     }
 
-    // 3. 게시물 생성
-    @PostMapping
-    public ResponseEntity<DeskteriorPostDto> createPost(@RequestBody DeskteriorPostRequest request) {
-        DeskteriorPostDto createdPost = deskteriorPostService.save(request.getDeskteriorPostDto(), request.getDeskteriorImageDto());
-        return ResponseEntity.ok(createdPost);
-    }
-
-    // 4. 게시물 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<DeskteriorPostDto> updatePost(@PathVariable Long id, @RequestBody DeskteriorPostRequest request) {
-        DeskteriorPostDto updatedPost = deskteriorPostService.update(id, request.getDeskteriorPostDto(), request.getDeskteriorImageDto());
-        return ResponseEntity.ok(updatedPost);
-    }
-
-    // 5. ID로 게시물 삭제
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
-        deskteriorPostService.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    // 6. 제목에 특정 키워드를 포함하는 게시물 조회
-    @GetMapping("/search")
-    public ResponseEntity<List<DeskteriorPostDto>> searchPosts(@RequestParam String keyword) {
-        List<DeskteriorPostDto> posts = deskteriorPostService.findByTitleContaining(keyword);
-        return ResponseEntity.ok(posts);
-    }
 }

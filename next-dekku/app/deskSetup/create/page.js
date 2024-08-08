@@ -1,92 +1,115 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
 
-export default function WritePage() {
+export default function Next14() {
+  const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [image, setImage] = useState(null);
-  const router = useRouter();
+  const [styleInfo, setStyleInfo] = useState("");
+  const [colorInfo, setColorInfo] = useState("");
+  const [textureInfo, setTextureInfo] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    setImage(URL.createObjectURL(file));
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("content", content);
-    if (image) {
-      formData.append("image", image);
-    }
-
-    try {
-      // 예를 들어, API를 통해 서버로 데이터를 전송할 수 있습니다.
-      await fetch("/api/posts", {
-        method: "POST",
-        body: formData,
-      });
-
-      // 제출 후 홈 페이지로 리다이렉트합니다.
-      router.push("/deskSetup");
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    // Handle form submission
+    console.log({ image, title, content, styleInfo, colorInfo, textureInfo });
   };
 
   return (
-    <div className="bg-gray-100 p-6">
-      <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-2xl font-bold mb-4">글쓰기</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="title" className="block font-medium text-gray-700">
-              제목
-            </label>
-            <input
-              id="title"
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              required
-            />
-          </div>
-          <div>
+    <div className="flex justify-center items-center h-screen">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col items-center w-3/4 space-y-5"
+      >
+        <div className="flex flex-row w-full space-x-5">
+          <div className="flex-1 flex justify-center items-center border border-gray-300 bg-gray-200 p-8">
             <label
-              htmlFor="content"
-              className="block font-medium text-gray-700"
+              htmlFor="imageUpload"
+              className="cursor-pointer flex flex-col items-center"
             >
-              내용
+              {image ? (
+                <img src={image} alt="Uploaded" className="w-full h-auto" />
+              ) : (
+                <div className="text-center">
+                  <p>이곳에 사진을 올려주세요</p>
+                  <button
+                    type="button"
+                    className="mt-2 bg-black text-white py-2 px-4 rounded"
+                  >
+                    PC에서 불러오기
+                  </button>
+                </div>
+              )}
+              <input
+                type="file"
+                id="imageUpload"
+                className="hidden"
+                accept="image/*"
+                onChange={handleImageUpload}
+              />
             </label>
-            <textarea
-              id="content"
-              rows="8"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              required
-            ></textarea>
           </div>
-          <div>
-            <label htmlFor="image" className="block font-medium text-gray-700">
-              이미지 업로드
-            </label>
-            <input
-              id="image"
-              type="file"
-              accept="image/*"
-              onChange={(e) => setImage(e.target.files[0])}
-              className="mt-1 block w-full text-gray-500 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
-            />
+          <div className="flex-1 flex flex-col space-y-5">
+            <div className="w-full">
+              <input
+                type="text"
+                placeholder="제목을 입력해주세요"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div className="w-full">
+              <textarea
+                placeholder="내용을 입력해주세요"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded h-28"
+              />
+            </div>
+            <div className="w-full">
+              <select
+                value={styleInfo}
+                onChange={(e) => setStyleInfo(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option value="">스타일 정보 추가</option>
+                {/* Add options here */}
+              </select>
+            </div>
+            <div className="w-full">
+              <select
+                value={colorInfo}
+                onChange={(e) => setColorInfo(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option value="">컬러 정보 추가</option>
+                {/* Add options here */}
+              </select>
+            </div>
+            <div className="w-full">
+              <select
+                value={textureInfo}
+                onChange={(e) => setTextureInfo(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option value="">직업 정보 추가</option>
+                {/* Add options here */}
+              </select>
+            </div>
           </div>
-          <button
-            type="submit"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            등록
-          </button>
-        </form>
-      </div>
+        </div>
+        <button type="submit" className="bg-black text-white py-2 px-4 rounded">
+          제출
+        </button>
+      </form>
     </div>
   );
 }

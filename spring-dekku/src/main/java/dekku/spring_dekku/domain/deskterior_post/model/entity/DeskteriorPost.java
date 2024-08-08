@@ -1,62 +1,84 @@
 package dekku.spring_dekku.domain.deskterior_post.model.entity;
 
-import lombok.*;
+import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
+import dekku.spring_dekku.domain.deskterior_post.model.entity.code.OpenStatus;
+import dekku.spring_dekku.domain.member.model.entity.Member;
+import dekku.spring_dekku.domain.member.model.entity.Like;
+import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
+import dekku.spring_dekku.global.model.entity.BaseEntity;
 import jakarta.persistence.*;
-import java.sql.Timestamp;
+import lombok.*;
 
-@Getter
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Table(name = "deskterior_posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder(toBuilder = true)
-public class DeskteriorPost {
+@Table(name = "deskterior_posts")
+@Getter
+public class DeskteriorPost extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column(name = "deskterior_post_id")
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    private String thumnailUrl;
+
+    @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DeskteriorPostImage> deskteriorPostImages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "deskteriorPost")
+    private List<Like> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DeskteriorPostProductInfo> deskteriorPostProductInfos = new ArrayList<>();
+
     private String title;
 
-    @Column(length = 255)
-    private String thumbnailUrl;
-
-    @Column(columnDefinition = "TEXT")
     private String content;
 
-    @Column(nullable = false)
-    private Timestamp createdAt;
+    private int viewCount;
 
-    @Column(nullable = true)
-    private Timestamp modifiedAt;
+    private int likeCount;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "deskterior_image_id", nullable = true)
-    private DeskteriorImage deskteriorImage;
+    @Enumerated(EnumType.STRING)
+    private OpenStatus openStatus;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @Embedded
+    private DeskteriorAttributes deskteriorAttributes;
 
     @Builder
-    public DeskteriorPost(String title, String thumbnailUrl, String content, Timestamp createdAt, Timestamp modifiedAt, DeskteriorImage deskteriorImage, Long userId) {
+    public DeskteriorPost(Member member, String title, String content, DeskteriorAttributes deskteriorAttributes, OpenStatus openStatus) {
+
+        this.member = member;
         this.title = title;
-        this.thumbnailUrl = thumbnailUrl;
         this.content = content;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
-        this.deskteriorImage = deskteriorImage;
-        this.userId = userId;
+        this.deskteriorAttributes = deskteriorAttributes;
+        this.openStatus = openStatus;
+
+        this.viewCount = 0;
+        this.likeCount = 0;
     }
 
-    public DeskteriorPost updatePost(String title, String thumbnailUrl, String content, Timestamp timestamp, DeskteriorImage deskteriorImage) {
-        return this.toBuilder()
-                .title(title != null ? title : this.title)
-                .thumbnailUrl(thumbnailUrl != null ? thumbnailUrl : this.thumbnailUrl)
-                .content(content != null ? content : this.content)
-                .modifiedAt(timestamp != null ? timestamp : this.modifiedAt)
-                .deskteriorImage(deskteriorImage != null ? deskteriorImage : this.deskteriorImage)
-                .build();
+    public void insertDeskteriorPostImages(DeskteriorPostImage deskteriorPostImage) {
+        this.deskteriorPostImages.add(deskteriorPostImage);
+
+        if (deskteriorPostImage.getDeskteriorPost() != this) {
+            deskteriorPostImage.setDeskteriorPost(this);
+        }
     }
+
+    public void insertDeskteriorPostProductInfos(DeskteriorPostProductInfo deskteriorPostProductInfo) {
+        this.deskteriorPostProductInfos.add(deskteriorPostProductInfo);
+
+        if (deskteriorPostProductInfo.getDeskteriorPost() != this) {
+            deskteriorPostProductInfo.setDeskteriorPost(this);
+        }
+    }
+
 }
