@@ -22,7 +22,7 @@ const OAuth2Redirect = () => {
         if (response.ok) {
           // local storage access token set
           window.localStorage.setItem("access", response.headers.get("access"));
-          window.localStorage.setItem("refresh", response.headers.get("refresh"));
+
           // local storage name set
           const name = queryParams.get("name");
           window.localStorage.setItem("name", name);
