@@ -1,27 +1,26 @@
+# Use Node.js to build the app
 FROM node:20.15.1-alpine AS build
 
-# 작업 폴더를 만들고 npm 설치
 WORKDIR /app
 
+# Copy package files and install dependencies
 COPY package.json .
 COPY package-lock.json .
-
 RUN npm ci
 
-# 소스를 작업폴더로 복사
-COPY . /app
+# Copy the entire source code
+COPY . .
 
-# 빌드
+# Build the Next.js app
 RUN npm run build
 
-# 프로덕션 스테이지
-FROM nginx:1.21.4-alpine
+# Production stage
+FROM node:20.15.1-alpine
 
-# nginx 실행 전 default.conf 파일 수정
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy the build output and node_modules from the build step
+COPY --from=build /app .
 
-# 빌드 이미지에서 생성된 build 폴더를 nginx 이미지로 복사
-COPY --from=build /app/.next /usr/share/nginx/html
+EXPOSE 3000
 
-EXPOSE 80
-CMD [ "nginx", "-g", "daemon off;" ]
+# Start the Next.js app
+CMD ["npm", "run", "start"]
