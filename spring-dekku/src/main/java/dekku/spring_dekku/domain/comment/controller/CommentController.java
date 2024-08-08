@@ -42,7 +42,7 @@ public class CommentController {
     @GetMapping("/{postId}")
     public ResponseEntity<List<Comment>> getComments(@PathVariable(name = "postId") Long postId) {
         List<Comment> comments = commentService.findByPostId(postId);
-        if (comments == null) {
+        if (comments.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.status(HttpStatus.OK).body(comments);
