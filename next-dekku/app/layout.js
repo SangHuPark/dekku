@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
       >
         <AuthProvider>
           <Header />
-          <main className="mt-28 flex-grow bg-gradient-to-b from-white to-[#F1EFEB]">
+          <main className="mt-20 flex-grow bg-gradient-to-b from-white to-[#F1EFEB]">
             {children}
           </main>
           <Footer />
