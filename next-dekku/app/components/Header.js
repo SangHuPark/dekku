@@ -2,9 +2,13 @@
 
 import Link from "next/link";
 import { useLogin } from "./AuthContext";
+import LoginModal from "./LoginModal";
+import { useState } from "react";
 
 const Header = () => {
   const { isLoggedIn } = useLogin();
+  const [ showModal, setShowModal ] = useState(false);
+
   return (
     <header className="fixed top-0 w-full z-50 bg-white px-4 py-8">
       <div className="max-w-6xl mx-auto flex justify-between">
@@ -29,7 +33,8 @@ const Header = () => {
             )}
             {!isLoggedIn && (
               <li>
-                <Link href="/login">로그인</Link>
+                <button onClick={() => setShowModal(true)}>로그인</button>
+                <LoginModal showModal={showModal} setShowModal={setShowModal} />
               </li>
             )}
             {isLoggedIn && (
