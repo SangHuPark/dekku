@@ -16,10 +16,19 @@ RUN npm run build
 # COPY ./public 
 # COPY ./.next /app
 
-# Copy build output files
-COPY ./public ./public
-COPY ./.next/standalone ./
-COPY ./.next/static ./.next/static
+# 소스를 작업폴더로 복사
+COPY . .
+
+# 빌드
+RUN npm run build
+
+# COPY ./public 
+# COPY ./.next /app
+
+# # Copy build output files
+# COPY ./public ./public
+# COPY ./.next/standalone ./
+# COPY ./.next/static ./.next/static
 
 EXPOSE $PORT
 
