@@ -1,11 +1,36 @@
-'use client';
+"use client"; // 클라이언트 컴포넌트로 명시
 
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation'; // next/navigation 모듈 사용
 import Head from '../components/threeDafter/Head';
 import UsedProducts from '../components/threeDafter/UsedProducts';
 import RecommendSetup from '../components/threeDafter/RecommendSetup';
-import { useRouter } from 'next/navigation';
 
 const ThreeDAfter = () => {
+  const router = useRouter();
+  const [thumbnailUrl, setThumbnailUrl] = useState('');
+  const [selectedProducts, setSelectedProducts] = useState([]); // 선택된 제품 상태
+
+  useEffect(() => {
+    const storedThumbnail = localStorage.getItem('thumbnail');
+    if (storedThumbnail) {
+      setThumbnailUrl(storedThumbnail); // 로컬 스토리지에서 썸네일 설정
+    }
+
+    const storedProducts = localStorage.getItem('selectedProducts');
+    if (storedProducts) {
+      setSelectedProducts(JSON.parse(storedProducts)); // 로컬 스토리지에서 선택한 제품 목록 설정
+    }
+  }, []);
+
+  const handleSave = () => {
+    router.push('/threeD');
+  };
+
+  const handleShare = () => {
+    router.push('/deskSetup/create');
+  };
+
   const recommendedPosts = [
     {
       id: 1,
@@ -39,27 +64,23 @@ const ThreeDAfter = () => {
     },
   ];
 
-  const router = useRouter();
-
-  const handleSave = () => {
-    router.push('/mypage'); // 마이페이지로 이동
-  };
-
-  const handleShare = () => {
-    router.push('/deskSetup/create'); // 게시글 작성 페이지로 이동
-  };
-
   return (
     <div>
       <div>
         <Head onSave={handleSave} onShare={handleShare} />
       </div>
       <div>
-        <UsedProducts />
+        <UsedProducts selectedProducts={selectedProducts} />
       </div>
       <div>
-        <RecommendSetup posts={recommendedPosts}/>
+        <RecommendSetup posts={recommendedPosts} />
       </div>
+      {/* {thumbnailUrl && (
+        <div>
+          <img src={thumbnailUrl} alt="Thumbnail" />
+          <p>Thumbnail loaded from localStorage.</p>
+        </div>
+      )} */}
     </div>
   );
 };

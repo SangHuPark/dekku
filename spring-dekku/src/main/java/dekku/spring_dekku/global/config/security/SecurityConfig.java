@@ -47,9 +47,9 @@ public class SecurityConfig {
 
                 .csrf(CsrfConfigurer::disable)
 
-                .formLogin(AbstractHttpConfigurer::disable)
+                .formLogin((form) -> form.disable());
 
-                .cors(AbstractHttpConfigurer::disable);
+                //.cors(cors -> cors.disable());
 
         httpSecurity
                 .oauth2Login((oauth2) -> oauth2
@@ -64,6 +64,13 @@ public class SecurityConfig {
                 .logout((auth) -> auth
                         .logoutSuccessUrl("/")
                         .permitAll());
+
+        // authorization
+        httpSecurity.authorizeHttpRequests((auth) -> auth
+                .requestMatchers("/", "/login", "/logout", "/update", "/oauth2-jwt-header").permitAll()
+//                .requestMatchers("/users/login", "/posts/all", "posts/details/**").permitAll()
+                .requestMatchers("/admin").hasRole("ADMIN")
+                .anyRequest().authenticated());
 
         // 인가되지 않은 사용자에 대한 exception
         httpSecurity.exceptionHandling((exception) ->
