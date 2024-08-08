@@ -7,7 +7,7 @@ import { useState } from "react";
 
 const Header = () => {
   const { isLoggedIn } = useLogin();
-  const [ showModal, setShowModal ] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <header className="fixed top-0 w-full z-50 bg-white px-4 py-6">
@@ -20,9 +20,6 @@ const Header = () => {
 
         <nav className="flex items-center">
           <ul className="flex items-center space-x-8 text-lg">
-          <li>
-              <Link href="/test3">kream파쿠리</Link>
-            </li>
             <li>
               <Link href="/threeD">3D 데꾸</Link>
             </li>
