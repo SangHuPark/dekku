@@ -27,8 +27,8 @@ public class MemberService {
         if(!jwtTokenProvider.validateToken(token)){
             throw new Exception("JWT Token 만료");
         }
-        String socialId = jwtTokenProvider.getKeyFromClaims(token, "username");
-        memberRepository.update(socialId, request.nickname(), request.ageRange(), request.gender(), request.imageUrl());
+        String username = jwtTokenProvider.getKeyFromClaims(token, "username");
+        memberRepository.update(username, request.nickname(), request.ageRange(), request.gender(), request.imageUrl());
     }
 
     @Transactional
