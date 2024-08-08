@@ -47,7 +47,7 @@ public class SecurityConfig {
 
                 .csrf(CsrfConfigurer::disable)
 
-                .formLogin((form) -> form.disable());
+                .formLogin(AbstractHttpConfigurer::disable);
 
                 //.cors(cors -> cors.disable());
 
@@ -77,13 +77,6 @@ public class SecurityConfig {
                 exception
                         .authenticationEntryPoint((request, response, authException) ->
                                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED)));
-        // authorization
-        httpSecurity.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/", "/login", "/logout", "/update", "/oauth2-jwt-header").permitAll()
-//                .requestMatchers("/users/login", "/posts/all", "posts/details/**").permitAll()
-                .requestMatchers("/admin").hasRole("ADMIN")
-                .anyRequest().authenticated());
-
         //CORS Issue
         httpSecurity
                 .cors((cors) -> cors.configurationSource(request -> {
