@@ -5,10 +5,19 @@ services:
     image: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=Dekku1234
-      - MYSQL_USER=dekku-user
-      - MYSQL_PASSWORD=Dekku1234
+      - MYSQL_USER=sanghu
+      - MYSQL_PASSWORD=sanghu
     volumes:
       - mydata:/var/lib/mysql
+    restart: always
+
+  dekku-redis:
+    container_name: dekku-redis
+    image: redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redisdata:/data
     restart: always
 
   dekku-backend:
@@ -17,9 +26,11 @@ services:
     image: sanghupark/dekku-backend
     depends_on:
       - dekku-mysql
+      - dekku-redis
     restart: on-failure
 
   dekku-frontend:
+    user: root
     container_name: dekku-frontend
     build: ./next-dekku
     image: sanghupark/dekku-frontend
@@ -27,7 +38,13 @@ services:
       - dekku-backend
     ports:
       - '80:80'
+      - '443:443'
+    volumes:
+      - type: bind
+        source: /etc/letsencrypt
+        target: /etc/letsencrypt
     restart: on-failure
 
 volumes:
   mydata:
+  redisdata:
