@@ -5,7 +5,31 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import MouseControls from './MouseControls';
 import TransformControls from './TransformControls';
 import SelectedProducts from './SelectedProducts';
+import { v4 as uuidv4 } from 'uuid';
+// import AWS from 'aws-sdk';
 
+// const s3 = new AWS.S3({
+//   accessKeyId: 'YOUR_ACCESS_KEY',
+//   secretAccessKey: 'YOUR_SECRET_KEY',
+//   region: 'YOUR_REGION'
+// });
+
+// const uploadToS3 = (data, fileName) => {
+//   const params = {
+//     Bucket: 'YOUR_BUCKET_NAME',
+//     Key: fileName,
+//     Body: JSON.stringify(data),
+//     ContentType: 'application/json'
+//   };
+
+//   s3.upload(params, (err, data) => {
+//     if (err) {
+//       console.error("Error uploading JSON data:", err);
+//     } else {
+//       console.log("Successfully uploaded JSON data:", data);
+//     }
+//   });
+// };
 
 const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) => {
   const mountRef = useRef(null);
@@ -18,19 +42,25 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
   const [renderer, setRenderer] = useState(null);
   const [activeModel, setActiveModel] = useState(null);
 
-  
   const saveModelData = () => {
     const data = models.map(model => ({
       id: model.userData.id,
       uniqueId: model.userData.uniqueId,
+      name: model.userData.product.name,
+      description: model.userData.product.description,
+      image: model.userData.product.image,
+      modelPath: model.userData.product.modelPath,
       position: model.position.toArray(),
       scale: model.scale.toArray(),
       rotation: model.rotation.toArray(),
-      modelPath: model.userData.product.modelPath,
+      price: model.userData.product.price,
       isFetched: model.userData.isFetched,
     }));
     localStorage.setItem('sceneState', JSON.stringify(data));
     console.log(data);
+
+    // S3 업로드 호출
+    // uploadToS3(data, 'modelData.json');
   };
 
   const captureThumbnail = () => {
@@ -54,7 +84,7 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
     }
   };
 
-  const loadModelsFromData = (data, scene, loader) => {
+  const loadModelsFromData = (data, scene, loader, setSelectedProducts) => {
     data.forEach(modelData => {
       console.log("modelData:", modelData);
 
@@ -67,7 +97,7 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
         }
         model.userData = {
           id: modelData.id,
-          uniqueId: modelData.uniqueId,
+          uniqueId: modelData.uniqueId || uuidv4(),
           product: modelData,
           isFetched: true,
         };
@@ -79,9 +109,10 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
           image: modelData.image,
           modelPath: modelData.modelPath,
           scale: modelData.scale,
-          uniqueId: modelData.uniqueId,
+          uniqueId: modelData.uniqueId || uuidv4(),
           position: modelData.position,
           rotation: modelData.rotation,
+          price: modelData.price,
           isFetched: true,
         }]);
         scene.add(model);
@@ -132,9 +163,9 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
       scene.add(desk);
       console.log("Desk model loaded and added to scene.");
 
-      const jsonUrl = 'https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/3d/memberId/5f08f89c-3697-44d3-92ab-2aecc80fc9a9';
+      const jsonUrl = 'https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/3d/memberId/47270356-1d1c-4fcf-8776-4bba416ca87e';
       fetchModelData(jsonUrl).then(data => {
-        loadModelsFromData(data, scene, loader);
+        loadModelsFromData(data, scene, loader, setSelectedProducts);
       });
     });
 
@@ -163,7 +194,7 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
             const model = gltf.scene;
             const scale = product.scale || [1, 1, 1];
             const fixedPosition = { x: 0, y: deskHeight + 0.02, z: -1.5 };
-            model.userData = { id: product.id, uniqueId: product.uniqueId, product, isFetched: true };
+            model.userData = { id: product.id, uniqueId: product.uniqueId, product, isFetched: product.isFetched || false };
 
             if (product.position && product.scale && product.rotation) {
               model.position.fromArray(product.position);
