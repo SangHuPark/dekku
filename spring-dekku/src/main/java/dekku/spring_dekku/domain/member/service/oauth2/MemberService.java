@@ -23,7 +23,7 @@ public class MemberService {
     private final OAuthUnlinkService oAuthUnlinkService;
 
     @Transactional
-    public void updateUser(MemberUpdateDto request, String token) throws Exception {
+    public void updateMember(MemberUpdateDto request, String token) throws Exception {
         if(!jwtTokenProvider.validateToken(token)){
             throw new Exception("JWT Token 만료");
         }
@@ -57,7 +57,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void delete(String requestAccessToken) {
+    public void deleteMember(String requestAccessToken) {
         if (requestAccessToken == null || requestAccessToken.isEmpty()) {
             throw new RuntimeException("액세스 토큰이 없습니다.");
         }
