@@ -4,6 +4,7 @@ import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowerListRes
 import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowingListResponseDto;
 import dekku.spring_dekku.domain.follow.model.entity.Follow;
 import dekku.spring_dekku.domain.follow.repository.FollowRepository;
+import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
 import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
@@ -29,7 +30,7 @@ public class FollowService {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member member = memberRepository.findByUsername(username);
         if (member == null) {
-            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
         }
         List<Follow> followerEntities = followRepository.findByFromMember(member);
         List<CreateFollowerListResponseDto> followers = new ArrayList<>();
@@ -50,7 +51,7 @@ public class FollowService {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member member = memberRepository.findByUsername(username);
         if (member == null) {
-            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
         }
         List<Follow> followingEntities = followRepository.findByFromMember(member);
         List<CreateFollowingListResponseDto> followings = new ArrayList<>();
@@ -70,8 +71,11 @@ public class FollowService {
     public void follow(String token, Long toMemberId) {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member fromMember = memberRepository.findByUsername(username);
+        if (fromMember == null) {
+            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
+        }
         Member toMember = memberRepository.findById(toMemberId)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("팔로우할 사용자를 찾을 수 없습니다."));
         Follow follow = new Follow(fromMember, toMember);
         followRepository.save(follow);
     }
@@ -80,8 +84,11 @@ public class FollowService {
     public void unfollow(String token, Long toMemberId) {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member fromMember = memberRepository.findByUsername(username);
+        if (fromMember == null) {
+            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
+        }
         Member toMember = memberRepository.findById(toMemberId)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("언팔로우할 사용자를 찾을 수 없습니다."));
         Optional<Follow> followOptional = followRepository.findByFromMemberAndToMember(fromMember, toMember);
         if (followOptional.isPresent()) {
             followRepository.delete(followOptional.get());
