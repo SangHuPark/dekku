@@ -148,7 +148,7 @@ export default function DeskSetupPage() {
           <h3 className="text-2xl text-[#A4A4A4] mb-6">이번주 인기 급상승</h3>
           <div className="grid grid-cols-3 gap-5">
             {recentTopPosts.map((data) => (
-              <DeskSetupCard key={data.id} data={data} isTopPost={true} />
+              <DeskSetupCard key={data.id} data={data} isNoProfilePost={true} />
             ))}
           </div>
         </div>

@@ -1,50 +1,72 @@
-import Link from "next/link";
+"use client";
 
-export default function DeskSetupCard({ data, isTopPost = false }) {
+import { useState } from "react";
+import DeskSetupCard from "../deskSetup/DeskSetupCard";
+import { datas } from "../deskSetup/data";
+
+const Profile = () => {
+  const [allPosts, setAllPosts] = useState(datas);
+  const [activeTab, setActiveTab] = useState('uploads'); // 현재 선택된 탭을 저장
+
   return (
-    <Link href={`/deskSetup/${data.id}`}>
-      <div className="rounded-lg py-2 w-auto">
-        <div className="relative flex justify-center mb-2">
-          <img
-            src={data.imgSrc}
-            alt="desk"
-            className="w-96 h-72 rounded-lg object-cover"
-          />
-          <div className="font-pretendard absolute bottom-1.5 right-1.5 text-white bg-black bg-opacity-50 rounded px-2 py-1">
-            조회수 {data.views}
+    <main className="flex flex-col items-center bg-white min-h-screen px-5">
+      <div className="w-full max-w-6xl bg-white">
+        <div className="flex items-center space-x-12 my-5 h-40">
+          <div className="">
+            <img
+              src="/yuuka_tired.PNG"
+              alt="Profile Picture"
+              className="w-32 h-32 rounded-full object-cover"
+            />
           </div>
-        </div>
-        {!isTopPost && (
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center space-x-2">
-              <img
-                src={data.profileImg}
-                alt="profile"
-                className="w-12 h-12 object-cover rounded-full"
-              />
-              <div className="font-pretendard text-lg font-bold truncate">
-                {data.username}
-              </div>
+          <div className="flex-1">
+            <div className="flex items-center mb-4">
+              <h2 className="text-2xl mr-4">yuuka314</h2>
+              <button className="bg-black text-white border-none py-2 px-3 rounded-lg cursor-pointer text-sm font-bold">
+                팔로우
+              </button>
             </div>
-            <button className="font-pretendard rounded px-3 p-1 h-8 bg-[#77C3EB] text-white flex-shrink-0">
-              팔로우
-            </button>
+            <p className="space-x-2 mb-4">
+              <span>팔로워</span>
+              <span className="font-bold">1,950</span>
+              <span className="text-gray-400">|</span>
+              <span>팔로잉</span>
+              <span className="font-bold">3</span>
+            </p>
+            <p>HayaseYuuka@Millenium</p>
           </div>
-        )}
-        <div className="font-pretendard text-lg font-semibold px-1 mb-1 truncate">
-          {data.title}
         </div>
-        <ul className="flex space-x-4 font-bold text-[#777777] px-1">
-          <li className="flex items-center space-x-1">
-            <img src="/like_icon.png" alt="like" className="w-5 h-5" />
-            <span className="font-pretendard font-light">{data.likes}</span>
-          </li>
-          <li className="flex items-center space-x-1">
-            <img src="/comment_icon.png" alt="comment" className="w-5 h-5" />
-            <span className="font-pretendard font-light">{data.comments}</span>
-          </li>
-        </ul>
+        <div className="flex justify-start border-b border-gray-100 mb-8">
+          <button
+            className={`bg-none border-none text-base cursor-pointer py-2 mr-5 text-center border-b-2 border-transparent ${
+              activeTab === 'uploads' ? 'font-bold border-black' : 'hover:border-black focus:border-black'
+            }`}
+            onClick={() => setActiveTab('uploads')}
+          >
+            업로드 99
+          </button>
+          <button
+            className={`bg-none border-none text-base cursor-pointer py-2 mr-5 text-center border-b-2 border-transparent ${
+              activeTab === 'likes' ? 'font-bold border-black' : 'hover:border-black focus:border-black'
+            }`}
+            onClick={() => setActiveTab('likes')}
+          >
+            좋아요 50
+          </button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+          {activeTab === 'uploads' && allPosts.map((data) => (
+            <DeskSetupCard key={data.id} data={data} isNoProfilePost={true} />
+          ))}
+          {activeTab === 'likes' && (
+            <div>
+              {/* 좋아요 탭의 내용을 여기에 추가 */}
+            </div>
+          )}
+        </div>
       </div>
-    </Link>
+    </main>
   );
-}
+};
+
+export default Profile;
