@@ -37,9 +37,9 @@ public class MemberController {
 	}
 
 	@PatchMapping("/update")
-	public ResponseEntity<Void> updateUser(@RequestHeader(value="Access") String token, @RequestBody MemberUpdateDto requestDto) throws Exception {
+	public ResponseEntity<Void> update(@RequestHeader(value="Access") String token, @RequestBody MemberUpdateDto requestDto) throws Exception {
 
-		memberService.updateUser(requestDto, token);
+		memberService.updateMember(requestDto, token);
 		return ResponseEntity.ok().build();
 	}
 //
@@ -51,7 +51,7 @@ public class MemberController {
 
 	@DeleteMapping("/delete")
 	public ResponseEntity<?> delete(@RequestHeader(value="access") String token) {
-		memberService.delete(token);
+		memberService.deleteMember(token);
 		ResponseCookie responseCookie = ResponseCookie.from("refresh-token", null)
 				.maxAge(0)
 				.path("/")
