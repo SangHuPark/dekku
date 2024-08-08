@@ -1,14 +1,15 @@
 'use client'
 
 import { useState } from 'react';
+import Link from 'next/link'
 
 export default function HomePage() {
   const [hoveredIndex, setHoveredIndex] = useState(0); // 초기 상태를 null로 설정하여 hover 시 반응하도록 함
 
   const images = [
-    { src: '/desk1.jpg', title: '3D Desk', topics: '' },
-    { src: '/desk2.jpg', title: 'Desk Setup', topics: '' },
-    { src: '/desk3.jpg', title: 'Share Your Desk', topics: '' },
+    { src: '/desk1.jpg', title: '3D Desk', topics: '', link:'/threeD' },
+    { src: '/desk2.jpg', title: 'Desk Setup', topics: '', link:'/deskSetup' },
+    { src: '/desk3.jpg', title: 'Share Your Desk', topics: '', link:'/deskSetup/create' },
   ];
 
   return (
@@ -26,8 +27,9 @@ export default function HomePage() {
           </div>
           <div className="w-2/3 flex gap-4">
             {images.map((image, index) => (
-              <div
+              <Link
                 key={index}
+                href={image.link}
                 className={`relative flex-grow rounded-2xl overflow-hidden transition-all duration-500 h-[32rem] ${hoveredIndex === index ? 'w-2/3 z-10' : 'w-1/6 z-0'}`}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(index)}
@@ -45,7 +47,7 @@ export default function HomePage() {
                   <h3 className="text-3xl">{image.title}</h3>
                   {image.topics && <p>{image.topics}</p>}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
