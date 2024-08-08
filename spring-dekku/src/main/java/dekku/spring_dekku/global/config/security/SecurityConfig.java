@@ -77,6 +77,12 @@ public class SecurityConfig {
                 exception
                         .authenticationEntryPoint((request, response, authException) ->
                                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED)));
+        // authorization
+        httpSecurity.authorizeHttpRequests((auth) -> auth
+                .requestMatchers("/", "/login", "/logout", "/update", "/oauth2-jwt-header").permitAll()
+//                .requestMatchers("/users/login", "/posts/all", "posts/details/**").permitAll()
+                .requestMatchers("/admin").hasRole("ADMIN")
+                .anyRequest().authenticated());
 
         //CORS Issue
         httpSecurity
