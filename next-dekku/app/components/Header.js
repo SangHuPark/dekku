@@ -10,7 +10,7 @@ const Header = () => {
   const [ showModal, setShowModal ] = useState(false);
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-white px-4 py-8">
+    <header className="fixed top-0 w-full z-50 bg-white px-4 py-6">
       <div className="max-w-6xl mx-auto flex justify-between">
         <div className="flex items-center">
           <Link href="/">
