@@ -23,8 +23,8 @@ const ThreeDPage = () => {
   };
 
   // 제품 제거 핸들러
-  const removeProduct = (index) => {
-    const updatedProducts = selectedProducts.filter((_, i) => i !== index);
+  const removeProduct = (uniqueId) => {
+    const updatedProducts = selectedProducts.filter(product => product.uniqueId !== uniqueId);
     setSelectedProducts(updatedProducts);
   };
 

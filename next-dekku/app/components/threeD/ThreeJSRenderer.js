@@ -4,7 +4,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import MouseControls from './MouseControls';
 import TransformControls from './TransformControls';
-import { v4 as uuidv4 } from 'uuid';
+import SelectedProducts from './SelectedProducts';
+
 
 const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) => {
   const mountRef = useRef(null);
@@ -17,7 +18,7 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
   const [renderer, setRenderer] = useState(null);
   const [activeModel, setActiveModel] = useState(null);
 
-  // 모델의 위치와 스케일을 로컬 스토리지에 저장
+  
   const saveModelData = () => {
     const data = models.map(model => ({
       id: model.userData.id,
@@ -26,12 +27,12 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
       scale: model.scale.toArray(),
       rotation: model.rotation.toArray(),
       modelPath: model.userData.product.modelPath,
+      isFetched: model.userData.isFetched,
     }));
     localStorage.setItem('sceneState', JSON.stringify(data));
     console.log(data);
   };
 
-  // 썸네일 캡처 및 로컬 스토리지에 저장
   const captureThumbnail = () => {
     renderer.render(scene, camera);
     const thumbnail = renderer.domElement.toDataURL('image/png');
@@ -46,17 +47,16 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
         throw new Error("Failed to fetch file from S3");
       }
       const data = await response.json();
-      console.log("Fetched JSON data:", data); // JSON 데이터를 확인하는 로그 추가
+      console.log("Fetched JSON data:", data);
       return data;
     } catch (error) {
       console.error("Error fetching JSON file:", error);
     }
   };
 
-  // 저장된 모델 로드
   const loadModelsFromData = (data, scene, loader) => {
     data.forEach(modelData => {
-      console.log("modelData:", modelData); // modelData를 콘솔에 출력
+      console.log("modelData:", modelData);
 
       loader.load(modelData.modelPath, (gltf) => {
         const model = gltf.scene;
@@ -67,8 +67,9 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
         }
         model.userData = {
           id: modelData.id,
-          uniqueId: uuidv4(), // 고유한 UUID 생성
-          product: modelData
+          uniqueId: modelData.uniqueId,
+          product: modelData,
+          isFetched: true,
         };
         setModels(prevModels => [...prevModels, model]);
         setSelectedProducts(prevProducts => [...prevProducts, {
@@ -78,9 +79,10 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
           image: modelData.image,
           modelPath: modelData.modelPath,
           scale: modelData.scale,
-          uniqueId: model.userData.uniqueId, // 고유한 UUID 설정
+          uniqueId: modelData.uniqueId,
           position: modelData.position,
-          rotation: modelData.rotation
+          rotation: modelData.rotation,
+          isFetched: true,
         }]);
         scene.add(model);
         console.log("Model loaded and added to scene:", modelData);
@@ -90,7 +92,6 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
     });
   };
 
-  // 씬 초기화
   useEffect(() => {
     const mount = mountRef.current;
     const scene = new THREE.Scene();
@@ -131,7 +132,7 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
       scene.add(desk);
       console.log("Desk model loaded and added to scene.");
 
-      const jsonUrl = 'https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/3d/memberId/ef43e90f-182b-40f7-b4e9-9d228ffd6be8';
+      const jsonUrl = 'https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/3d/memberId/5f08f89c-3697-44d3-92ab-2aecc80fc9a9';
       fetchModelData(jsonUrl).then(data => {
         loadModelsFromData(data, scene, loader);
       });
@@ -148,24 +149,21 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
     return () => {
       mount.removeChild(renderer.domElement);
     };
-  }, []); // 빈 배열로 두어 컴포넌트가 마운트될 때 한 번만 실행되도록 함
+  }, []);
 
-  // 선택된 제품 목록이 변경될 때마다 모델 로드
   useEffect(() => {
     if (scene) {
       const loader = new GLTFLoader();
-      const existingModelIds = models.map(model => model.userData.id);
-      const selectedProductIds = selectedProducts.map(product => product.id);
+      const existingModelUniqueIds = models.map(model => model.userData.uniqueId);
+      const selectedProductUniqueIds = selectedProducts.map(product => product.uniqueId);
 
-      // 새로운 모델 추가
       selectedProducts.forEach((product) => {
-        if (!existingModelIds.includes(product.id)) {
-          const uniqueId = uuidv4();
+        if (!existingModelUniqueIds.includes(product.uniqueId)) {
           loader.load(product.modelPath, (gltf) => {
             const model = gltf.scene;
             const scale = product.scale || [1, 1, 1];
             const fixedPosition = { x: 0, y: deskHeight + 0.02, z: -1.5 };
-            model.userData = { id: product.id, uniqueId, product };
+            model.userData = { id: product.id, uniqueId: product.uniqueId, product, isFetched: true };
 
             if (product.position && product.scale && product.rotation) {
               model.position.fromArray(product.position);
@@ -185,65 +183,42 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
         }
       });
 
-      // 제거된 모델 삭제
       models.forEach((model) => {
-        if (!selectedProductIds.includes(model.userData.id)) {
+        if (!selectedProductUniqueIds.includes(model.userData.uniqueId)) {
           scene.remove(model);
-          setModels(prevModels => prevModels.filter(m => m.userData.id !== model.userData.id));
-          console.log("Removed model from scene:", model.userData.id);
+          setModels(prevModels => prevModels.filter(m => m.userData.uniqueId !== model.userData.uniqueId));
+          console.log("Removed model from scene:", model.userData.uniqueId);
         }
       });
     }
   }, [selectedProducts, scene, deskHeight]);
 
-  // 윈도우 리사이즈 핸들러
-  useEffect(() => {
-    const handleWindowResize = () => {
-      if (camera && renderer) {
-        const { clientWidth, clientHeight } = mountRef.current;
-        camera.aspect = clientWidth / clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(clientWidth, clientHeight);
-      }
-    };
-
-    window.addEventListener('resize', handleWindowResize);
-
-    return () => {
-      window.removeEventListener('resize', handleWindowResize);
-    };
-  }, [camera, renderer]);
-
-  // 모델 회전 변경 핸들러
   const handleRotationChange = (rotationY) => {
     if (activeModel) {
       activeModel.rotation.y = THREE.MathUtils.degToRad(rotationY);
       setSelectedProducts(prevProducts => prevProducts.map(product =>
-        product.id === activeModel.userData.id
+        product.uniqueId === activeModel.userData.uniqueId
           ? { ...product, rotation: activeModel.rotation.toArray() }
           : product
       ));
     }
   };
 
-  // 모델 높이 변경 핸들러
   const handleHeightChange = (height) => {
     if (activeModel) {
       activeModel.position.y = parseFloat(height);
       setSelectedProducts(prevProducts => prevProducts.map(product =>
-        product.id === activeModel.userData.id
+        product.uniqueId === activeModel.userData.uniqueId
           ? { ...product, position: activeModel.position.toArray() }
           : product
       ));
     }
   };
 
-  // TransformControls 닫기 핸들러
   const handleCloseTransformControls = () => {
     setActiveModel(null);
   };
 
-  // 완성 버튼 클릭 핸들러
   const handleComplete = () => {
     saveModelData();
     const thumbnail = captureThumbnail();
@@ -279,6 +254,13 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
               onClose={handleCloseTransformControls}
             />
           )}
+          <SelectedProducts 
+            selectedProducts={selectedProducts} 
+            removeProduct={(uniqueId) => {
+              console.log('removeProduct called in ThreeJSRenderer with uniqueId:', uniqueId);
+              setSelectedProducts(prevProducts => prevProducts.filter(product => product.uniqueId !== uniqueId));
+            }} 
+          />
           <button
             className="bg-cyan-800 text-white px-10 py-4 rounded mt-2 fixed bottom-10 right-10 text-lg"
             onClick={handleComplete}
