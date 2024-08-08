@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 public class OAuth2JwtHeaderService {
     public String oauth2JwtHeaderSet(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
+
+        System.out.println("OAuth2JwtHeaderService.java -> " + cookies);
+
         String access = null;
 
         if(cookies == null){
@@ -33,6 +36,7 @@ public class OAuth2JwtHeaderService {
 
         // 클라이언트의 access 토큰 쿠키를 만료
         response.addCookie(CookieUtil.createCookie("access", null, 0));
+        response.addHeader("Access-Control-Expose-Headers", "access");
         response.addHeader("access", access);
         response.setStatus(HttpServletResponse.SC_OK);
 

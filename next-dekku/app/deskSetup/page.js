@@ -187,7 +187,7 @@ export default function DeskSetupPage() {
           </div>
           <Link
             className="bg-[#FF6E30] text-white px-2 py-3 rounded-lg"
-            href="/deskSetup/create"
+            href="/deskSetup/create2"
           >
             나의 데스크 셋업 공유하기
           </Link>

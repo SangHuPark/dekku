@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import products from '../threeD/ProductList'; // 각 모델의 스케일 값을 가져오기 위해 제품 리스트를 임포트
+import Modal from './Modal'; // 모달 컴포넌트 임포트
 
 const Head = ({ onSave, onShare }) => {
   const mountRef = useRef(null);
@@ -10,66 +10,78 @@ const Head = ({ onSave, onShare }) => {
   const [camera, setCamera] = useState(null);
   const [renderer, setRenderer] = useState(null);
   const [desk, setDesk] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
 
   useEffect(() => {
     const mount = mountRef.current;
 
-    // 씬 생성
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xffffff); // 배경 색상을 흰색으로 설정
+    scene.background = new THREE.Color(0xffffff);
     setScene(scene);
 
-    // 카메라 생성
-    const camera = new THREE.PerspectiveCamera(50, mount.clientWidth / mount.clientHeight, 0.1, 1000);
-    camera.position.set(0, 2, 4); // 카메라 위치 조정 (X, Y, Z)
-    camera.lookAt(0, 1, 0); // 카메라가 씬의 중심을 바라보도록 설정
+    const camera = new THREE.PerspectiveCamera(27, mount.clientWidth / mount.clientHeight, 0.01, 1000);
+    camera.position.set(0, 4, 5); // 카메라를 더 가깝게 조정
     setCamera(camera);
 
-    // 렌더러 생성
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     mount.appendChild(renderer.domElement);
     setRenderer(renderer);
 
-    // 조명 추가
-    const ambientLight = new THREE.AmbientLight(0x404040, 2); // 주변 광 조명
+    const ambientLight = new THREE.AmbientLight(0x404040, 2);
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 2); // 방향성 광 조명
-    directionalLight.position.set(10, 10, 10);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+    directionalLight.position.set(0, 10, 10);
     scene.add(directionalLight);
 
-    // OrbitControls 추가
-    const controls = new OrbitControls(camera, renderer.domElement);
-
-    // 책상 모델 로드
     const deskLoader = new GLTFLoader();
     deskLoader.load('threedmodels/ssafydesk.glb', (gltf) => {
       const desk = gltf.scene;
-      desk.position.set(0, 0, 0); // 책상을 씬의 중앙에 배치
-      desk.scale.set(3, 3, 3); // 책상의 크기를 조정
+
+      // 중심점 설정
+      const box = new THREE.Box3().setFromObject(desk);
+      const center = box.getCenter(new THREE.Vector3());
+      desk.position.sub(center);
+
+      // 위치 조정
+      desk.position.set(0, -3, -1.5); // 모델을 더 아래로 이동
+      desk.scale.set(3, 3, 3); // 모델 크기를 키움
       scene.add(desk);
       setDesk(desk);
 
-      // 로컬 스토리지에서 상태 불러오기
       const storedSceneState = localStorage.getItem('sceneState');
       if (storedSceneState) {
         const parsedState = JSON.parse(storedSceneState);
-        loadModels(parsedState, scene, desk); // 모델을 배치
+        loadModels(parsedState, scene, desk);
       }
     });
 
     const animate = () => {
       requestAnimationFrame(animate);
-      if (scene.children.length > 0) {
-        scene.rotation.y += 0.01; // 모든 모델이 함께 회전
+
+      if (camera) {
+        const time = Date.now() * 0.0005; // 회전 속도를 줄이기 위해 0.0005로 설정
+        camera.position.x = 5 * Math.cos(time); // 카메라 궤도를 더 좁게 조정
+        camera.position.z = 5 * Math.sin(time) - 1.5; // 책상의 z 위치에 맞춤
+        camera.lookAt(new THREE.Vector3(0, -1.5, -1.5)); // 책상의 위치로 바라봄
       }
-      controls.update();
+
       renderer.render(scene, camera);
     };
 
     animate();
 
+    const handleResize = () => {
+      camera.aspect = mount.clientWidth / mount.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(mount.clientWidth, mount.clientHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+
     return () => {
+      window.removeEventListener('resize', handleResize);
       mount.removeChild(renderer.domElement);
     };
   }, []);
@@ -81,25 +93,24 @@ const Head = ({ onSave, onShare }) => {
         return product.scale;
       }
     }
-    return [1, 1, 1]; // 기본 스케일 값
+    return [1, 1, 1];
   };
 
   const loadModels = (sceneState, scene, desk) => {
     const loader = new GLTFLoader();
     const deskBox = new THREE.Box3().setFromObject(desk);
-    const deskHeight = deskBox.max.y;
+    const deskHeight = deskBox.max.y - deskBox.min.y; // 책상의 높이를 계산
 
     sceneState.forEach((modelData) => {
       loader.load(modelData.modelPath, (gltf) => {
         const model = gltf.scene;
         model.position.fromArray(modelData.position);
         model.rotation.fromArray(modelData.rotation);
-
-        // 각 모델의 지정된 스케일을 적용
         model.scale.fromArray(modelData.scale);
 
-        // 모델의 위치를 책상 위로 설정
-        model.position.y = deskHeight + 0.02; // 책상 위에 모델을 배치
+        // 모델의 y 위치를 deskHeight를 기준으로 조정
+        model.position.y = deskBox.min.y + modelData.position[1]; // 책상의 y 위치를 기준으로 모델의 y 위치를 조정
+        model.position.z = modelData.position[2]; // 모델의 z 위치를 설정
         model.userData = { modelPath: modelData.modelPath };
 
         scene.add(model);
@@ -107,34 +118,79 @@ const Head = ({ onSave, onShare }) => {
     });
   };
 
-  const handleSave = () => {
-    const currentSceneState = scene.children.map(child => ({
-      modelPath: child.userData.modelPath,
-      position: child.position.toArray(),
-      rotation: child.rotation.toArray(),
-      scale: child.scale.toArray()
-    }));
-    localStorage.setItem('sceneState', JSON.stringify(currentSceneState));
+  const handleSave = async () => {
+    // 로컬 스토리지에서 씬 상태 가져오기
+    const storedSceneState = localStorage.getItem('sceneState');
+    if (!storedSceneState) {
+      console.error("No scene state found in localStorage.");
+      return;
+    }
+
+    // Presigned URL 생성 요청
+    let presignedUrl;
+    try {
+      const presignedResponse = await fetch("http://localhost:8080/api/s3/presigned-url", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          id: "memberId", // 고유 식별자. 필요에 따라 변경하세요. 로그인 정보에서 유저아이디 가져와서 보내기
+          fileCount: 1,
+          directory: "3d"
+        })
+      });
+
+      if (!presignedResponse.ok) {
+        const errorMessage = await presignedResponse.text();
+        console.error("Error:", errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      const presignedData = await presignedResponse.json();
+      presignedUrl = presignedData.data.preSignedUrl[0];
+
+      console.log("Presigned URL:", presignedUrl);
+    } catch (error) {
+      console.error("Failed to fetch presigned URL:", error);
+    }
+
+    // S3에 파일 업로드
+    const sceneStateBlob = new Blob([storedSceneState], { type: 'application/json' });
+    const uploadResponse = await fetch(presignedUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": 'application/json'
+      },
+      body: sceneStateBlob
+    });
+
+    if (!uploadResponse.ok) {
+      const errorMessage = await uploadResponse.text();
+      console.error("Error:", errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    const uploadedFileUrl = presignedUrl.split("?")[0];
+    console.log("Uploaded file URL:", uploadResponse.url);
+    setImageUrl(uploadedFileUrl);
+
+    setIsModalOpen(true); // 모달 열기
+
     if (onSave) {
       onSave();
     }
   };
 
-  const handleShare = () => {
-    const currentSceneState = scene.children.map(child => ({
-      modelPath: child.userData.modelPath,
-      position: child.position.toArray(),
-      rotation: child.rotation.toArray(),
-      scale: child.scale.toArray()
-    }));
-    localStorage.setItem('sceneState', JSON.stringify(currentSceneState));
+  const handleShare = async () => {
+    await handleSave();
     if (onShare) {
-      onShare();
+      onShare(imageUrl);
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto grid grid-cols-2 gap-4" style={{ paddingBottom: '5px', height: '350px', padding: '32px 0 5px' }}>
+    <div className="max-w-6xl mx-auto grid grid-cols-2 gap-4" style={{ paddingBottom: '60px', height: '350px', padding: '24px 0 60px' }}>
       <div className="flex flex-col justify-center items-start">
         <p className="text-xl font-bold mb-2">Good! 훌륭한 데스크 입니다!</p>
         <div className="flex">
@@ -143,6 +199,11 @@ const Head = ({ onSave, onShare }) => {
         </div>
       </div>
       <div ref={mountRef} className="w-full" style={{ height: '100%' }}></div>
+      <Modal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        message="성공적으로 저장되었습니다! 저장된 모델은 마이페이지에서 확인 가능합니다! 🎉"
+      />
     </div>
   );
 };
