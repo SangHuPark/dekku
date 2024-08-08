@@ -34,7 +34,7 @@ public class MemberController {
 	}
 
 	@PatchMapping("/update")
-	public ResponseEntity<Void> updateUser(@RequestHeader(value="Access") String token, @ModelAttribute MemberUpdateDto requestDto) throws Exception {
+	public ResponseEntity<Void> updateUser(@RequestHeader(value="access") String token, @ModelAttribute MemberUpdateDto requestDto) throws Exception {
 
 		System.out.println("updateUser token:" +token);
 
