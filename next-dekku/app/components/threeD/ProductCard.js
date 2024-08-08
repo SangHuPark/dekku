@@ -15,14 +15,14 @@ const ProductCard = ({ name, description, image, modelPath, scale, price, addPro
       }`}
       onClick={handleClick} // 클릭 시 handleClick 함수 호출
     >
-      <div className={`flex items-center justify-center mb-2 ${small ? 'w-24 h-24' : 'w-30 h-30'}`}>
+      <div className={`flex items-center justify-center mb-1 ${small ? 'w-24 h-24' : 'w-30 h-30'}`}>
         {image ? (
-          <img src={image} alt={name} className="object-cover w-full h-full" />
+          <img src={image} alt={name} className="object-fill w-full h-full" />
         ) : (
           <span className="text-gray-500 text-sm">No Image</span>
         )}
       </div>
-      <div className="text-center px-2">
+      <div className="text-center px-2 py-3">
         <p className="text-xs mb-1 truncate" style={{ fontSize: '12px' }}>{name}</p>
         <p className="text-xs text-gray-500 truncate" style={{ fontSize: '12px' }}>{description}</p>
         <p className="text-xs text-gray-700" style={{ fontSize: '12px' }}>{price}</p>

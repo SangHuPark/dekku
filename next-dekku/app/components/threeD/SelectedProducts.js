@@ -14,15 +14,7 @@ const SelectedProducts = ({ selectedProducts, removeProduct }) => {
 
   return (
     <div className="relative">
-      <div className="absolute top-0 left-0 right-0 shadow-lg p-2 flex flex-col items-start" style={{ zIndex: 10 }}>
-        {/* 드롭다운 버튼 */}
-        <button
-          className="bg-white text-black px-2 py-1 rounded mt-2"
-          onClick={toggleDropdown}
-          style={{ alignSelf: 'center', marginTop: '10px' }}
-        >
-          {isDropdownOpen ? '▲' : '▼'}
-        </button>
+      <div className="bg-white absolute top-0 left-0 right-0 shadow-lg p-2 flex flex-col items-start" style={{ zIndex: 10 }}>        
         {/* 드롭다운 내용 */}
         <div className={`transition-transform duration-300 ${isDropdownOpen ? 'max-h-screen' : 'max-h-0 overflow-hidden'}`} style={{ width: '100%' }}>
           <div className="flex gap-4 mt-1 overflow-x-auto overflow-y-hidden whitespace-nowrap" style={{ padding: '1px', boxSizing: 'border-box' }}>
@@ -39,12 +31,20 @@ const SelectedProducts = ({ selectedProducts, removeProduct }) => {
                   }}
                   style={{ transform: 'translate(50%, -50%)' }}
                 >
-                  ×
+                  x
                 </button>
               </div>
             ))}
           </div>
-        </div>
+        </div>      
+          {/* 드롭다운 버튼 */}
+          <button
+            className="bg-white text-black px-2 py-1 rounded mt-2"
+            onClick={toggleDropdown}
+            style={{ alignSelf: 'center', marginTop: '10px' }}
+          >
+            {isDropdownOpen ? '▲' : '▼'}
+          </button>
       </div>
     </div>
   );
