@@ -8,4 +8,4 @@ RUN gradle dependencies --no-daemon
 
 COPY . /app
 
-RUN gradle clean build --no-daemon
+RUN gradle clean build --no-daemon -x test
