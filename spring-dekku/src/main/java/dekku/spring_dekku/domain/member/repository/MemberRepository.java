@@ -4,6 +4,8 @@ import dekku.spring_dekku.domain.member.model.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByEmail(String email);
@@ -18,7 +20,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying
     @Query(value = "UPDATE Member m set m.name=:name, m.email=:email, m.imageUrl=:imageUrl " +
             "WHERE m.username= :username")
-    void renewMemberInfo(String username, String name, String email, String imageUrl);
+    void renewMemberInfo(@Param("username") String username, @Param("name")  String name, @Param("email") String email, @Param("imageUrl") String imageUrl);
 
 //    @Modifying
 //    @Transactional

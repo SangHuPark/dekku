@@ -15,13 +15,13 @@ const UsedProducts = () => {
   }, []);
 
   const handleShowAll = () => {
-    setShowAll(true);
+    setShowAll(!showAll);
   };
 
   const renderProducts = () => {
     const productsToShow = showAll ? selectedProducts : selectedProducts.slice(0, 4);
     return productsToShow.map((product, index) => (
-      <div key={index} className="border p-4 rounded shadow-lg">
+      <div key={index} className="border p-4 rounded shadow-lg h-72"> {/* 높이를 조정 */}
         <h2 className="text-xl">{product.name}</h2>
         <p>{product.description}</p>
         <p>{product.price}</p>
@@ -31,18 +31,18 @@ const UsedProducts = () => {
   };
 
   return (
-    <div className="p-8 h-screen overflow-y-auto"> {/* 양옆 패딩을 더 줌 */}
-      <div className="max-w-6xl mx-auto">
+    <div className="pb-30">
+      <div className={`max-w-6xl mx-auto ${showAll ? 'h-auto' : 'h-[500px]'}`}> 
         <h2 className="text-3xl mb-4">선택한 상품 목록</h2>
         {selectedProducts.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"> {/* 그리드 레이아웃 */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {renderProducts()}
             </div>
-            {selectedProducts.length > 4 && !showAll && (
-              <div className="text-right">
-                <button onClick={handleShowAll} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
-                  모두보기
+            {selectedProducts.length > 4 && (
+              <div className="text-right mt-4">
+                <button onClick={handleShowAll} className="px-4 py-2 bg-blue-500 text-white rounded">
+                  {showAll ? '접기' : '모두보기'}
                 </button>
               </div>
             )}
