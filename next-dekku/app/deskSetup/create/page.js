@@ -3,9 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation'; // useRouter를 next/navigation에서 임포트
 import PostModal from '../../components/deskSetup/PostModal'; // 모달 컴포넌트 임포트
-import DeskSetupPage from "../page";
 
-const createpage = () => {
+const CreatePage = () => {
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -237,4 +236,4 @@ const createpage = () => {
   );
 }
 
-export default createpage;
+export default CreatePage;
