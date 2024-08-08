@@ -1,6 +1,5 @@
 package dekku.spring_dekku.global.model.entity;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
