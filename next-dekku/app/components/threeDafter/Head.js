@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import products from '../threeD/ProductList'; // 각 모델의 스케일 값을 가져오기 위해 제품 리스트를 임포트
+import Modal from './Modal'; // 모달 컴포넌트 임포트
 
 const Head = ({ onSave, onShare }) => {
   const mountRef = useRef(null);
@@ -10,6 +11,7 @@ const Head = ({ onSave, onShare }) => {
   const [renderer, setRenderer] = useState(null);
   const [desk, setDesk] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -173,6 +175,8 @@ const Head = ({ onSave, onShare }) => {
     console.log("Uploaded file URL:", uploadResponse.url);
     setImageUrl(uploadedFileUrl);
 
+    setIsModalOpen(true); // 모달 열기
+
     if (onSave) {
       onSave();
     }
@@ -195,6 +199,11 @@ const Head = ({ onSave, onShare }) => {
         </div>
       </div>
       <div ref={mountRef} className="w-full" style={{ height: '100%' }}></div>
+      <Modal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        message="성공적으로 저장되었습니다! 저장된 모델은 마이페이지에서 확인 가능합니다! 🎉"
+      />
     </div>
   );
 };
