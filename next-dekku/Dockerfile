@@ -2,16 +2,24 @@ FROM node:18.17.0-alpine3.18 AS build
 
 ENV PORT 3000
 
-# Create app directory
-# RUN mkdir -p /usr/src/app
-# WORKDIR /usr/src/app
+COPY package.json .
+COPY package-lock.json .
 
-WORKDIR /app
+RUN npm ci
 
-# Copy build output files
-COPY ./public ./public
-COPY ./.next/standalone ./
-COPY ./.next/static ./.next/static
+# 소스를 작업폴더로 복사
+COPY . .
+
+# 빌드
+RUN npm run build
+
+# COPY ./public 
+# COPY ./.next /app
+
+# # Copy build output files
+# COPY ./public ./public
+# COPY ./.next/standalone ./
+# COPY ./.next/static ./.next/static
 
 EXPOSE $PORT
 
