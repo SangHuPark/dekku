@@ -1,6 +1,6 @@
 version: '3'
 services:
-  puzzlepop-mysql:
+  dekku-mysql:
     container_name: dekku-mysql
     image: mysql
     environment:
@@ -11,7 +11,7 @@ services:
       - mydata:/var/lib/mysql
     restart: always
 
-  puzzlepop-backend:
+  dekku-backend:
     container_name: dekku-backend
     build: ./spring-dekku
     image: sanghupark/dekku-backend
@@ -19,7 +19,7 @@ services:
       - dekku-mysql
     restart: on-failure
 
-  puzzlepop-frontend:
+  dekku-frontend:
     container_name: dekku-frontend
     build: ./next-dekku
     image: sanghupark/dekku-frontend

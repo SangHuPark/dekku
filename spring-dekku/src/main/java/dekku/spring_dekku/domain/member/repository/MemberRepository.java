@@ -20,8 +20,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying
     @Query(value = "UPDATE Member m set m.name=:name, m.email=:email, m.imageUrl=:imageUrl " +
             "WHERE m.username= :username")
-    void renewMemberInfo(String username, String name, String email, String imageUrl);
-    void renewMemberInfo(@Param("username") String username, @Param("name")  String name, @Param("email") String email);
+    void renewMemberInfo(@Param("username") String username, @Param("name")  String name, @Param("email") String email, @Param("imageUrl") String imageUrl);
 
 //    @Modifying
 //    @Transactional

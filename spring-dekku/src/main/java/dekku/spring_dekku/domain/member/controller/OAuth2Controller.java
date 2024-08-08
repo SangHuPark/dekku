@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OAuth2Controller {
     private final OAuth2JwtHeaderService oAuth2JwtHeaderService;
 
-    @PostMapping("/oauth2-jwt-header")
+    @PostMapping("/api/oauth2-jwt-header")
     public String oauth2JwtHeader(HttpServletRequest request, HttpServletResponse response) {
         return oAuth2JwtHeaderService.oauth2JwtHeaderSet(request, response);
     }
