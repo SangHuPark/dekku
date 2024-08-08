@@ -12,7 +12,7 @@ RUN npm ci
 COPY . /app
 
 # 빌드
-RUN npm run build
+RUN npm run build && npm run export
 
 # 프로덕션 스테이지
 FROM nginx:1.21.4-alpine
@@ -21,7 +21,7 @@ FROM nginx:1.21.4-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # 빌드 이미지에서 생성된 build 폴더를 nginx 이미지로 복사
-COPY --from=build /app/.next /usr/share/nginx/html
+COPY --from=build /app/out /usr/share/nginx/html
 
 EXPOSE 80
 CMD [ "nginx", "-g", "daemon off;" ]
