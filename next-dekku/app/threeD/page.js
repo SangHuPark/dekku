@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation'; // next/navigation 모듈 사용
-import ThreeDNavBar from '../components/threeD/ThreeDNavBar';
+import ThreeDNavBar from '../components/threeD/threeDNavBar';
 import SelectedProducts from '../components/threeD/SelectedProducts';
 import ThreeJSRenderer from '../components/threeD/ThreeJSRenderer';
 
