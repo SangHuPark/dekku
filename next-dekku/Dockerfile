@@ -20,7 +20,7 @@ FROM node:20.15.1-alpine
 # Copy the build output and node_modules from the build step
 COPY --from=build /app .
 
-EXPOSE 3000
+EXPOSE 80
 
 # Start the Next.js app
 CMD ["npm", "run", "start"]
