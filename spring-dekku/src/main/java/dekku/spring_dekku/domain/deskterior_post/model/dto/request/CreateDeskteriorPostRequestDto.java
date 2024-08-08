@@ -40,6 +40,10 @@ public record CreateDeskteriorPostRequestDto(
 ) {
 
         @Builder
+        public CreateDeskteriorPostRequestDto {
+        }
+
+        @Builder
         public static DeskteriorPost toEntity(Member member, String title, String content, DeskteriorAttributes deskteriorAttributes, OpenStatus openStatus) {
                 return DeskteriorPost.builder()
                         .member(member)
