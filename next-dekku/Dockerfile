@@ -17,9 +17,9 @@ RUN npm run build
 # COPY ./.next /app
 
 # Copy build output files
-COPY ./public ./public
-COPY ./.next/standalone ./
-COPY ./.next/static ./.next/static
+COPY --from=build ./public ./public
+COPY --from=build ./.next/standalone ./
+COPY --from=build ./.next/static ./.next/static
 
 EXPOSE $PORT
 
