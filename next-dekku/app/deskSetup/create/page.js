@@ -38,12 +38,11 @@ export default function Next14() {
               ) : (
                 <div className="text-center">
                   <p>이곳에 사진을 올려주세요</p>
-                  <button
-                    type="button"
+                  <div
                     className="mt-2 bg-black text-white py-2 px-4 rounded"
                   >
                     PC에서 불러오기
-                  </button>
+                  </div>
                 </div>
               )}
               <input
