@@ -17,7 +17,7 @@ const ProductCard = ({ name, description, image, modelPath, scale, price, addPro
     >
       <div className={`flex items-center justify-center mb-1 ${small ? 'w-24 h-24' : 'w-30 h-30'}`}>
         {image ? (
-          <img src={image} alt={name} className="object-fill w-full h-full" />
+          <img src={image} alt={name} className="object-fill w-full h-70rem" />
         ) : (
           <span className="text-gray-500 text-sm">No Image</span>
         )}
