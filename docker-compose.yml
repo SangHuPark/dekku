@@ -52,7 +52,7 @@ services:
       - '8080:8080'
     volumes:
       - /home/ubuntu/yml/application.yml:/app/config/application.yml
-    restart: no
+    restart: on-failure
     networks:
       - dekku-network
 
