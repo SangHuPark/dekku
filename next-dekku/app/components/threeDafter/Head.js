@@ -26,7 +26,7 @@ const Head = ({ onSave }) => {
     setScene(scene);
 
     const camera = new THREE.PerspectiveCamera(27, mount.clientWidth / mount.clientHeight, 0.01, 1000);
-    camera.position.set(0, 4, 5); // 카메라를 더 가깝게 조정
+    camera.position.set(0, 5, 0); // 카메라를 더 가깝게 조정
     setCamera(camera);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -34,10 +34,10 @@ const Head = ({ onSave }) => {
     mount.appendChild(renderer.domElement);
     setRenderer(renderer);
 
-    const ambientLight = new THREE.AmbientLight(0x404040, 2);
+    const ambientLight = new THREE.AmbientLight(0x404040, 5);
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
-    directionalLight.position.set(0, 10, 10);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+    directionalLight.position.set(0, 30, 0);
     scene.add(directionalLight);
 
     const deskLoader = new GLTFLoader();
@@ -50,7 +50,7 @@ const Head = ({ onSave }) => {
       desk.position.sub(center);
 
       // 위치 조정
-      desk.position.set(0, -3, -1.5); // 모델을 더 아래로 이동
+      desk.position.set(0, -2.2, -1.5); // 모델을 더 아래로 이동
       desk.scale.set(3, 3, 3); // 모델 크기를 키움
       scene.add(desk);
       setDesk(desk);
@@ -133,7 +133,7 @@ const Head = ({ onSave }) => {
     }
 
     // 멤버 ID는 로그인 정보를 사용해 가져와야 합니다.
-    const memberId = "yourMemberId"; // 실제 구현 시 수정
+    const memberId = "MemberId"; // 실제 구현 시 수정
 
     try {
       const thumbnailUrl = await uploadToS3(storedSceneState, storedThumbnail, memberId);
@@ -153,10 +153,10 @@ const Head = ({ onSave }) => {
     <div className="max-w-6xl mx-auto grid grid-cols-2 gap-4" style={{ paddingBottom: '24px', height: '350px', marginBottom: '32px', marginTop: '12px' }}>
       <div className="glass-container flex justify-between items-center p-4" style={{ height: '350px' }}>
         <div className="flex flex-col justify-center items-start">
-          <p className="text-xl font-bold mb-2">Good! 훌륭한 데스크 입니다!</p>
+          <p className="text-xl font-bold mb-2 ml-4">Good! 훌륭한 재능입니다!</p>
           <div className="flex items-center space-x-4 mt-6">
-            <button onClick={handleSave} className="ml-10 mr-2 px-4 py-2 border border-pink-500">저장</button>
-            <button onClick={handleShare} className="px-4 py-2 border border-blue-500">공유</button>
+            <button onClick={handleSave} className="ml-10  text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-base px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">저장</button>
+            <button onClick={handleShare} className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-base px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">공유</button>
           </div>
         </div>
         <img src="/손박수.png" alt="손박수" style={{ width: '270px', height: '270px' }} />

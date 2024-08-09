@@ -5,7 +5,7 @@ const ProductCard = ({ name, description, image, modelPath, scale, price, addPro
   // 클릭 시 호출되는 핸들러 함수
   const handleClick = () => {
     const uniqueId = uuidv4(); // 고유한 uniqueId 생성
-    addProduct && addProduct({ uniqueId, name, modelPath, image, description, price, scale }); // 제품 추가 함수 호출
+    addProduct && addProduct({ uniqueId, name, description, image, modelPath, scale, price  }); // 제품 추가 함수 호출
   };
 
   return (

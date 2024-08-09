@@ -42,7 +42,7 @@ const CreatePage = () => {
     // Presigned URL 생성 요청
     let presignedUrl;
     try {
-      const presignedResponse = await fetch("http://localhost:8080/api/s3/presigned-url", {
+      const presignedResponse = await fetch("http://dekku.co.kr:8080/api/s3/presigned-url", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
