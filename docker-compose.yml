@@ -36,7 +36,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=Dekku1234
-    restart: on-failure
+    restart: always
     networks:
       - dekku-network
 
