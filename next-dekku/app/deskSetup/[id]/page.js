@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { datas } from "../data"; // 데이터 파일의 경로를 조정하세요.
+import DeskSetupCard from "../DeskSetupCard";
 
 export default function Details({ params }) {
   const postId = parseInt(params.id, 10); // 문자열을 정수로 변환
@@ -12,6 +13,9 @@ export default function Details({ params }) {
   // 이전과 다음 게시물의 ID를 계산합니다.
   const prevPostId = postId > 1 ? postId - 1 : null;
   const nextPostId = postId < datas.length ? postId + 1 : null;
+
+  const prevPostData = datas.find((item) => item.id === prevPostId);
+  const nextPostData = datas.find((item) => item.id === nextPostId);
 
   return (
     <div className="bg-gray-100 p-6">
@@ -30,7 +34,7 @@ export default function Details({ params }) {
           />
         </div>
 
-        <div className="text-lg mb-10 text-center">{data.content}</div>
+        <div className="text mb-10">{data.content}</div>
 
         <h2 className="text-xl font-bold mb-4">제품 내용</h2>
         <div className="grid grid-cols-2 gap-4 mb-6">
@@ -75,7 +79,7 @@ export default function Details({ params }) {
           </div>
           <div className="ml-4">
             <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
-              Follow
+              팔로우
             </button>
           </div>
         </div>
@@ -90,29 +94,17 @@ export default function Details({ params }) {
         <hr className="border-t-2 border-gray-300 mb-6" />
 
         <h2 className="text-xl font-bold mb-4">다른 게시물</h2>
-        <div className="flex space-x-4">
+        <div className="flex justify-evenly">
           {prevPostId && (
-            <div className="w-1/2">
-              <a href={`/deskSetup/${prevPostId}`}>
-                <img
-                  src={datas.find((item) => item.id === prevPostId)?.imgSrc}
-                  alt="Previous post"
-                  className="w-full h-auto rounded-md"
-                />
-                <p className="text-center mt-2 font-bold text-gray-600">이전 게시물</p>
-              </a>
+            <div className="">
+              <DeskSetupCard key={prevPostData.id} data={prevPostData} />
+              <p className="text-center mt-2 font-bold text-gray-600">이전 게시물</p>
             </div>
           )}
           {nextPostId && (
-            <div className="w-1/2">
-              <a href={`/deskSetup/${nextPostId}`}>
-                <img
-                  src={datas.find((item) => item.id === nextPostId)?.imgSrc}
-                  alt="Next post"
-                  className="w-full h-auto rounded-md"
-                />
-                <p className="text-center mt-2 font-bold text-gray-600">다음 게시물</p>
-              </a>
+            <div className="">
+              <DeskSetupCard key={nextPostData.id} data={nextPostData} />
+              <p className="text-center mt-2 font-bold text-gray-600">다음 게시물</p>
             </div>
           )}
         </div>

@@ -14,8 +14,8 @@ const Profile = () => {
   const { isLoggedIn } = useLogin();
 
   return (
-    <main className="flex flex-col items-center bg-white min-h-screen px-5">
-      <div className="w-full max-w-6xl bg-white">
+    <main className="flex flex-col items-center bg-white min-h-screen">
+      <div className="w-full max-w-6xl bg-white px-5">
         <div className="flex items-center space-x-12 my-5 h-40">
           <div className="">
             <img
@@ -55,9 +55,9 @@ const Profile = () => {
             <p>HayaseYuuka@Millenium</p>
           </div>
         </div>
-        <div className="flex justify-start border-b border-gray-100 mb-8">
+        <div className="flex justify-start">
           <button
-            className={`bg-none border-none text-base cursor-pointer py-2 mr-5 text-center border-b-2 border-transparent ${
+            className={`bg-none text-base cursor-pointer py-2 mr-5 text-center border-b-2 border-transparent ${
               activeTab === "uploads"
                 ? "font-bold border-black"
                 : "hover:border-black focus:border-black"
@@ -67,7 +67,7 @@ const Profile = () => {
             업로드 99
           </button>
           <button
-            className={`bg-none border-none text-base cursor-pointer py-2 mr-5 text-center border-b-2 border-transparent ${
+            className={`bg-none text-base cursor-pointer py-2 mr-5 text-center border-b-2 border-transparent ${
               activeTab === "likes"
                 ? "font-bold border-black"
                 : "hover:border-black focus:border-black"
@@ -77,6 +77,7 @@ const Profile = () => {
             좋아요 50
           </button>
         </div>
+        <hr className="border-b border-gray-100 mb-8"></hr>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {activeTab === "uploads" &&
             allPosts.map((data) => (
