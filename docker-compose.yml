@@ -76,3 +76,6 @@ volumes:
   mydata:
   redisdata:
   mongodata:
+
+networks:
+  dekku-network:
