@@ -23,8 +23,7 @@ const products = {
     { name: '애플 매직 키보드', description: 'WITH NUMERIC KEYPAD', price: '149,000원', image: '/products_image/magickeyboard.PNG', modelPath: 'threedmodels/apple_magic_keyboard.glb', scale: [0.2, 0.2, 0.2] },
   ],
   '기타': [
-    { name: '자동차', description: '파란색 자동차', image: '/products_image/파란색자동차.png', modelPath: 'threedmodels/car_example.glb', scale: [0.2, 0.2, 0.2] },
-    { name: '마샬스피커', description: '마샬스피커', image: '/products_image/마샬스피커.png', modelPath: 'threedmodels/speaker_example.glb', scale: [0.04, 0.04, 0.04] },
+    { name: '자동차', description: '파란색 자동차', image: '/products_image/파란색자동차.png', modelPath: 'threedmodels/car_example.glb', scale: [0.2, 0.2, 0.2] },    
     { name: 'SSAFY 명패', description: '싸피인의 필수품', image: '/products_image/nametag.png', modelPath: 'threedmodels/nametag.glb', scale: [2, 2, 2] },
   ],
 };
