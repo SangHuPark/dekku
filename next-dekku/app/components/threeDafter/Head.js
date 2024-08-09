@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import products from '../threeD/ProductList'; // 각 모델의 스케일 값을 가져오기 위해 제품 리스트를 임포트
 import SaveModal from './SaveModal'; // 모달 컴포넌트 임포트
-import '../../styles/ThreeDAfter.css'; // 글래스 모피즘 스타일
+import '../../styles/ThreeDafter.css'; // 글래스 모피즘 스타일
 
 const Head = ({ onSave, onShare }) => {
   const mountRef = useRef(null);
