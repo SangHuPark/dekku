@@ -7,7 +7,6 @@ import dekku.spring_dekku.domain.member.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -24,10 +23,8 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
 
-    @Value("${spring.jwt.accessExpiredTime}")
-    private Long accessExpiredTime;
-    @Value("${spring.jwt.refreshExpiredTime}")
-    private Long refreshExpiredTime;
+    private final Long accessExpiredTime = 3600000L;
+    private final Long refreshExpiredTime = 86400000L;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
