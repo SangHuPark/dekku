@@ -23,6 +23,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "데스크테리어 게시판 관련 API")
 @RestController
 @RequestMapping("/api/deskterior-post")
@@ -48,14 +50,14 @@ public class DeskteriorPostController {
             )
     })
     @PostMapping("")
-        public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorPostRequestDto request, @RequestHeader(name = "access") String token) {
+    public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorPostRequestDto request, @RequestHeader(name = "access") String token) {
 
         System.out.println("post");
 
         CreateDeskteriorPostResponseDto response = null;
         try {
             response = deskteriorPostService.addDeskteriorPost(token, request);
-        } catch(AccessTokenException e){
+        } catch (AccessTokenException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (MemberNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -73,29 +75,25 @@ public class DeskteriorPostController {
             @ApiResponse(
                     responseCode = "200",
                     description = "요청 완료",
+                    content = @Content(schema = @Schema(implementation = List.class))
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "게시글 없음",
                     content = @Content(schema = @Schema(implementation = FindDeskteriorPostResponseDto.class))
             ),
             @ApiResponse(
                     responseCode = "400",
                     description = "모든 게시글 조회 요청 실패"
             )
-            ,
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "존재하지 않는 계정"
-            )
     })
-//    @Parameter(name = "phoneNumber", description = "찾고 싶은 계정", example = "01012345678")
     @GetMapping("")
-    public ResponseEntity findAllDeskteriorPost(
-//            @RequestParam @Pattern(regexp = "^010\\d{8}$", message = "올바른 형식이 아닙니다.") String phoneNumber
-    ) {
-
-        return ResponseUtil.ok(
-                Success.builder()
-                        .data(deskteriorPostService.findAll())
-                        .build());
-
+    public ResponseEntity<List<FindDeskteriorPostResponseDto>> findAllDeskteriorPost() {
+        List<FindDeskteriorPostResponseDto> response = deskteriorPostService.findAll();
+        if(response == null || response.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Operation(summary = "단일 게시글 조회")
