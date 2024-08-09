@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLogin } from "../components/AuthContext";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 
 const OAuth2Redirect = () => {
   const router = useRouter();
@@ -12,7 +12,7 @@ const OAuth2Redirect = () => {
   useEffect(() => {
     const OAuth2JwtHeaderFetch = async () => {
       try {
-        const response = await fetch("http://localhost:8080/oauth2-jwt-header", {
+        const response = await fetch("http://localhost:8080/api/oauth2-jwt-header", {
           method: "POST",
           credentials: "include",
         });
@@ -44,4 +44,12 @@ const OAuth2Redirect = () => {
   return null; // 이 컴포넌트는 화면에 아무 것도 렌더링하지 않으므로 `null` 반환
 };
 
-export default OAuth2Redirect;
+const OAuth2RedirectWithSuspense = () => {
+  return (
+    <Suspense>
+      <OAuth2Redirect />
+    </Suspense>
+  );
+};
+
+export default OAuth2RedirectWithSuspense;

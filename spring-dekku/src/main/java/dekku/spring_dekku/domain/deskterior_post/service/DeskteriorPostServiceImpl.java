@@ -1,9 +1,14 @@
 package dekku.spring_dekku.domain.deskterior_post.service;
 
+import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
+import dekku.spring_dekku.domain.comment.model.entity.Comment;
+import dekku.spring_dekku.domain.comment.service.CommentService;
 import dekku.spring_dekku.domain.deskterior_post.exception.NotExistsDeskteriorPostException;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.request.CreateDeskteriorPostRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.CreateDeskteriorPostResponseDto;
+import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindByIdDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
+import dekku.spring_dekku.domain.deskterior_post.model.dto.response.UpdateDeskteriorPostRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPostImage;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
@@ -36,6 +41,8 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     private final ProductRepository productRepository;
 
     private final ModelMapper modelMapper;
+
+    private final CommentService commentService;
 
     @Override
     public CreateDeskteriorPostResponseDto addDeskteriorPost(String username, CreateDeskteriorPostRequestDto request) {
@@ -91,25 +98,85 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     }
 
     @Override
-    public List<DeskteriorPost> findAll() {
+    public List<FindDeskteriorPostResponseDto> findAll() {
         List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findAll();
 
         List<FindDeskteriorPostResponseDto> response = new ArrayList<>();
 
         for (DeskteriorPost deskteriorPost : deskteriorPosts) {
-            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost.getId(), deskteriorPost.getMember().getId());
-//            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost.getId(), deskteriorPost.getMember().getId());
+            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost);
             response.add(findDeskteriorPostResponseDto);
         }
 
-        return deskteriorPosts;
+        return response;
     }
 
-    @Override
-    public DeskteriorPost findById(Long id) {
+
+    public FindByIdDeskteriorPostResponseDto findById(Long id) {
         DeskteriorPost foundDeskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
 
-        return foundDeskteriorPost;
+        List<CommentResponseDto> commentResponseDtos = commentService.getCommentsByPostId(id);
+
+        return new FindByIdDeskteriorPostResponseDto(foundDeskteriorPost, commentResponseDtos);
+    }
+
+
+    // 게시물 업데이트 추가
+    @Override
+    public DeskteriorPost updateDeskteriorPost(Long id, UpdateDeskteriorPostRequestDto request) {
+        DeskteriorPost existingDeskteriorPost = deskteriorPostRepository.findById(id)
+                .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
+
+        DeskteriorAttributes deskteriorAttributes = DeskteriorAttributes.builder()
+                .style(request.style() != null ? request.style() : existingDeskteriorPost.getDeskteriorAttributes().getStyle())
+                .color(request.color() != null ? request.color() : existingDeskteriorPost.getDeskteriorAttributes().getColor())
+                .job(request.job() != null ? request.job() : existingDeskteriorPost.getDeskteriorAttributes().getJob())
+                .build();
+
+        DeskteriorPost updatedDeskteriorPost = DeskteriorPost.builder()
+                .member(existingDeskteriorPost.getMember())
+                .title(request.title() != null ? request.title() : existingDeskteriorPost.getTitle())
+                .content(request.content() != null ? request.content() : existingDeskteriorPost.getContent())
+                .deskteriorAttributes(deskteriorAttributes)
+                .openStatus(request.openStatus() != null ? request.openStatus() : existingDeskteriorPost.getOpenStatus())
+                .build();
+
+        if (request.deskteriorPostImages() != null && !request.deskteriorPostImages().isEmpty()) {
+            updatedDeskteriorPost.getDeskteriorPostImages().clear();
+            for (String imageUrl : request.deskteriorPostImages()) {
+                DeskteriorPostImage deskteriorPostImage = DeskteriorPostImage.builder()
+                        .deskteriorPost(updatedDeskteriorPost)
+                        .imageUrl(imageUrl)
+                        .build();
+                updatedDeskteriorPost.insertDeskteriorPostImages(deskteriorPostImage);
+            }
+        } else {
+            updatedDeskteriorPost.getDeskteriorPostImages().addAll(existingDeskteriorPost.getDeskteriorPostImages());
+        }
+
+        if (request.productIds() != null && !request.productIds().isEmpty()) {
+            updatedDeskteriorPost.getDeskteriorPostProductInfos().clear();
+            for (Long productId : request.productIds()) {
+                Product product = productRepository.findById(productId)
+                        .orElseThrow(() -> new NotExistsProductException(ErrorCode.NOT_EXISTS_PRODUCT));
+                DeskteriorPostProductInfo deskteriorPostProductInfo = DeskteriorPostProductInfo.builder()
+                        .deskteriorPost(updatedDeskteriorPost)
+                        .product(product)
+                        .build();
+                updatedDeskteriorPost.insertDeskteriorPostProductInfos(deskteriorPostProductInfo);
+            }
+        } else {
+            updatedDeskteriorPost.getDeskteriorPostProductInfos().addAll(existingDeskteriorPost.getDeskteriorPostProductInfos());
+        }
+
+        return deskteriorPostRepository.save(updatedDeskteriorPost);
+    }
+
+    @Override
+    public void deleteDeskteriorPost(Long id) {
+        DeskteriorPost existingDeskteriorPost = deskteriorPostRepository.findById(id)
+                .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
+        deskteriorPostRepository.delete(existingDeskteriorPost);
     }
 }

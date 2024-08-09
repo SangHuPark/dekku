@@ -1,19 +1,22 @@
-FROM openjdk:17-jdk-slim as builder
+FROM gradle:8.8.0-jdk17 AS build
 
-COPY gradlew .
-COPY gradle gradle
-COPY build.gradle .
-COPY settings.gradle .
-COPY src src
-RUN chmod +x ./gradlew
-RUN ./gradlew bootJar
+WORKDIR /app
 
+COPY build.gradle settings.gradle ./
+
+RUN gradle dependencies --no-daemon
+
+COPY . /app
+
+RUN gradle clean build --no-daemon -x test
+
+# JRE 이미지로 런타임 이미지 생성
 FROM openjdk:17-jdk-slim
-COPY --from=builder build/libs/*.jar app.jar
+
+WORKDIR /app
+
+COPY --from=build /app/build/libs/*.jar /app/dekku.jar
+
 EXPOSE 8080
-
-# ARG SERVER_MODE
-# RUN echo "$SERVER_MODE"
-# ENV SERVER_MODE=$SERVER_MODE
-
-ENTRYPOINT ["java", "-Duser.timezone=Asia/Seoul", "-jar", "/app.jar"]
+ENTRYPOINT [ "java" ]
+CMD [ "-jar", "dekku.jar" ]

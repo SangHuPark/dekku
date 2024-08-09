@@ -1,18 +1,7 @@
 package dekku.spring_dekku.domain.member.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Builder;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public class MemberUpdateDto {
-
-    private String nickname;
-    private Integer ageRange;
-    private String gender;
-
+@Builder
+public record MemberUpdateDto(String nickname, Integer ageRange, String gender, String imageUrl) {
 }

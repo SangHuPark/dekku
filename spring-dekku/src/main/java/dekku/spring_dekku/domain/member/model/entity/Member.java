@@ -1,6 +1,7 @@
 package dekku.spring_dekku.domain.member.model.entity;
 
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
+import dekku.spring_dekku.domain.follow.model.entity.Follow;
 import dekku.spring_dekku.global.model.entity.BaseEntity;
 import lombok.*;
 
@@ -31,7 +32,11 @@ public class Member extends BaseEntity {
 	@Column(nullable = false, unique = true)
 	private String nickname;
 
-	private String image_url;
+	@Column
+	private String introduction;
+
+	@Column(name = "image_url")
+	private String imageUrl;
 
     @Column(nullable = false)
 	private String role;
@@ -61,16 +66,14 @@ public class Member extends BaseEntity {
 	private List<Follow> followers = new ArrayList<>();
 
     @Builder
-	public Member(String username, String name, String email, String image_url, String role) {
+	public Member(String username, String name, String email, String imageUrl, String role) {
 		this.username = username;
 		this.email = email;
 		this.name = name;
 		this.nickname = this.name;
 		this.gender = "";
 		this.ageRange = 20;
-
-		// service 에서 처리
-		this.image_url = image_url;
+		this.imageUrl = imageUrl;
 		this.role = role;
 	}
 

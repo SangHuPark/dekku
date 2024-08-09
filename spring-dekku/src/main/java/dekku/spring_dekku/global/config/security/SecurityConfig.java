@@ -1,7 +1,7 @@
 package dekku.spring_dekku.global.config.security;
 
 import dekku.spring_dekku.domain.member.jwt.JWTFilter;
-import dekku.spring_dekku.domain.member.jwt.JWTUtil;
+import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.repository.RefreshRepository;
 import dekku.spring_dekku.domain.member.service.RefreshTokenService;
 import dekku.spring_dekku.domain.member.service.oauth2.CustomOAuth2UserService;
@@ -16,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,13 +24,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.Collections;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final JWTUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final RefreshTokenService refreshTokenService;
     private final RefreshRepository refreshRepository;
@@ -43,7 +47,7 @@ public class SecurityConfig {
 
                 .csrf(CsrfConfigurer::disable)
 
-                .formLogin((form) -> form.disable());
+                .formLogin(AbstractHttpConfigurer::disable);
 
                 //.cors(cors -> cors.disable());
 
@@ -52,7 +56,7 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .userInfoEndpoint((userinfo) -> userinfo
                                 .userService(customOAuth2UserService))
-                        .successHandler(new CustomOAuth2SuccessHandler(jwtUtil, refreshTokenService))
+                        .successHandler(new CustomOAuth2SuccessHandler(jwtTokenProvider, refreshTokenService))
                         .failureHandler(authenticationFailureHandler())
                         .permitAll());
 
@@ -64,24 +68,36 @@ public class SecurityConfig {
         // authorization
         httpSecurity.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/", "/login", "/logout", "/update", "/oauth2-jwt-header").permitAll()
-//                .requestMatchers("/users/login", "/posts/all", "posts/details/**").permitAll()
-                .requestMatchers("/admin").hasRole("ADMIN")
+//                .requestMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated());
 
         // 인가되지 않은 사용자에 대한 exception
         httpSecurity.exceptionHandling((exception) ->
                 exception
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        }));
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED)));
+        //CORS Issue
+        httpSecurity
+                .cors((cors) -> cors.configurationSource(request -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000/"));
+                    configuration.setAllowedMethods(Collections.singletonList("*"));
+                    configuration.setAllowCredentials(true);
+                    configuration.setAllowedHeaders(Collections.singletonList("*"));
+                    configuration.setMaxAge(3600L);
+
+                    configuration.setExposedHeaders(Collections.singletonList("access"));
+
+                    return configuration;
+                }));
 
         // jwt filter
         httpSecurity
-                .addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(new JWTFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         // custom logout filter 등록
         httpSecurity
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
+                .addFilterBefore(new CustomLogoutFilter(jwtTokenProvider, refreshRepository), LogoutFilter.class);
 
         // session stateless
         httpSecurity
@@ -95,12 +111,11 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**")
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/api/**")
                 .requestMatchers("/h2-console/**")
                 .requestMatchers(
                         "/auth/**", "/sign-up/**", "/verification/**",
-                        "/users/find-password", "/users/update-password", "/s3/**", "/test")
-                .requestMatchers("/api/**");
+                        "/users/find-password", "/users/update-password", "/s3/**", "/test");
     }
 
 
