@@ -50,7 +50,7 @@ services:
     ports:
       - '8080:8080'
     volumes:
-      - ./yml/application.yml:/app/config/application.yml
+      - /home/ubuntu/yml/application.yml:/app/config/application.yml
     restart: no
     networks:
       - dekku-network
