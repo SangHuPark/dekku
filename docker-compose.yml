@@ -50,7 +50,7 @@ services:
     ports:
       - '8080:8080'
     volumes:
-      - ./config/application.yml:/app/config/application.yml
+      - ./yml/application.yml:/app/config/application.yml
     restart: on-failure
     networks:
       - dekku-network
