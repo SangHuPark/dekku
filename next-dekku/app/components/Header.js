@@ -32,7 +32,7 @@ const Header = () => {
         </div>
 
         <nav className="flex items-center">
-          <ul className="flex items-center space-x-8 text-lg">
+          <ul className="flex items-center space-x-8">
             <li>
               <Link href="/threeD">3D 데꾸</Link>
             </li>

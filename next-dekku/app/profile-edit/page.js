@@ -57,36 +57,29 @@ export default function profileEdit() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 flex items-start space-x-8 border shadow-xl bg-white flex items-center mt-4">
-      <div className="p-4 border shadow">
-        <div className="relative w-48 h-48 mb-8">
-          <img
-            src={profileImage || "/profile_icon1.png"}
-            alt="Profile Preview"
-            className="w-48 h-48 object-cover rounded-full shadow-xl"
-          />
-        </div>
-        <label
-          htmlFor="profileImage"
-          className="block text-center bg-[#77C3EB] text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-blue-600"
-        >
-          프로필 이미지 변경
-        </label>
-        <input
-          type="file"
-          id="profileImage"
-          accept="image/*"
-          onChange={handleProfileImageChange}
-          className="hidden"
-        />
-      </div>
-
-      <div className="flex-1">
-        <h1 className="text-2xl font-bold mb-4">개인정보 수정</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex flex-col mb-4">
-            <label htmlFor="nickname" className="text-lg font-medium mb-2">
-              닉네임:
+    <div className="max-w-sm mx-auto p-6 mt-2">
+      <div>
+        <form className="space-y-4">
+          <div className="flex justify-center">
+            <div className="w-32 h-32 rounded-full border">
+              <img
+                src={profileImage || "/profile_icon1.png"}
+                alt="Profile Preview"
+                className="w-32 h-32 object-cover rounded-full cursor-pointer"
+                onClick={() => document.getElementById("profileImage").click()}
+              />
+            </div>
+            <input
+              type="file"
+              id="profileImage"
+              accept="image/*"
+              onChange={handleProfileImageChange}
+              className="hidden"
+            />
+          </div>
+          <div className="flex flex-col space-y-2">
+            <label htmlFor="nickname" className="text-sm font-medium text-[#828c94]">
+              닉네임
             </label>
             <input
               type="text"
@@ -98,15 +91,15 @@ export default function profileEdit() {
             />
           </div>
 
-          <div className="flex flex-col mb-4">
-            <label htmlFor="introduction" className="text-lg font-medium mb-2">
-              한 줄 소개:
+          <div className="flex flex-col space-y-2">
+            <label htmlFor="introduction" className="text-sm font-medium text-[#828c94]">
+              1줄 소개
             </label>
             <textarea
               id="introduction"
               value={introduction}
               onChange={(e) => setIntroduction(e.target.value)}
-              rows="4"
+              rows="1"
               required
               className="border rounded-lg px-3 py-2"
             />
@@ -114,9 +107,9 @@ export default function profileEdit() {
 
           <button
             type="submit"
-            className=" bg-[#77C3EB] text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+            className="w-full bg-[#35C5F0] text-white text-sm font-bold py-3 px-4 rounded hover:bg-[#009FCE]"
           >
-            수정하기
+            완료
           </button>
         </form>
       </div>
