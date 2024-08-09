@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useLogin } from "../components/AuthContext";
 
-export default function profileEdit() {
+export default function ProfileEdit() {
   const [profileImage, setProfileImage] = useState("");
   const [nickname, setNickname] = useState("");
   const [introduction, setIntroduction] = useState("");
@@ -13,7 +13,7 @@ export default function profileEdit() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/user");
+        const response = await fetch("http://localhost:8080/api/users");
         if (response.ok) {
           const data = await response.json();
           setProfileImage(data.profileImage || "");
