@@ -50,7 +50,7 @@ const CreatePage = () => {
         body: JSON.stringify({
           id: "memberId", // 고유 식별자. 필요에 따라 변경하세요. 로그인 정보에서 유저아이디 가져와서 보내기
           fileCount: 2,
-          directory: "3d"
+          directory: "post"
         })
       });
 
@@ -128,13 +128,13 @@ const CreatePage = () => {
         className="flex flex-col w-3/4 space-y-5"
       >
         <div className="flex flex-row w-full space-x-5">
-          <div className="flex-1 flex justify-center items-center border border-gray-300 bg-gray-200 p-8">
+          <div className="flex-1 flex justify-center items-center">
             <label
               htmlFor="imageUpload"
               className="cursor-pointer flex flex-col items-center"
             >
               {image ? (
-                <img src={image} alt="Uploaded" className="w-full h-auto" />
+                <img src={image} alt="Uploaded" className="w-full h-auto rounded-lg" />
               ) : (
                 <div className="text-center">
                   <p>이곳에 사진을 올려주세요</p>

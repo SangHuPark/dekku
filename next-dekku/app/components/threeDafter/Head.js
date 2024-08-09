@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import products from '../threeD/ProductList'; // 각 모델의 스케일 값을 가져오기 위해 제품 리스트를 임포트
 import SaveModal from './SaveModal'; // 모달 컴포넌트 임포트
-import '../../styles/ThreeDAfter.css'; // 글래스 모피즘 스타일
+import '../../styles/ThreeDafter.css'; // 글래스 모피즘 스타일
 
 const Head = ({ onSave, onShare }) => {
   const mountRef = useRef(null);
@@ -119,10 +119,12 @@ const Head = ({ onSave, onShare }) => {
   };
 
   const handleSave = async () => {
-    // 로컬 스토리지에서 씬 상태 가져오기
+    // 로컬 스토리지에서 씬 상태와 썸네일 가져오기
     const storedSceneState = localStorage.getItem('sceneState');
-    if (!storedSceneState) {
-      console.error("No scene state found in localStorage.");
+    const storedThumbnail = localStorage.getItem('thumbnail');
+
+    if (!storedSceneState || !storedThumbnail) {
+      console.error("No scene state or thumbnail found in localStorage.");
       return;
     }
 
@@ -136,7 +138,7 @@ const Head = ({ onSave, onShare }) => {
         },
         body: JSON.stringify({
           id: "memberId", // 고유 식별자. 필요에 따라 변경하세요. 로그인 정보에서 유저아이디 가져와서 보내기
-          fileCount: 1,
+          fileCount: 1,  // 씬 상태와 썸네일, 두 개의 파일 업로드
           directory: "3d"
         })
       });
@@ -148,34 +150,58 @@ const Head = ({ onSave, onShare }) => {
       }
 
       const presignedData = await presignedResponse.json();
-      presignedUrl = presignedData.data.preSignedUrl[0];
+      presignedUrl = presignedData.data.preSignedUrl;
 
-      console.log("Presigned URL:", presignedUrl);
+      console.log("Presigned URLs:", presignedUrl);
     } catch (error) {
       console.error("Failed to fetch presigned URL:", error);
+      return;
     }
 
     // S3에 파일 업로드
-    const sceneStateBlob = new Blob([storedSceneState], { type: 'application/json' });
-    const uploadResponse = await fetch(presignedUrl, {
-      method: "PUT",
-      headers: {
-        "Content-Type": 'application/json'
-      },
-      body: sceneStateBlob
-    });
+    try {
+      const sceneStateBlob = new Blob([storedSceneState], { type: 'application/json' });
+      const thumbnailBlob = new Blob([storedThumbnail.split(',')[1]], { type: 'image/png' }); // 썸네일 데이터 처리
 
-    if (!uploadResponse.ok) {
-      const errorMessage = await uploadResponse.text();
-      console.error("Error uploading scene state:", errorMessage);
-      throw new Error(errorMessage);
+      const uploadSceneResponse = await fetch(presignedUrl[0], {
+        method: "PUT",
+        headers: {
+          "Content-Type": 'application/json'
+        },
+        body: sceneStateBlob
+      });
+
+      if (!uploadSceneResponse.ok) {
+        const errorMessage = await uploadSceneResponse.text();
+        console.error("Error uploading scene state:", errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      const uploadThumbnailResponse = await fetch(presignedUrl[1], {
+        method: "PUT",
+        headers: {
+          "Content-Type": 'image/png'
+        },
+        body: thumbnailBlob
+      });
+
+      if (!uploadThumbnailResponse.ok) {
+        const errorMessage = await uploadThumbnailResponse.text();
+        console.error("Error uploading thumbnail:", errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      const uploadedFileUrls = presignedUrl.map(url => url.split("?")[0]);
+      console.log("Uploaded file URLs:", uploadedFileUrls);
+
+      // 업로드된 파일 URL 사용
+      setImageUrl(uploadedFileUrls[1]); // 썸네일 URL을 설정
+
+      setIsModalOpen(true); // 모달 열기
+    } catch (error) {
+      console.error("Failed to upload files:", error);
+      return;
     }
-
-    const uploadedFileUrl = presignedUrl.split("?")[0];
-    console.log("Uploaded file URL:", uploadResponse.url);
-    setImageUrl(uploadedFileUrl);
-
-    setIsModalOpen(true); // 모달 열기
   };
 
   const handleShare = async () => {
@@ -199,17 +225,16 @@ const Head = ({ onSave, onShare }) => {
     </div>
     <div ref={mountRef} className="glass-container w-full" style={{ height: '100%', overflow: 'hidden' }}></div>
 
-
-      <SaveModal 
-        isOpen={isModalOpen} 
-        onClose={() => {
-          setIsModalOpen(false);
-          if (onSave) {
-            onSave();
-          }
-        }} 
-      />
-    </div>
+    <SaveModal 
+      isOpen={isModalOpen} 
+      onClose={() => {
+        setIsModalOpen(false);
+        if (onSave) {
+          onSave();
+        }
+      }} 
+    />
+  </div>
   );
 };
 
