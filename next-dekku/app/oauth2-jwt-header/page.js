@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLogin } from "../components/AuthContext";
@@ -12,10 +12,13 @@ const OAuth2Redirect = () => {
   useEffect(() => {
     const OAuth2JwtHeaderFetch = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/oauth2-jwt-header", {
-          method: "POST",
-          credentials: "include",
-        });
+        const response = await fetch(
+          "http://localhost:8080/api/oauth2-jwt-header",
+          {
+            method: "POST",
+            credentials: "include",
+          }
+        );
 
         console.log(response);
 
