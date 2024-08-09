@@ -1,15 +1,13 @@
-FROM node:20.15.1-alpine AS build
+FROM node:18.17.0-alpine3.18
 
-# 작업 폴더를 만들고 npm 설치
-WORKDIR /app
+ENV PORT 3000
 
-COPY package.json .
-COPY package-lock.json .
+# Copy build output files
+COPY ./public ./public
+COPY ./.next/standalone ./
+COPY ./.next/static ./.next/static
 
-RUN npm ci
+EXPOSE $PORT
 
-# 소스를 작업폴더로 복사
-COPY . /app
-
-# 빌드
-RUN npm run build
+# Running the app
+ENTRYPOINT [ "node", "server.js" ]

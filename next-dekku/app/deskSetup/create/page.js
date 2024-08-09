@@ -3,9 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation'; // useRouter를 next/navigation에서 임포트
 import PostModal from '../../components/deskSetup/PostModal'; // 모달 컴포넌트 임포트
-import DeskSetupPage from "../page";
 
-const createpage = () => {
+const CreatePage = () => {
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -123,7 +122,7 @@ const createpage = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto flex justify-center">
+    <div className="max-w-6xl mx-auto flex justify-center items-center mt-20">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col w-3/4 space-y-5"
@@ -251,4 +250,4 @@ const createpage = () => {
   );
 }
 
-export default createpage;
+export default CreatePage;

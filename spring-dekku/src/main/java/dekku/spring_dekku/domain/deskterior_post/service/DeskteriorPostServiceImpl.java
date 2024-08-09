@@ -1,8 +1,12 @@
 package dekku.spring_dekku.domain.deskterior_post.service;
 
+import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
+import dekku.spring_dekku.domain.comment.model.entity.Comment;
+import dekku.spring_dekku.domain.comment.service.CommentService;
 import dekku.spring_dekku.domain.deskterior_post.exception.NotExistsDeskteriorPostException;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.request.CreateDeskteriorPostRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.CreateDeskteriorPostResponseDto;
+import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindByIdDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.UpdateDeskteriorPostRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
@@ -37,6 +41,8 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     private final ProductRepository productRepository;
 
     private final ModelMapper modelMapper;
+
+    private final CommentService commentService;
 
     @Override
     public CreateDeskteriorPostResponseDto addDeskteriorPost(String username, CreateDeskteriorPostRequestDto request) {
@@ -92,27 +98,29 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     }
 
     @Override
-    public List<DeskteriorPost> findAll() {
+    public List<FindDeskteriorPostResponseDto> findAll() {
         List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findAll();
 
         List<FindDeskteriorPostResponseDto> response = new ArrayList<>();
 
         for (DeskteriorPost deskteriorPost : deskteriorPosts) {
-            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost.getId(), deskteriorPost.getMember().getId());
-//            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost.getId(), deskteriorPost.getMember().getId());
+            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost);
             response.add(findDeskteriorPostResponseDto);
         }
 
-        return deskteriorPosts;
+        return response;
     }
 
-    @Override
-    public DeskteriorPost findById(Long id) {
+
+    public FindByIdDeskteriorPostResponseDto findById(Long id) {
         DeskteriorPost foundDeskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
 
-        return foundDeskteriorPost;
+        List<CommentResponseDto> commentResponseDtos = commentService.getCommentsByPostId(id);
+
+        return new FindByIdDeskteriorPostResponseDto(foundDeskteriorPost, commentResponseDtos);
     }
+
 
     // 게시물 업데이트 추가
     @Override
@@ -163,5 +171,12 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
         }
 
         return deskteriorPostRepository.save(updatedDeskteriorPost);
+    }
+
+    @Override
+    public void deleteDeskteriorPost(Long id) {
+        DeskteriorPost existingDeskteriorPost = deskteriorPostRepository.findById(id)
+                .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
+        deskteriorPostRepository.delete(existingDeskteriorPost);
     }
 }
