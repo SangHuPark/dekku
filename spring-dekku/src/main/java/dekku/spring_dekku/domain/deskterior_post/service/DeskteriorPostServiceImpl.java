@@ -10,7 +10,11 @@ import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteri
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.UpdateDeskteriorPostRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPostImage;
+import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.Color;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
+import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.Job;
+import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.Style;
+import dekku.spring_dekku.domain.deskterior_post.model.entity.code.OpenStatus;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostImageRepository;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostRepository;
 import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
@@ -112,7 +116,7 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     @Transactional
     public List<FindDeskteriorPostResponseDto> findAll() {
         List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findAll();
-        if(deskteriorPosts.isEmpty()) {
+        if (deskteriorPosts.isEmpty()) {
             throw new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST);
         }
 
@@ -137,61 +141,87 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     }
 
 
-    // 게시물 업데이트 추가
     @Override
-    public DeskteriorPost updateDeskteriorPost(Long id, UpdateDeskteriorPostRequestDto request) {
+    @Transactional
+    public DeskteriorPost updateDeskteriorPost(Long id, String token, UpdateDeskteriorPostRequestDto request) {
+        String username = extractUsernameFromToken(token);
+        Member member = memberRepository.findByUsername(username);
+        if (member == null) {
+            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
+        }
         DeskteriorPost existingDeskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
 
-        DeskteriorAttributes deskteriorAttributes = DeskteriorAttributes.builder()
-                .style(request.style() != null ? request.style() : existingDeskteriorPost.getDeskteriorAttributes().getStyle())
-                .color(request.color() != null ? request.color() : existingDeskteriorPost.getDeskteriorAttributes().getColor())
-                .job(request.job() != null ? request.job() : existingDeskteriorPost.getDeskteriorAttributes().getJob())
-                .build();
+        if (!existingDeskteriorPost.getMember().getId().equals(member.getId())) {
+            throw new AccessTokenException("게시글을 수정할 권한이 없습니다.");
+        }
 
-        DeskteriorPost updatedDeskteriorPost = DeskteriorPost.builder()
-                .member(existingDeskteriorPost.getMember())
-                .title(request.title() != null ? request.title() : existingDeskteriorPost.getTitle())
-                .content(request.content() != null ? request.content() : existingDeskteriorPost.getContent())
-                .deskteriorAttributes(deskteriorAttributes)
-                .openStatus(request.openStatus() != null ? request.openStatus() : existingDeskteriorPost.getOpenStatus())
-                .build();
+        if (request.title() != null) {
+            existingDeskteriorPost.title = request.title();
+        }
+        if (request.content() != null) {
+            existingDeskteriorPost.content = request.content();
+        }
+
+        DeskteriorAttributes existingAttributes = existingDeskteriorPost.getDeskteriorAttributes();
+        if (request.style() != null) {
+            existingAttributes.style = request.style();
+        }
+        if (request.color() != null) {
+            existingAttributes.color = request.color();
+        }
+        if (request.job() != null) {
+            existingAttributes.job = request.job();
+        }
+        if (request.openStatus() != null) {
+            existingDeskteriorPost.openStatus = request.openStatus();
+        }
 
         if (request.deskteriorPostImages() != null && !request.deskteriorPostImages().isEmpty()) {
-            updatedDeskteriorPost.getDeskteriorPostImages().clear();
+            existingDeskteriorPost.getDeskteriorPostImages().clear();
             for (String imageUrl : request.deskteriorPostImages()) {
                 DeskteriorPostImage deskteriorPostImage = DeskteriorPostImage.builder()
-                        .deskteriorPost(updatedDeskteriorPost)
+                        .deskteriorPost(existingDeskteriorPost)
                         .imageUrl(imageUrl)
                         .build();
-                updatedDeskteriorPost.insertDeskteriorPostImages(deskteriorPostImage);
+                existingDeskteriorPost.insertDeskteriorPostImages(deskteriorPostImage);
             }
-        } else {
-            updatedDeskteriorPost.getDeskteriorPostImages().addAll(existingDeskteriorPost.getDeskteriorPostImages());
         }
 
         if (request.productIds() != null && !request.productIds().isEmpty()) {
-            updatedDeskteriorPost.getDeskteriorPostProductInfos().clear();
+            existingDeskteriorPost.getDeskteriorPostProductInfos().clear();
             for (Long productId : request.productIds()) {
                 Product product = productRepository.findById(productId)
                         .orElseThrow(() -> new NotExistsProductException(ErrorCode.NOT_EXISTS_PRODUCT));
                 DeskteriorPostProductInfo deskteriorPostProductInfo = DeskteriorPostProductInfo.builder()
-                        .deskteriorPost(updatedDeskteriorPost)
+                        .deskteriorPost(existingDeskteriorPost)
                         .product(product)
                         .build();
-                updatedDeskteriorPost.insertDeskteriorPostProductInfos(deskteriorPostProductInfo);
+                existingDeskteriorPost.insertDeskteriorPostProductInfos(deskteriorPostProductInfo);
             }
-        } else {
-            updatedDeskteriorPost.getDeskteriorPostProductInfos().addAll(existingDeskteriorPost.getDeskteriorPostProductInfos());
         }
 
-        return deskteriorPostRepository.save(updatedDeskteriorPost);
+        return deskteriorPostRepository.save(existingDeskteriorPost);
     }
 
     @Override
-    public void deleteDeskteriorPost(Long id) {
+    public void deleteDeskteriorPost(Long id, String token) {
+        String username = extractUsernameFromToken(token);
+        Member member = memberRepository.findByUsername(username);
+        if (member == null) {
+            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
+        }
         DeskteriorPost existingDeskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
+
+        if (!existingDeskteriorPost.getMember().getId().equals(member.getId())) {
+            throw new AccessTokenException("게시글을 삭제할 권한이 없습니다.");
+        }
+
         deskteriorPostRepository.delete(existingDeskteriorPost);
+    }
+
+    private String extractUsernameFromToken(String token) {
+        return jwtTokenProvider.getUsername(token);
     }
 }

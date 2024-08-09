@@ -13,15 +13,15 @@ public class DeskteriorAttributes {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "style", length = 20)
-    private Style style;
+    public Style style;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "color", length = 20)
-    private Color color;
+    public Color color;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "job", length = 20)
-    private Job job;
+    public Job job;
 
     @Builder
     public DeskteriorAttributes(Style style, Color color, Job job) {
