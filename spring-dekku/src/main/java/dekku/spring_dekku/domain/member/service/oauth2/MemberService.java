@@ -1,18 +1,15 @@
 package dekku.spring_dekku.domain.member.service.oauth2;
 
-import dekku.spring_dekku.domain.member.model.dto.MemberDto;
+import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
 import dekku.spring_dekku.domain.member.model.dto.MemberUpdateDto;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
 import dekku.spring_dekku.domain.member.service.RedisService;
+import dekku.spring_dekku.global.exception.AccessTokenException;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -23,48 +20,27 @@ public class MemberService {
     private final OAuthUnlinkService oAuthUnlinkService;
 
     @Transactional
-    public void updateUser(MemberUpdateDto request, String token) throws Exception {
+    public void updateMember(MemberUpdateDto request, String token) throws Exception {
         if(!jwtTokenProvider.validateToken(token)){
-            throw new Exception("JWT Token 만료");
+            throw new AccessTokenException("JWT Token 만료");
         }
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
+        Member member = memberRepository.findByUsername(username);
+        if (member == null) {
+            throw new MemberNotFoundException("정보를 찾을 수 없습니다.");
+        }
         memberRepository.update(username, request.nickname(), request.ageRange(), request.gender(), request.imageUrl());
     }
 
     @Transactional
-    public List<Member> getAllMembers() {
-        return memberRepository.findAll();
-    }
-
-    @Transactional
-    public Optional<Member> getMemberById(Long id) {
-        return memberRepository.findById(id);
-    }
-
-    @Transactional
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
-    }
-
-    @Transactional
-    public MemberDto getMemberDtoByEmail(String email) {
-
-        Member member = memberRepository.findByEmail(email);
-        ModelMapper modelMapper = new ModelMapper();
-        MemberDto memberDto = modelMapper.map(member, MemberDto.class);
-
-        return memberDto;
-    }
-
-    @Transactional
-    public void delete(String requestAccessToken) {
+    public void deleteMember(String requestAccessToken) {
         if (requestAccessToken == null || requestAccessToken.isEmpty()) {
-            throw new RuntimeException("액세스 토큰이 없습니다.");
+            throw new AccessTokenException("액세스 토큰이 없습니다.");
         }
         String username = jwtTokenProvider.getKeyFromClaims(requestAccessToken, "username");
         Member member = memberRepository.findByUsername(username);
         if (member == null) {
-            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
         }
 
         // Redis에서 Refresh Token 삭제
@@ -94,4 +70,29 @@ public class MemberService {
         memberRepository.delete(member);
         jwtTokenProvider.invalidateToken(requestAccessToken);
     }
+
+//    @Transactional
+//    public List<Member> getAllMembers() {
+//        return memberRepository.findAll();
+//    }
+//
+//    @Transactional
+//    public Optional<Member> getMemberById(Long id) {
+//        return memberRepository.findById(id);
+//    }
+//
+//    @Transactional
+//    public void deleteMember(Long id) {
+//        memberRepository.deleteById(id);
+//    }
+//
+//    @Transactional
+//    public MemberDto getMemberDtoByEmail(String email) {
+//
+//        Member member = memberRepository.findByEmail(email);
+//        ModelMapper modelMapper = new ModelMapper();
+//        MemberDto memberDto = modelMapper.map(member, MemberDto.class);
+//
+//        return memberDto;
+//    }
 }

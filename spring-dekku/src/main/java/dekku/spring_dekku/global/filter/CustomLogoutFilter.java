@@ -1,7 +1,7 @@
 package dekku.spring_dekku.global.filter;
 
 import dekku.spring_dekku.domain.member.jwt.CookieUtil;
-import dekku.spring_dekku.domain.member.jwt.JWTUtil;
+import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.repository.RefreshRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class CustomLogoutFilter extends GenericFilterBean {
 
-    private final JWTUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
     private final RefreshRepository refreshRepository;
 
     @Override
@@ -59,7 +59,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        String category = jwtUtil.getCategory(refresh);
+        String category = jwtTokenProvider.getCategory(refresh);
 
         // not refresh token
         if(!category.equals("refresh")){
@@ -78,7 +78,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         // logout
         refreshRepository.deleteByRefresh(refresh);
 
-        Cookie cookie = CookieUtil.createCookie("refresh", null, 0);
+        Cookie cookie = CookieUtil.createCookie("refresh", null, 0L);
         response.addCookie(cookie);
         response.setStatus(HttpServletResponse.SC_OK);
     }

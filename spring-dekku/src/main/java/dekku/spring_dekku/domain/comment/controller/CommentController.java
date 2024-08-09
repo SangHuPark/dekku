@@ -45,7 +45,7 @@ public class CommentController {
             )
     })
     @GetMapping("/{postId}")
-    public ResponseEntity findDeskteriorPost(@PathVariable Long postId) {
+    public ResponseEntity<?> findDeskteriorPost(@PathVariable Long postId) {
         FindByIdDeskteriorPostResponseDto response = deskteriorPostService.findById(postId);
 
         return ResponseUtil.ok(
@@ -53,6 +53,7 @@ public class CommentController {
                         .data(response)
                         .build());
     }
+
     @Operation(summary = "댓글 작성")
     @ApiResponses({
             @ApiResponse(
