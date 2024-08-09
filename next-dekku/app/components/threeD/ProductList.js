@@ -20,7 +20,7 @@ const products = {
   ],
   '키보드': [    
     { name: '로지텍 텐키리스 키보드', description: 'Logitech G913 Wireless TKL', price: '199,000원', image: '/products_image/logitech_g913.PNG', modelPath: 'threedmodels/logicool_g913_tkl_gaming_keyboard.glb', scale: [3, 3, 3] },
-    { name: '애플 매직 키보드', description: 'WITH NUMERIC KEYPAD', price: '149,000원', image: '/products_image/magickeyboard.PNG', modelPath: 'threedmodels/apple_magic_keyboard.glb', scale: [0.2, 0.2, 0.2] },
+    { name: '애플 매직 키보드', description: 'WITH NUMERIC KEYPAD', price: '149,000원', image: '/products_image/magickeyboard.PNG', modelPath: 'threedmodels/apple_magic_keyboard.glb', scale: [0.2, 0.4, 0.2] },
   ],
   '기타': [
     { name: '자동차', description: '파란색 자동차', image: '/products_image/파란색자동차.png', modelPath: 'threedmodels/car_example.glb', scale: [0.2, 0.2, 0.2] },    
