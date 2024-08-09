@@ -2,6 +2,7 @@ package dekku.spring_dekku.domain.member.model.entity;
 
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.follow.model.entity.Follow;
+import dekku.spring_dekku.domain.like.model.entity.Like;
 import dekku.spring_dekku.global.model.entity.BaseEntity;
 import lombok.*;
 

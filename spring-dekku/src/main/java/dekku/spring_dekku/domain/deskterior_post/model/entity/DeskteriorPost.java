@@ -3,7 +3,7 @@ package dekku.spring_dekku.domain.deskterior_post.model.entity;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.code.OpenStatus;
 import dekku.spring_dekku.domain.member.model.entity.Member;
-import dekku.spring_dekku.domain.member.model.entity.Like;
+import dekku.spring_dekku.domain.like.model.entity.Like;
 import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
 import dekku.spring_dekku.global.model.entity.BaseEntity;
 import jakarta.persistence.*;

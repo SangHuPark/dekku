@@ -1,6 +1,7 @@
-package dekku.spring_dekku.domain.member.model.entity;
+package dekku.spring_dekku.domain.like.model.entity;
 
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
+import dekku.spring_dekku.domain.member.model.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
