@@ -69,6 +69,7 @@ public class CommentService {
                     .orElseThrow(() -> new MemberNotFoundException("Member not found with id: " + memberId));
 
             CommentResponseDto commentResponseDto = new CommentResponseDto(
+                    comment.getCommentId(),
                     comment.getContent(),
                     member.getNickname(),
                     member.getImageUrl()
