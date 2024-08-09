@@ -1,7 +1,6 @@
 package dekku.spring_dekku.domain.deskterior_post.service;
 
 import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
-import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.comment.service.CommentService;
 import dekku.spring_dekku.domain.deskterior_post.exception.NotExistsDeskteriorPostException;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.request.CreateDeskteriorPostRequestDto;
@@ -14,16 +13,20 @@ import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPostImag
 import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostImageRepository;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostRepository;
+import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
+import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
 import dekku.spring_dekku.domain.product.exception.NotExistsProductException;
 import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
 import dekku.spring_dekku.domain.product.model.entity.Product;
 import dekku.spring_dekku.domain.product.repository.ProductRepository;
+import dekku.spring_dekku.global.exception.AccessTokenException;
 import dekku.spring_dekku.global.status.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +47,18 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
 
     private final CommentService commentService;
 
-    @Override
-    public CreateDeskteriorPostResponseDto addDeskteriorPost(String username, CreateDeskteriorPostRequestDto request) {
+    private final JwtTokenProvider jwtTokenProvider;
 
+    @Override
+    public CreateDeskteriorPostResponseDto addDeskteriorPost(String token, CreateDeskteriorPostRequestDto request) {
+        if (token == null || token.isEmpty()) {
+            throw new AccessTokenException("액세스 토큰이 없습니다.");
+        }
+        String username = jwtTokenProvider.getUsername(token);
         Member member = memberRepository.findByUsername(username);
+        if (member == null) {
+            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
+        }
 
         // Embeddable 생성
         DeskteriorAttributes deskteriorAttributes = CreateDeskteriorPostRequestDto.createDeskteriorAttributes(
@@ -98,8 +109,12 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     }
 
     @Override
+    @Transactional
     public List<FindDeskteriorPostResponseDto> findAll() {
         List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findAll();
+        if(deskteriorPosts.isEmpty()) {
+            throw new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST);
+        }
 
         List<FindDeskteriorPostResponseDto> response = new ArrayList<>();
 
