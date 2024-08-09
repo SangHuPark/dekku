@@ -5,7 +5,11 @@ import dekku.spring_dekku.domain.comment.exception.UnauthorizedCommentDeleteExce
 import dekku.spring_dekku.domain.comment.model.dto.CommentDto;
 import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.comment.service.CommentService;
+import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindByIdDeskteriorPostResponseDto;
+import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
 import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
+import dekku.spring_dekku.global.model.dto.Success;
+import dekku.spring_dekku.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,6 +30,7 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final DeskteriorPostService deskteriorPostService;
 
     @Operation(summary = "게시글의 댓글 전체 목록 불러오기")
     @ApiResponses({
@@ -40,12 +45,13 @@ public class CommentController {
             )
     })
     @GetMapping("/{postId}")
-    public ResponseEntity<List<Comment>> getComments(@PathVariable(name = "postId") Long postId) {
-        List<Comment> comments = commentService.findByPostId(postId);
-        if (comments.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(comments);
+    public ResponseEntity<?> findDeskteriorPost(@PathVariable Long postId) {
+        FindByIdDeskteriorPostResponseDto response = deskteriorPostService.findById(postId);
+
+        return ResponseUtil.ok(
+                Success.builder()
+                        .data(response)
+                        .build());
     }
 
     @Operation(summary = "댓글 작성")

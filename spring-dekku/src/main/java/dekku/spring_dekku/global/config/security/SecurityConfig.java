@@ -68,8 +68,7 @@ public class SecurityConfig {
         // authorization
         httpSecurity.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/", "/login", "/logout", "/update", "/oauth2-jwt-header").permitAll()
-//                .requestMatchers("/users/login", "/posts/all", "posts/details/**").permitAll()
-                .requestMatchers("/admin").hasRole("ADMIN")
+//                .requestMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated());
 
         // 인가되지 않은 사용자에 대한 exception
