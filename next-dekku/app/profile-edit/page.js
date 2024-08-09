@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-export default function EditUser() {
+export default function profileEdit() {
   const [profileImage, setProfileImage] = useState("");
   const [nickname, setNickname] = useState("");
   const [introduction, setIntroduction] = useState("");

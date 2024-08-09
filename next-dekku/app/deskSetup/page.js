@@ -140,7 +140,7 @@ export default function DeskSetupPage() {
 
   return (
     <div className="">
-      <div className="bg-[#F6F7FB] pt-6 pb-6">
+      <div className="bg-[#F6F7FB] py-6 px-4">
         <div className="max-w-6xl mx-auto">
           <h1 className="font-bold text-3xl mt-3 mb-3">
             최근 데스크 셋업 인기 순위

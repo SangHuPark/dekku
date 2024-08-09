@@ -13,7 +13,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="px-4">
+    <div className="px-4 mt-4">
       <section className="max-w-6xl mx-auto">
         <div className="flex">
           <div className="w-1/3 py-12">
