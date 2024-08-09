@@ -7,6 +7,8 @@ import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteri
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.UpdateDeskteriorPostRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
+import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
+import dekku.spring_dekku.global.exception.AccessTokenException;
 import dekku.spring_dekku.global.model.dto.Success;
 import dekku.spring_dekku.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,17 +35,31 @@ public class DeskteriorPostController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201",
-                    description = "게시글 저장 성공"
-//                    content = @Content(schema = @Schema(implementation = CreateDeskteriorPostResponseDto.class))
+                    description = "게시글 저장 성공",
+                    content = @Content(schema = @Schema(implementation = CreateDeskteriorPostResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "게시자의 정보가 없거나 토큰 만료됨"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "만료된 토큰으로 게시글 작성 시도"
             )
     })
     @PostMapping("")
-//    public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorPostRequestDto request)
-public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorPostRequestDto request) {
+        public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorPostRequestDto request, @RequestHeader(name = "access") String token) {
 
         System.out.println("post");
 
-        CreateDeskteriorPostResponseDto response = deskteriorPostService.addDeskteriorPost("tkdgn407", request);
+        CreateDeskteriorPostResponseDto response = null;
+        try {
+            response = deskteriorPostService.addDeskteriorPost(token, request);
+        } catch(AccessTokenException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        } catch (MemberNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
 
         return ResponseUtil.created(
                 Success.builder()

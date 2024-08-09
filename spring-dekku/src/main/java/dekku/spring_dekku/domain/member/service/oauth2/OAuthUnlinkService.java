@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class OAuthUnlinkService {
 
-    @Value("${spring.security.oauth2.client.provider.kakao.token-uri}")
+    @Value("${spring.security.oauth2.client.provider.kakao.unlink-uri}")
     private String KAKAO_URL;
     @Value("${spring.security.oauth2.client.provider.naver.token-uri}")
     private String NAVER_URL;

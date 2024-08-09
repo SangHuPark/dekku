@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function DeskSetupCard({ data, isTopPost = false }) {
+export default function DeskSetupCard({ data, isNoProfilePost = false }) {
   return (
     <Link href={`/deskSetup/${data.id}`}>
       <div className="rounded-lg py-2 w-auto">
@@ -14,7 +14,7 @@ export default function DeskSetupCard({ data, isTopPost = false }) {
             조회수 {data.views}
           </div>
         </div>
-        {!isTopPost && (
+        {!isNoProfilePost && (
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
               <img

@@ -5,11 +5,8 @@ import dekku.spring_dekku.domain.comment.exception.UnauthorizedCommentDeleteExce
 import dekku.spring_dekku.domain.comment.model.dto.CommentDto;
 import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.comment.service.CommentService;
-import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindByIdDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
 import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
-import dekku.spring_dekku.global.model.dto.Success;
-import dekku.spring_dekku.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
