@@ -11,7 +11,7 @@ const Logout = () => {
   useEffect(() => {
     const fetchLogout = async () => {
       try {
-        const response = await fetch("http://localhost:8080/logout", {
+        const response = await fetch("http://dekku.co.kr:8080/logout", {
           method: "POST",
           credentials: "include",
         });

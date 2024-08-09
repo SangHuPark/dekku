@@ -28,7 +28,7 @@ const ThreeDAfter = () => {
   };
 
   const handleShare = () => {
-    router.push('/deskSetup/create');
+    // router.push('/deskSetup/create1');
   };
 
   const recommendedPosts = [
