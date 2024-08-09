@@ -17,7 +17,7 @@ export default function HomePage() {
 
   return (
     <div className="h-[calc(100vh-8rem)] overflow-y-scroll snap-y snap-mandatory">
-      <section className="h-[calc(100vh-18rem)] snap-start flex justify-center bg-white">
+      <section className="h-[72vh] snap-start flex justify-center bg-white">
         <div className="max-w-6xl mx-auto px-4 mt-4">
           <div className="flex">
             <div className="w-1/3 py-12">
@@ -63,7 +63,7 @@ export default function HomePage() {
       </section>
       
       {/* 이번 주 인기 급상승 데스크 섹션 추가 */}
-      <section className="h-[calc(100vh-18rem)] snap-start flex justify-center bg-gray-100">
+      <section className="h-[72vh] snap-start flex justify-center bg-gray-100">
         <div className="max-w-6xl mx-auto px-4 mt-8">
           <div>
             <h2 className="text-4xl font-bold mb-8">이번 주 인기 데스크</h2>
@@ -76,7 +76,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="h-[calc(100vh-18rem)] snap-start flex justify-center items-center bg-gray-200">
+      <section className="h-[72vh] snap-start flex justify-center items-center bg-gray-200">
         <div className="max-w-6xl mx-auto px-4 mt-4">
           <h2 className="text-3xl font-bold">추가 섹션</h2>
           {/* 여기에 컨텐츠 추가 */}
