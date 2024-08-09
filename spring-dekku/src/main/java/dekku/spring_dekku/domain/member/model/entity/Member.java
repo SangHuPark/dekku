@@ -1,5 +1,6 @@
 package dekku.spring_dekku.domain.member.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.follow.model.entity.Follow;
 import dekku.spring_dekku.domain.like.model.entity.Like;
@@ -24,7 +25,7 @@ public class Member extends BaseEntity {
 	@Column(nullable = false)
 	private String username; // provider + provider id
 
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private String email;
 
 	@Column(nullable = false)
@@ -49,6 +50,7 @@ public class Member extends BaseEntity {
 	private Integer ageRange;
 
 	@OneToMany(mappedBy = "member")
+	@JsonBackReference
 	/**
 	 * 컬렉션은 필드에서 초기화 하자.
 	 * 1. null 문제에서 안전하다
@@ -58,6 +60,7 @@ public class Member extends BaseEntity {
 	private List<DeskteriorPost> deskteriorPosts = new ArrayList<>();
 
 	@OneToMany(mappedBy = "member")
+	@JsonBackReference
 	private List<Like> likes = new ArrayList<>();
 
 	@OneToMany(mappedBy = "fromMember")

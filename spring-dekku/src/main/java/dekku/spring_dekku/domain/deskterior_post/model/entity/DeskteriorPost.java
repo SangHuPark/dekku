@@ -1,5 +1,6 @@
 package dekku.spring_dekku.domain.deskterior_post.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.code.OpenStatus;
 import dekku.spring_dekku.domain.member.model.entity.Member;
@@ -25,17 +26,18 @@ public class DeskteriorPost extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @JsonManagedReference
     private Member member;
 
     private String thumnailUrl;
 
-    @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DeskteriorPostImage> deskteriorPostImages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "deskteriorPost")
+    @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Like> likes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DeskteriorPostProductInfo> deskteriorPostProductInfos = new ArrayList<>();
 
     private String title;

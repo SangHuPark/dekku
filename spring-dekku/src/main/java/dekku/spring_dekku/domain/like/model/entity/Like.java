@@ -1,16 +1,16 @@
 package dekku.spring_dekku.domain.like.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "members_liked_posts_info")
 @Getter
+@RequiredArgsConstructor
 public class Like {
 
     @Id
@@ -20,9 +20,18 @@ public class Like {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @JsonManagedReference
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deskterior_post_id")
+    @JsonManagedReference
     private DeskteriorPost deskteriorPost;
+
+    public Like(Member member, DeskteriorPost post) {
+        this.member = member;
+        this.deskteriorPost = post;
+        member.getLikes().add(this);
+        post.getLikes().add(this);
+    }
 }
