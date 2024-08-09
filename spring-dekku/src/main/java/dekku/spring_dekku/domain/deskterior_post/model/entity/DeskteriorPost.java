@@ -38,16 +38,16 @@ public class DeskteriorPost extends BaseEntity {
     @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeskteriorPostProductInfo> deskteriorPostProductInfos = new ArrayList<>();
 
-    private String title;
+    public String title;
 
-    private String content;
+    public String content;
 
     private int viewCount;
 
     private int likeCount;
 
     @Enumerated(EnumType.STRING)
-    private OpenStatus openStatus;
+    public OpenStatus openStatus;
 
     @Embedded
     private DeskteriorAttributes deskteriorAttributes;
