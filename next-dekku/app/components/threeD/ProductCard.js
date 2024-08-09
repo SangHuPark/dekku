@@ -5,7 +5,7 @@ const ProductCard = ({ name, description, image, modelPath, scale, price, addPro
   // 클릭 시 호출되는 핸들러 함수
   const handleClick = () => {
     const uniqueId = uuidv4(); // 고유한 uniqueId 생성
-    addProduct && addProduct({ uniqueId, name, modelPath, image, description, price, scale }); // 제품 추가 함수 호출
+    addProduct && addProduct({ uniqueId, name, description, image, modelPath, scale, price  }); // 제품 추가 함수 호출
   };
 
   return (
@@ -17,7 +17,7 @@ const ProductCard = ({ name, description, image, modelPath, scale, price, addPro
     >
       <div className={`flex items-center justify-center mb-1 ${small ? 'w-24 h-24' : 'w-30 h-30'}`}>
         {image ? (
-          <img src={image} alt={name} className="object-fill w-full h-full" />
+          <img src={image} alt={name} className="object-fill w-full h-70rem" />
         ) : (
           <span className="text-gray-500 text-sm">No Image</span>
         )}

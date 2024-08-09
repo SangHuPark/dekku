@@ -1,12 +1,11 @@
 package dekku.spring_dekku.domain.deskterior_post.model.dto.response;
 
 import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
-import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPostImage;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.code.OpenStatus;
-import dekku.spring_dekku.domain.member.model.entity.Like;
+import dekku.spring_dekku.domain.like.model.entity.Like;
 import dekku.spring_dekku.domain.product.model.dto.response.CreateProductResponseDto;
 import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
 import dekku.spring_dekku.domain.product.model.entity.Product;

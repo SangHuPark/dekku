@@ -142,7 +142,7 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
     const ambientLight = new THREE.AmbientLight(0x404040, 10);
     scene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
-    directionalLight.position.set(0, 10, 10);
+    directionalLight.position.set(0, 30, 0);
     scene.add(directionalLight);
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -193,7 +193,7 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
           loader.load(product.modelPath, (gltf) => {
             const model = gltf.scene;
             const scale = product.scale || [1, 1, 1];
-            const fixedPosition = { x: 0, y: deskHeight + 0.02, z: -1.5 };
+            const fixedPosition = { x: 0, y: deskHeight + 0.03, z: -1.5 };
             model.userData = { id: product.id, uniqueId: product.uniqueId, product, isFetched: product.isFetched || false };
 
             if (product.position && product.scale && product.rotation) {

@@ -13,12 +13,7 @@ export default function ProfileEdit() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/users", {
-          method: "GET",
-          headers: {
-            "access": window.localStorage.getItem("access"),
-          },
-        });
+        const response = await fetch("http://dekku.co.kr:8080/api/user");
         if (response.ok) {
           const data = await response.json();
           setProfileImage(data.profileImage || "");
@@ -48,7 +43,7 @@ export default function ProfileEdit() {
     formData.append("introduction", introduction);
 
     try {
-      const response = await fetch("http://localhost:8080/api/users", {
+      const response = await fetch("http://dekku.co.kr:8080/api/user", {
         method: "PUT",
         body: formData,
       });
