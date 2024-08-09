@@ -26,6 +26,7 @@ import dekku.spring_dekku.global.status.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,8 +109,12 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     }
 
     @Override
+    @Transactional
     public List<FindDeskteriorPostResponseDto> findAll() {
         List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findAll();
+        if(deskteriorPosts.isEmpty()) {
+            throw new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST);
+        }
 
         List<FindDeskteriorPostResponseDto> response = new ArrayList<>();
 
