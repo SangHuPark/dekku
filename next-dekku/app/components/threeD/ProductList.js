@@ -4,7 +4,7 @@
 const products = {
   '모니터': [
     { name: '삼성 SyncMaster SA300', description: 'LCD 모니터', image: '/products_image/syncmaster_sa300.png', modelPath: 'threedmodels/sa300_1.glb', scale: [2, 2, 2] },
-    { name: '서브 모니터', description: '모니터 거치대 연결', image: '/products_image/monitorstand.png', modelPath: 'threedmodels/monitorstand.glb', scale: [0.5, 0.5, 0.5] },
+    { name: '서브 모니터', description: '모니터 거치대 연결', image: '/products_image/monitorstandssafy.png', modelPath: 'threedmodels/monitorstandssafy.glb', scale: [0.5, 0.5, 0.5] },
   ],
   '노트북': [
     { name: 'samsung Galaxy Book4', description: 'NT750XGK-KD51G', price: '1,460,000원', image: '/products_image/갤럭시북프로4.png', modelPath: 'threedmodels/싸트북.glb', scale: [1, 1, 1] },
