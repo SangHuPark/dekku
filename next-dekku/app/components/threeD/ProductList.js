@@ -7,11 +7,11 @@ const products = {
     { name: '서브 모니터', description: '모니터 거치대 연결', image: '/products_image/monitorstandssafy.png', modelPath: 'threedmodels/monitorstandssafy.glb', scale: [0.5, 0.5, 0.5] },
   ],
   '노트북': [
-    { name: 'samsung Galaxy Book4', description: 'NT750XGK-KD51G', price: '1,460,000원', image: '/products_image/갤럭시북프로4.png', modelPath: 'threedmodels/싸트북.glb', scale: [1, 1, 1] },
+    { name: 'samsung Galaxy Book4', description: 'NT750XGK-KD51G', price: '1,460,000원', image: '/products_image/갤럭시북프로4.png', modelPath: 'threedmodels/ssatbook.glb', scale: [1, 1, 1] },
     { name: '게이밍 노트북', description: '게이밍용', price: '2,250,000원', image: '/products_image/게이밍노트북.png', modelPath: 'threedmodels/gaming_laptop.glb', scale: [0.2, 0.2, 0.2] },
   ],
   '데스크': [
-    { name: 'SSAFY DESK', description: '2학기 책상', image: 'https://via.placeholder.com/150', modelPath: 'threedmodels/ssafydesk.glb', scale: [1, 1, 1] },
+    { name: 'SSAFY DESK', description: '2학기 책상', image: '/products_image/ssafydesk.png', modelPath: 'threedmodels/ssafydesk.glb', scale: [1, 1, 1] },
   ],
   '마우스': [
     { name: '삼성 무선 마우스', description: 'black color', price: '10,000원', image: '/products_image/삼성무선마우스.png', modelPath: 'threedmodels/simple_pc_mouse.glb', scale: [1.2, 1.2, 1.2] },
