@@ -32,7 +32,7 @@ public class FollowService {
         if (member == null) {
             throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
         }
-        List<Follow> followerEntities = followRepository.findByFromMember(member);
+        List<Follow> followerEntities = followRepository.findByToMember(member);
         List<CreateFollowerListResponseDto> followers = new ArrayList<>();
 
         for (Follow follower : followerEntities) {

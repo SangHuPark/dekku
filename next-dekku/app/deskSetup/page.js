@@ -140,15 +140,15 @@ export default function DeskSetupPage() {
 
   return (
     <div className="">
-      <div className="bg-[#F6F7FB] pt-6 pb-6">
+      <div className="bg-[#F6F7FB] py-6 px-4">
         <div className="max-w-6xl mx-auto">
           <h1 className="font-bold text-3xl mt-3 mb-3">
             최근 데스크 셋업 인기 순위
           </h1>
           <h3 className="text-2xl text-[#A4A4A4] mb-6">이번주 인기 급상승</h3>
-          <div className="grid grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
             {recentTopPosts.map((data) => (
-              <DeskSetupCard key={data.id} data={data} isTopPost={true} />
+              <DeskSetupCard key={data.id} data={data} isNoProfilePost={true} />
             ))}
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function DeskSetupPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {filteredData.slice(0, displayedCount).map((data) => (
             <div key={data.id}>
               <DeskSetupCard data={data} />

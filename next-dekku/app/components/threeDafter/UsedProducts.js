@@ -21,18 +21,18 @@ const UsedProducts = () => {
   const renderProducts = () => {
     const productsToShow = showAll ? selectedProducts : selectedProducts.slice(0, 4);
     return productsToShow.map((product, index) => (
-      <div key={index} className="border p-4 rounded shadow-lg h-72"> {/* 높이를 조정 */}
-        <h2 className="text-xl">{product.name}</h2>
-        <p>{product.description}</p>
-        <p>{product.price}</p>
-        {product.image && <img src={product.image} alt={product.name} className="w-full h-40 object-contain" />}
+      <div key={index} className="border p-4 rounded-lg shadow-lg h-72 border-gray-300"> {/* 테두리 스타일 추가 */}
+        <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
+        <p className="text-gray-600 mb-2">{product.description}</p>
+        <p className="text-gray-800 mb-2">{product.price}</p>
+        {product.image && <img src={product.image} alt={product.name} className="w-full h-40 object-contain rounded" />} {/* 이미지에 둥근 모서리 추가 */}
       </div>
     ));
   };
 
   return (
-    <div className="pb-30">
-      <div className={`max-w-6xl mx-auto ${showAll ? 'h-auto' : 'h-[500px]'}`}> 
+    <div className="mb-32 mt-40">
+      <div className={`max-w-6xl mx-auto ${showAll ? 'h-auto' : 'h-[350px]'}`}> 
         <h2 className="text-3xl mb-4">선택한 상품 목록</h2>
         {selectedProducts.length > 0 ? (
           <>
@@ -41,7 +41,7 @@ const UsedProducts = () => {
             </div>
             {selectedProducts.length > 4 && (
               <div className="text-right mt-4">
-                <button onClick={handleShowAll} className="px-4 py-2 bg-blue-500 text-white rounded">
+                <button onClick={handleShowAll} className="px-4 py-2 bg-black text-white rounded">
                   {showAll ? '접기' : '모두보기'}
                 </button>
               </div>

@@ -1,18 +1,6 @@
-# FROM node:18.17.0-alpine3.18 AS build
-# RUN npm ci
-
-# # 소스를 작업폴더로 복사
-# COPY . /app
-
-# # 빌드
-# RUN npm run build
-
 FROM node:18.17.0-alpine3.18
 
 ENV PORT 3000
-
-# COPY ./public 
-# COPY ./.next /app
 
 # Copy build output files
 COPY ./public ./public

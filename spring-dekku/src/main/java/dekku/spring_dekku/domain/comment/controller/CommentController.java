@@ -5,6 +5,7 @@ import dekku.spring_dekku.domain.comment.exception.UnauthorizedCommentDeleteExce
 import dekku.spring_dekku.domain.comment.model.dto.CommentDto;
 import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.comment.service.CommentService;
+import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
 import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,6 +27,7 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final DeskteriorPostService deskteriorPostService;
 
     @Operation(summary = "게시글의 댓글 전체 목록 불러오기")
     @ApiResponses({
@@ -47,6 +49,7 @@ public class CommentController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
+
 
     @Operation(summary = "댓글 작성")
     @ApiResponses({

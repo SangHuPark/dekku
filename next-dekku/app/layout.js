@@ -12,6 +12,8 @@ import AuthProvider from "./components/AuthContext";
 //   description: "A Next.js project",
 // };
 
+// bg-gradient-to-b from-white to-[#F1EFEB]
+
 const pretendard = localFont({
   src: "../fonts/PretendardVariable.woff2",
   display: "swap",

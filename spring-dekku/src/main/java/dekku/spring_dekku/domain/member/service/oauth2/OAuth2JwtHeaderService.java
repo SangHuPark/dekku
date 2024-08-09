@@ -35,7 +35,7 @@ public class OAuth2JwtHeaderService {
         }
 
         // 클라이언트의 access 토큰 쿠키를 만료
-        response.addCookie(CookieUtil.createCookie("access", null, 0));
+        response.addCookie(CookieUtil.createCookie("access", null, 0L));
         response.addHeader("Access-Control-Expose-Headers", "access");
         response.addHeader("access", access);
         response.setStatus(HttpServletResponse.SC_OK);
