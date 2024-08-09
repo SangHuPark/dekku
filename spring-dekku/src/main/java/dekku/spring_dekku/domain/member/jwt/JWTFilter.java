@@ -3,6 +3,8 @@ package dekku.spring_dekku.domain.member.jwt;
 import dekku.spring_dekku.domain.member.model.dto.CustomOAuth2Member;
 import dekku.spring_dekku.domain.member.model.dto.MemberDto;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,7 +24,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
-    private final JWTUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -40,27 +41,27 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         //token validate
-        try{
+        try {
             logger.error("Token is not vaild");
-            if(!jwtUtil.validateJwt(access)){
+            if (!jwtTokenProvider.validateToken(access)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
-        } catch (JwtValidationException e) {
+        } catch (ExpiredJwtException e) {
+            System.out.println("만료");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        } catch (MalformedJwtException e) {
+            System.out.println("변조");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        } catch (SignatureException e) {
+            System.out.println("signature");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        // access token expired
-        try{
-            logger.error("Token is valid");
-            jwtUtil.isExpired(access);
-        } catch (ExpiredJwtException e){
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        String category = jwtUtil.getCategory(access);
+        String category = jwtTokenProvider.getCategory(access);
 
         logger.error("category: " + category);
 
@@ -71,8 +72,8 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         //클라가 보낸 jwt를 읽어서 사용자 이름과 role을 가져옴
-        String username = jwtUtil.getUsername(access);
-        String role = jwtUtil.getRole(access);
+        String username = jwtTokenProvider.getUsername(access);
+        String role = jwtTokenProvider.getRole(access);
 
         MemberDto userPrincipal = MemberDto.builder()
                 .username(username)
