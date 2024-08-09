@@ -48,14 +48,14 @@ public class DeskteriorPostController {
             )
     })
     @PostMapping("")
-        public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorPostRequestDto request, @RequestHeader(name = "access") String token) {
+    public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorPostRequestDto request, @RequestHeader(name = "access") String token) {
 
         System.out.println("post");
 
         CreateDeskteriorPostResponseDto response = null;
         try {
             response = deskteriorPostService.addDeskteriorPost(token, request);
-        } catch(AccessTokenException e){
+        } catch (AccessTokenException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (MemberNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
