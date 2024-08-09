@@ -49,7 +49,7 @@ public class SecurityConfig {
 
                 .formLogin((form) -> form.disable());
 
-                //.cors(cors -> cors.disable());
+        //.cors(cors -> cors.disable());
 
         httpSecurity
                 .oauth2Login((oauth2) -> oauth2
@@ -68,7 +68,6 @@ public class SecurityConfig {
         // authorization
         httpSecurity.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/", "/login", "/logout", "/update", "/oauth2-jwt-header").permitAll()
-//                .requestMatchers("/users/login", "/posts/all", "posts/details/**").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated());
 
@@ -77,12 +76,6 @@ public class SecurityConfig {
                 exception
                         .authenticationEntryPoint((request, response, authException) ->
                                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED)));
-        // authorization
-        httpSecurity.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/", "/login", "/logout", "/update", "/oauth2-jwt-header").permitAll()
-//                .requestMatchers("/users/login", "/posts/all", "posts/details/**").permitAll()
-                .requestMatchers("/admin").hasRole("ADMIN")
-                .anyRequest().authenticated());
 
         //CORS Issue
         httpSecurity
@@ -113,7 +106,6 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return httpSecurity.getOrBuild();
-
     }
 
     @Bean
@@ -125,7 +117,6 @@ public class SecurityConfig {
                         "/auth/**", "/sign-up/**", "/verification/**",
                         "/users/find-password", "/users/update-password", "/s3/**", "/test");
     }
-
 
     @Bean
     public AuthenticationManager authenticationManagerBean() {
@@ -139,6 +130,4 @@ public class SecurityConfig {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
         };
     }
-
-
 }

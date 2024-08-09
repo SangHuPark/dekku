@@ -1,5 +1,8 @@
 package dekku.spring_dekku.domain.deskterior_post.service;
 
+import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
+import dekku.spring_dekku.domain.comment.model.entity.Comment;
+import dekku.spring_dekku.domain.comment.service.CommentService;
 import dekku.spring_dekku.domain.deskterior_post.exception.NotExistsDeskteriorPostException;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.request.CreateDeskteriorPostRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.CreateDeskteriorPostResponseDto;
@@ -38,6 +41,8 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     private final ProductRepository productRepository;
 
     private final ModelMapper modelMapper;
+
+    private final CommentService commentService;
 
     @Override
     public CreateDeskteriorPostResponseDto addDeskteriorPost(String username, CreateDeskteriorPostRequestDto request) {
@@ -107,12 +112,13 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     }
 
 
-    @Override
     public FindByIdDeskteriorPostResponseDto findById(Long id) {
         DeskteriorPost foundDeskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
 
-        return new FindByIdDeskteriorPostResponseDto(foundDeskteriorPost);
+        List<CommentResponseDto> commentResponseDtos = commentService.getCommentsByPostId(id);
+
+        return new FindByIdDeskteriorPostResponseDto(foundDeskteriorPost, commentResponseDtos);
     }
 
 
