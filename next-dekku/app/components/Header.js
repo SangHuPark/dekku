@@ -41,7 +41,7 @@ const Header = () => {
             </li>
             {isLoggedIn && (
               <li>
-                <Link href="/profile">프로필</Link>
+                <Link href="/social">프로필</Link>
               </li>
             )}
             {!isLoggedIn && (
