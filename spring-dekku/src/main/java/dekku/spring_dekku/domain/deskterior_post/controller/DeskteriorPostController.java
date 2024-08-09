@@ -122,13 +122,11 @@ public class DeskteriorPostController {
                         .build());
     }
 
-    // 게시글 수정
     @Operation(summary = "게시글 수정")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "게시글 수정 성공",
-                    content = @Content(schema = @Schema(implementation = FindDeskteriorPostResponseDto.class))
+                    description = "게시글 수정 성공"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -139,16 +137,21 @@ public class DeskteriorPostController {
                     description = "존재하지 않는 게시글"
             )
     })
-
     @PutMapping("/{postId}")
-    public ResponseEntity updateDeskteriorPost(@PathVariable Long postId, @RequestBody @Valid UpdateDeskteriorPostRequestDto request) {
-        DeskteriorPost updatedDeskteriorPost = deskteriorPostService.updateDeskteriorPost(postId, request);
+    public ResponseEntity<?> updateDeskteriorPost(@PathVariable Long postId, @RequestBody @Valid UpdateDeskteriorPostRequestDto request, @RequestHeader(name = "access") String token) {
+        try {
+            deskteriorPostService.updateDeskteriorPost(postId, token, request);
+        } catch (AccessTokenException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        } catch (MemberNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
         return ResponseUtil.ok(
                 Success.builder()
-                        .data(updatedDeskteriorPost)
-                        .build());
+                        .build()
+        );
     }
-
 
     @Operation(summary = "게시글 삭제")
     @ApiResponses({
@@ -165,10 +168,16 @@ public class DeskteriorPostController {
                     description = "존재하지 않는 게시글"
             )
     })
-
     @DeleteMapping("/{postId}")
-    public ResponseEntity deleteDeskteriorPost(@PathVariable Long postId) {
-        deskteriorPostService.deleteDeskteriorPost(postId);
+    public ResponseEntity deleteDeskteriorPost(@PathVariable Long postId, @RequestHeader(name = "access") String token) {
+        try {
+            deskteriorPostService.deleteDeskteriorPost(postId, token);
+        } catch (AccessTokenException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        } catch (MemberNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
         return ResponseUtil.ok(
                 Success.builder()
                         .build()
