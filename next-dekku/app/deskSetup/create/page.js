@@ -118,7 +118,7 @@ const CreatePage = () => {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    router.push('/deskSetup/2'); // 게시글 디테일 페이지 경로로 변경
+    router.push('/deskSetup/1'); // 게시글 디테일 페이지 경로로 변경
   };
 
   return (

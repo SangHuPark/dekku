@@ -40,7 +40,7 @@ const UsedProducts = () => {
               {renderProducts()}
             </div>
             {selectedProducts.length > 4 && (
-              <div className="text-right mt-4">
+              <div className="text-left mt-4">
                 <button onClick={handleShowAll} className="px-4 py-2 bg-black text-white rounded">
                   {showAll ? '접기' : '모두보기'}
                 </button>

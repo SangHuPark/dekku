@@ -3,10 +3,14 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import products from '../threeD/ProductList'; // 각 모델의 스케일 값을 가져오기 위해 제품 리스트를 임포트
 import SaveModal from './SaveModal'; // 모달 컴포넌트 임포트
-import '../../styles/ThreeDafter.css'; // 글래스 모피즘 스타일
+import { useRouter } from 'next/navigation'; // useRouter를 import
+import { useUploadToS3 } from './ThreedUpload'; // 파일 업로드 훅을 import
+import '../../styles/ThreeDAfter.css'; // 글래스 모피즘 스타일
 
-const Head = ({ onSave, onShare }) => {
+const Head = ({ onSave }) => {
   const mountRef = useRef(null);
+  const router = useRouter(); // useRouter 사용
+  const { uploadToS3 } = useUploadToS3(); // S3 업로드 훅 사용
   const [scene, setScene] = useState(null);
   const [camera, setCamera] = useState(null);
   const [renderer, setRenderer] = useState(null);
@@ -128,113 +132,47 @@ const Head = ({ onSave, onShare }) => {
       return;
     }
 
-    // Presigned URL 생성 요청
-    let presignedUrl;
+    // 멤버 ID는 로그인 정보를 사용해 가져와야 합니다.
+    const memberId = "yourMemberId"; // 실제 구현 시 수정
+
     try {
-      const presignedResponse = await fetch("http://localhost:8080/api/s3/presigned-url", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          id: "memberId", // 고유 식별자. 필요에 따라 변경하세요. 로그인 정보에서 유저아이디 가져와서 보내기
-          fileCount: 1,  // 씬 상태와 썸네일, 두 개의 파일 업로드
-          directory: "3d"
-        })
-      });
-
-      if (!presignedResponse.ok) {
-        const errorMessage = await presignedResponse.text();
-        console.error("Error:", errorMessage);
-        throw new Error(errorMessage);
-      }
-
-      const presignedData = await presignedResponse.json();
-      presignedUrl = presignedData.data.preSignedUrl;
-
-      console.log("Presigned URLs:", presignedUrl);
-    } catch (error) {
-      console.error("Failed to fetch presigned URL:", error);
-      return;
-    }
-
-    // S3에 파일 업로드
-    try {
-      const sceneStateBlob = new Blob([storedSceneState], { type: 'application/json' });
-      const thumbnailBlob = new Blob([storedThumbnail.split(',')[1]], { type: 'image/png' }); // 썸네일 데이터 처리
-
-      const uploadSceneResponse = await fetch(presignedUrl[0], {
-        method: "PUT",
-        headers: {
-          "Content-Type": 'application/json'
-        },
-        body: sceneStateBlob
-      });
-
-      if (!uploadSceneResponse.ok) {
-        const errorMessage = await uploadSceneResponse.text();
-        console.error("Error uploading scene state:", errorMessage);
-        throw new Error(errorMessage);
-      }
-
-      const uploadThumbnailResponse = await fetch(presignedUrl[1], {
-        method: "PUT",
-        headers: {
-          "Content-Type": 'image/png'
-        },
-        body: thumbnailBlob
-      });
-
-      if (!uploadThumbnailResponse.ok) {
-        const errorMessage = await uploadThumbnailResponse.text();
-        console.error("Error uploading thumbnail:", errorMessage);
-        throw new Error(errorMessage);
-      }
-
-      const uploadedFileUrls = presignedUrl.map(url => url.split("?")[0]);
-      console.log("Uploaded file URLs:", uploadedFileUrls);
-
-      // 업로드된 파일 URL 사용
-      setImageUrl(uploadedFileUrls[1]); // 썸네일 URL을 설정
-
+      const thumbnailUrl = await uploadToS3(storedSceneState, storedThumbnail, memberId);
+      setImageUrl(thumbnailUrl);
       setIsModalOpen(true); // 모달 열기
-    } catch (error) {
-      console.error("Failed to upload files:", error);
-      return;
+    } catch (err) {
+      console.error("Error during upload:", err);
     }
   };
 
-  const handleShare = async () => {
-    await handleSave();
-    if (onShare) {
-      onShare(imageUrl);
-    }
+  const handleShare = () => {
+    router.push('/deskSetup/create');
   };
+  
 
   return (
     <div className="max-w-6xl mx-auto grid grid-cols-2 gap-4" style={{ paddingBottom: '24px', height: '350px', marginBottom: '32px', marginTop: '12px' }}>
-    <div className="glass-container flex justify-between items-center p-4" style={{ height: '350px' }}>
-      <div className="flex flex-col justify-center items-start">
-        <p className="text-xl font-bold mb-2">Good! 훌륭한 데스크 입니다!</p>
-        <div className="flex items-center space-x-4 mt-6">
-          <button onClick={handleSave} className="ml-10 mr-2 px-4 py-2 border border-pink-500">저장</button>
-          <button onClick={handleShare} className="px-4 py-2 border border-blue-500">공유</button>
+      <div className="glass-container flex justify-between items-center p-4" style={{ height: '350px' }}>
+        <div className="flex flex-col justify-center items-start">
+          <p className="text-xl font-bold mb-2">Good! 훌륭한 데스크 입니다!</p>
+          <div className="flex items-center space-x-4 mt-6">
+            <button onClick={handleSave} className="ml-10 mr-2 px-4 py-2 border border-pink-500">저장</button>
+            <button onClick={handleShare} className="px-4 py-2 border border-blue-500">공유</button>
+          </div>
         </div>
+        <img src="/손박수.png" alt="손박수" style={{ width: '270px', height: '270px' }} />
       </div>
-      <img src="/손박수.png" alt="손박수" style={{ width: '270px', height: '270px' }} />
-    </div>
-    <div ref={mountRef} className="glass-container w-full" style={{ height: '100%', overflow: 'hidden' }}></div>
+      <div ref={mountRef} className="glass-container w-full" style={{ height: '100%', overflow: 'hidden' }}></div>
 
-    <SaveModal 
-      isOpen={isModalOpen} 
-      onClose={() => {
-        setIsModalOpen(false);
-        if (onSave) {
-          onSave();
-        }
-      }} 
-    />
-  </div>
+      <SaveModal 
+        isOpen={isModalOpen} 
+        onClose={() => {
+          setIsModalOpen(false);
+          if (onSave) {
+            onSave();
+          }
+        }} 
+      />
+    </div>
   );
 };
 
