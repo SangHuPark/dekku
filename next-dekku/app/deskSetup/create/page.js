@@ -122,7 +122,7 @@ const CreatePage = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto flex justify-center">
+    <div className="max-w-6xl mx-auto flex justify-center items-center mt-20">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col w-3/4 space-y-5"

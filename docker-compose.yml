@@ -5,11 +5,14 @@ services:
     image: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=Dekku1234
+      - MYSQL_DATABASE=dekkudb
       - MYSQL_USER=sanghu
       - MYSQL_PASSWORD=sanghu
     volumes:
       - mydata:/var/lib/mysql
     restart: always
+    networks:
+      - dekku-network
 
   dekku-redis:
     container_name: dekku-redis
@@ -19,6 +22,22 @@ services:
     volumes:
       - redisdata:/data
     restart: always
+    networks:
+      - dekku-network
+
+  dekku-mongo:
+    container_name: dekku-mongo
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodata:/data
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=Dekku1234
+    restart: on-failure
+    networks:
+      - dekku-network
 
   dekku-backend:
     container_name: dekku-backend
@@ -27,7 +46,14 @@ services:
     depends_on:
       - dekku-mysql
       - dekku-redis
+      - dekku-mongo
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./config/application.yml:/app/config/application.yml
     restart: on-failure
+    networks:
+      - dekku-network
 
   dekku-frontend:
     user: root
@@ -43,7 +69,10 @@ services:
         source: /etc/letsencrypt
         target: /etc/letsencrypt
     restart: on-failure
+    networks:
+      - dekku-network
 
 volumes:
   mydata:
   redisdata:
+  mongodata:

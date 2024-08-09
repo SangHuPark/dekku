@@ -3,6 +3,7 @@ package dekku.spring_dekku.domain.comment.service;
 import dekku.spring_dekku.domain.comment.exception.CommentNotFoundException;
 import dekku.spring_dekku.domain.comment.exception.UnauthorizedCommentDeleteException;
 import dekku.spring_dekku.domain.comment.model.dto.CommentDto;
+import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
 import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.comment.repository.CommentRepository;
 import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,4 +58,26 @@ public class CommentService {
         return commentRepository.findByPostId(postId);
     }
 
+    @Transactional(readOnly = true)
+    public List<CommentResponseDto> getCommentsByPostId(Long postId) {
+        List<Comment> comments = commentRepository.findByPostId(postId);
+        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+
+        for (Comment comment : comments) {
+            Long memberId = comment.getMemberId();
+            Member member = memberRepository.findById(memberId)
+                    .orElseThrow(() -> new MemberNotFoundException("Member not found with id: " + memberId));
+
+            CommentResponseDto commentResponseDto = new CommentResponseDto(
+                    comment.getCommentId(),
+                    comment.getContent(),
+                    member.getNickname(),
+                    member.getImageUrl()
+            );
+
+            commentResponseDtos.add(commentResponseDto);
+        }
+
+        return commentResponseDtos;
+    }
 }

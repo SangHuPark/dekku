@@ -1,5 +1,7 @@
 package dekku.spring_dekku.domain.deskterior_post.model.dto.response;
 
+import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
+import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPostImage;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
@@ -20,12 +22,13 @@ public record FindByIdDeskteriorPostResponseDto(
         List<String> deskteriorPostImages,
         List<String> likes,
         List<CreateProductResponseDto> deskteriorPostProductInfos,
+        List<CommentResponseDto> comments,
         int viewCount,
         int likeCount,
         OpenStatus openStatus,
         DeskteriorAttributes deskteriorAttributes
 ) {
-    public FindByIdDeskteriorPostResponseDto(DeskteriorPost deskteriorPost) {
+    public FindByIdDeskteriorPostResponseDto(DeskteriorPost deskteriorPost, List<CommentResponseDto> comments) {
         this(
                 deskteriorPost.getMember().getNickname(),
                 deskteriorPost.getMember().getImageUrl(),
@@ -34,6 +37,7 @@ public record FindByIdDeskteriorPostResponseDto(
                 mapDeskteriorPostImages(deskteriorPost.getDeskteriorPostImages()),
                 mapLikes(deskteriorPost.getLikes()),
                 mapDeskteriorPostProductInfos(deskteriorPost.getDeskteriorPostProductInfos()),
+                comments,
                 deskteriorPost.getViewCount(),
                 deskteriorPost.getLikeCount(),
                 deskteriorPost.getOpenStatus(),
@@ -70,7 +74,6 @@ public record FindByIdDeskteriorPostResponseDto(
                     product.getExistStatus(),
                     product.getCategory(),
                     product.getFilePath().getPath()
-
             );
             productInfos.add(productDto);
         }
