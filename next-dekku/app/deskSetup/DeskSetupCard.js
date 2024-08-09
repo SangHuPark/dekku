@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function DeskSetupCard({ data, isNoProfilePost = false }) {
   return (
     <Link href={`/deskSetup/${data.id}`}>
-      <div className="rounded-lg py-2 w-auto">
+      <div className="rounded-lg w-auto">
         <div className="relative flex justify-center mb-2">
           <img
             src={data.imgSrc}
