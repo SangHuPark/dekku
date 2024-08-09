@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function DeskSetupCard({ data, isNoProfilePost = false }) {
   return (
     <Link href={`/deskSetup/${data.id}`}>
-      <div className="rounded-lg w-auto">
+      <div className="rounded-lg w-auto hover:bg-gray-200">
         <div className="relative flex justify-center mb-2">
           <img
             src={data.imgSrc}
@@ -26,7 +26,7 @@ export default function DeskSetupCard({ data, isNoProfilePost = false }) {
                 {data.username}
               </div>
             </div>
-            <button className="font-pretendard rounded px-3 p-1 h-8 bg-[#77C3EB] text-white flex-shrink-0">
+            <button className="font-pretendard rounded px-3 p-1 h-8 bg-[#77C3EB] text-white flex-shrink-0 hover:bg-[#09addb]">
               팔로우
             </button>
           </div>
