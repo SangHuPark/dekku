@@ -130,6 +130,23 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
         return response;
     }
 
+    @Override
+    @Transactional
+    public List<FindDeskteriorPostResponseDto> findTopThreePosts() {
+        List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findTopPosts();
+        if (deskteriorPosts.isEmpty()) {
+            throw new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST);
+        }
+
+        List<FindDeskteriorPostResponseDto> response = new ArrayList<>();
+        for (DeskteriorPost deskteriorPost : deskteriorPosts) {
+            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost);
+            response.add(findDeskteriorPostResponseDto);
+        }
+
+        return response;
+    }
+
 
     public FindByIdDeskteriorPostResponseDto findById(Long id) {
         DeskteriorPost foundDeskteriorPost = deskteriorPostRepository.findById(id)

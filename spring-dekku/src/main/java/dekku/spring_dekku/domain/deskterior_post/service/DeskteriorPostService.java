@@ -20,4 +20,6 @@ public interface DeskteriorPostService {
     DeskteriorPost updateDeskteriorPost(Long id, String token, UpdateDeskteriorPostRequestDto requestDto);
 
     void deleteDeskteriorPost(Long id, String token);
+
+    List<FindDeskteriorPostResponseDto> findTopThreePosts();
 }
