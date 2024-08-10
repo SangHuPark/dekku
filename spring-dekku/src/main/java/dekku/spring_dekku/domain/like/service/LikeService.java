@@ -50,6 +50,8 @@ public class LikeService {
         Like like = new Like(member, post);
         likeRepository.save(like);
         member.getLikes().add(like);
+        memberRepository.save(member);
+        likeRepository.upCount(member.getId());
 
         return LikeDto.builder()
                 .id(like.getId())
@@ -77,6 +79,8 @@ public class LikeService {
             if(like.getDeskteriorPost().equals(post)) {
                 likeRepository.delete(like);
                 member.getLikes().remove(like);
+                memberRepository.save(member);
+                likeRepository.downCount(member.getId());
                 return LikeDto.builder()
                         .id(like.getId())
                         .postId(like.getDeskteriorPost().getId())
