@@ -1,5 +1,6 @@
 package dekku.spring_dekku.domain.follow.service;
 
+import dekku.spring_dekku.domain.follow.exception.FollowException;
 import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowerListResponseDto;
 import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowingListResponseDto;
 import dekku.spring_dekku.domain.follow.model.entity.Follow;
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -76,6 +76,9 @@ public class FollowService {
         }
         Member toMember = memberRepository.findById(toMemberId)
                 .orElseThrow(() -> new MemberNotFoundException("팔로우할 사용자를 찾을 수 없습니다."));
+        if(followRepository.findByFromMemberAndToMember(fromMember, toMember).isPresent()) {
+            throw new FollowException("이미 팔로우한 사용자입니다.");
+        }
         Follow follow = new Follow(fromMember, toMember);
         followRepository.save(follow);
     }
@@ -89,9 +92,8 @@ public class FollowService {
         }
         Member toMember = memberRepository.findById(toMemberId)
                 .orElseThrow(() -> new MemberNotFoundException("언팔로우할 사용자를 찾을 수 없습니다."));
-        Optional<Follow> followOptional = followRepository.findByFromMemberAndToMember(fromMember, toMember);
-        if (followOptional.isPresent()) {
-            followRepository.delete(followOptional.get());
-        }
+        Follow follow = followRepository.findByFromMemberAndToMember(fromMember, toMember)
+                .orElseThrow(() -> new FollowException("팔로우하지 않은 사용자입니다."));
+        followRepository.delete(follow);
     }
 }

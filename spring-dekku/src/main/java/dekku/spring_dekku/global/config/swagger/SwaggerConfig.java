@@ -1,9 +1,9 @@
 package dekku.spring_dekku.global.config.swagger;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,6 +32,15 @@ public class SwaggerConfig {
                 .title("SSAFY Dekku API")
                 .description("SSAFY Dekku DOCS")
                 .version("v1.0.0");
+    }
+
+    @Bean
+    public GroupedOpenApi publicApi() {
+        return GroupedOpenApi.builder()
+                .group("public")
+                .pathsToMatch("/api/**")
+                .pathsToExclude("/api/oauth2-jwt-header")
+                .build();
     }
 
 
