@@ -1,9 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import DeskSetupCard from "./deskSetup/DeskSetupCard";
 import { useRecentTopDeveloperPosts } from "./components/useRecentTopDeveloperPosts";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+//import './styles/slider-custom.css'; 
 
 export default function HomePage() {
   const [hoveredIndex, setHoveredIndex] = useState(0);
@@ -14,6 +18,33 @@ export default function HomePage() {
     { src: "/desk2.jpg", title: "Desk Setup", link: "/deskSetup" },
     { src: "/desk3.jpg", title: "Share Your Desk", link: "/deskSetup/create" },
   ];
+
+  // Slider settings
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    arrows: false,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    pauseOnHover: true,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
+  };
 
   return (
     <div className="">
@@ -68,11 +99,13 @@ export default function HomePage() {
           <div>
             <h2 className="text-4xl font-bold mb-8">개발자 추천 데스크</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+          <Slider {...sliderSettings}>
             {recentTopDeveloperPosts.map((data) => (
-              <DeskSetupCard key={data.id} data={data} isNoProfilePost={true} />
+              <div key={data.id} className="p-2">
+                <DeskSetupCard key={data.id} data={data} isNoProfilePost={true} />
+              </div>
             ))}
-          </div>
+          </Slider>
         </div>
       </section>
 
