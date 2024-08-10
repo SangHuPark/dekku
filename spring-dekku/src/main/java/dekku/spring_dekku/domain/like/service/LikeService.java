@@ -51,7 +51,11 @@ public class LikeService {
         likeRepository.save(like);
         member.getLikes().add(like);
 
-        return LikeDto.fromEntity(like);
+        return LikeDto.builder()
+                .id(like.getId())
+                .postId(like.getDeskteriorPost().getId())
+                .memberId(like.getMember().getId())
+                .build();
     }
 
     @Transactional
@@ -73,7 +77,11 @@ public class LikeService {
             if(like.getDeskteriorPost().equals(post)) {
                 likeRepository.delete(like);
                 member.getLikes().remove(like);
-                return LikeDto.fromEntity(like);
+                return LikeDto.builder()
+                        .id(like.getId())
+                        .postId(like.getDeskteriorPost().getId())
+                        .memberId(like.getMember().getId())
+                        .build();
             }
         }
         throw new LikeException("이미 좋아요를 취소했니다.");
