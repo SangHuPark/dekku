@@ -1,5 +1,6 @@
 package dekku.spring_dekku.domain.follow.controller;
 
+import dekku.spring_dekku.domain.follow.exception.FollowException;
 import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowingListResponseDto;
 import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowerListResponseDto;
 import dekku.spring_dekku.domain.follow.service.FollowService;
@@ -98,6 +99,10 @@ public class FollowController {
             @ApiResponse(
                     responseCode = "404",
                     description = "팔로우할 계정이 없는 경우"
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "이미 해당 계정을 팔로우한 상태"
             )
     })
     @PostMapping("/follow")
@@ -106,6 +111,8 @@ public class FollowController {
             followService.follow(token, toMemberId);
         } catch (MemberNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (FollowException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
         return ResponseUtil.ok(Success.builder().build());
     }
@@ -119,7 +126,12 @@ public class FollowController {
             @ApiResponse(
                     responseCode = "404",
                     description = "언팔로우할 계정이 없는 경우"
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "해당 계정을 팔로우하지 않은 상태"
             )
+
     })
     @PostMapping("/unfollow")
     public ResponseEntity<?> unfollow(@RequestHeader("Access") String token, @RequestParam Long toMemberId) {
