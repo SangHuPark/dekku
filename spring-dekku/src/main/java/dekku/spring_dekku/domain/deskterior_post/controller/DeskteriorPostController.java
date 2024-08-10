@@ -96,6 +96,32 @@ public class DeskteriorPostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Operation(summary = "인기 게시글 조회")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청 완료",
+                    content = @Content(schema = @Schema(implementation = List.class))
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "게시글 없음",
+                    content = @Content(schema = @Schema(implementation = FindDeskteriorPostResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "인기 게시글 조회 요청 실패"
+            )
+    })
+    @GetMapping("/rank")
+    public ResponseEntity<List<FindDeskteriorPostResponseDto>> findTopThreeDeskteriorPosts() {
+        List<FindDeskteriorPostResponseDto> response = deskteriorPostService.findTopThreePosts();
+        if(response == null || response.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @Operation(summary = "단일 게시글 조회")
     @ApiResponses({
             @ApiResponse(
