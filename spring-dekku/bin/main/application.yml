@@ -1,17 +1,24 @@
 spring:
-  application:
-    name: security-login
+  data:
+    mongodb:
+      host: dekku.co.kr
+      port: 27017
+      database: dekkudb
+    redis:
+      host: dekku.co.kr
+      port: 6379
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/security?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    url: jdbc:mysql://dekku.co.kr:3306/security?serverTimezone=Asia/Seoul
     username: root
-    password: 1234
+    password: Dekku1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
+    #    show-sql: true
     properties:
       hibernate:
-        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
   # oauth2
   security:
     oauth2:
@@ -24,6 +31,7 @@ spring:
             authorization-grant-type: authorization_code
             redirect-uri: http://localhost:8080/login/oauth2/code/naver
             scope: name, email, age, gender
+            client-authentication-method: client_secret_post
           kakao:
             client-name: kakao
             client-id: 49e8b661f0b102fb6d48af8f9d51ae58
@@ -43,6 +51,7 @@ spring:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
+            unlink-uri: https://kapi.kakao.com/v1/user/unlink
             user-name-attribute: kakao_account
   jwt:
     secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaxcvbxzcvasgrgfzv
@@ -70,4 +79,4 @@ cloud:
 # 얘는 logger 를 통해 log 를 남기는거니까 SQL 을 얘로 확인
 logging.level:
   org.hibernate.SQL: debug
-  # org.hibernate.type: trace # 쿼리 에서 value 에 ? ? 였던 부분을 뽑아 아래서 값만 따로 로그 출력
+  org.hibernate.type: trace # 쿼리 에서 value 에 ? ? 였던 부분을 뽑아 아래서 값만 따로 로그 출력
