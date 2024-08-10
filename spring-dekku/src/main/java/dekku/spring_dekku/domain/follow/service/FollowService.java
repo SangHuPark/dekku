@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -93,9 +92,8 @@ public class FollowService {
         }
         Member toMember = memberRepository.findById(toMemberId)
                 .orElseThrow(() -> new MemberNotFoundException("언팔로우할 사용자를 찾을 수 없습니다."));
-        Optional<Follow> followOptional = followRepository.findByFromMemberAndToMember(fromMember, toMember);
-        if (followOptional.isPresent()) {
-            followRepository.delete(followOptional.get());
-        }
+        Follow follow = followRepository.findByFromMemberAndToMember(fromMember, toMember)
+                .orElseThrow(() -> new FollowException("팔로우하지 않은 사용자입니다."));
+        followRepository.delete(follow);
     }
 }

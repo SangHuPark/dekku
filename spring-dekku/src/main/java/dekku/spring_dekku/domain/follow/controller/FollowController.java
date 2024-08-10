@@ -126,7 +126,12 @@ public class FollowController {
             @ApiResponse(
                     responseCode = "404",
                     description = "언팔로우할 계정이 없는 경우"
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "해당 계정을 팔로우하지 않은 상태"
             )
+
     })
     @PostMapping("/unfollow")
     public ResponseEntity<?> unfollow(@RequestHeader("Access") String token, @RequestParam Long toMemberId) {
