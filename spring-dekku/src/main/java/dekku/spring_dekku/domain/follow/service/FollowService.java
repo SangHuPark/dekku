@@ -1,5 +1,6 @@
 package dekku.spring_dekku.domain.follow.service;
 
+import dekku.spring_dekku.domain.follow.exception.FollowException;
 import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowerListResponseDto;
 import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowingListResponseDto;
 import dekku.spring_dekku.domain.follow.model.entity.Follow;
@@ -76,6 +77,9 @@ public class FollowService {
         }
         Member toMember = memberRepository.findById(toMemberId)
                 .orElseThrow(() -> new MemberNotFoundException("팔로우할 사용자를 찾을 수 없습니다."));
+        if(followRepository.findByFromMemberAndToMember(fromMember, toMember).isPresent()) {
+            throw new FollowException("이미 팔로우한 사용자입니다.");
+        }
         Follow follow = new Follow(fromMember, toMember);
         followRepository.save(follow);
     }
