@@ -53,6 +53,30 @@ const CreatePage = () => {
 
       console.log("Uploaded file URLs:", { jsonUrl, imageUrl });
 
+      // 업로드된 URL을 백엔드 서버에 전달
+      const response = await fetch('http://localhost:8080/api/deskterior-post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          content,
+          style: styleInfo,
+          color: colorInfo,
+          job: jobInfo,
+          deskteriorPostImages: [imageUrl, jsonUrl], // 이미지, 모델json URL 전달
+          productIds: [], // 관련된 제품 ID가 있다면 추가
+          openStatus: 'PUBLIC', // 공개 상태 설정
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create post');
+      }
+
+      console.log("Post successfully created!");
+
       // 모달 띄우기
       setIsModalOpen(true);
     } catch (err) {

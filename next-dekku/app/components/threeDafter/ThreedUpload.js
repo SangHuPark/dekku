@@ -10,14 +10,14 @@ export const useUploadToS3 = () => {
 
     try { 
       // Presigned URL 생성 요청
-      const presignedResponse = await fetch("http://localhost:8080/api/s3/presigned-url", {
+      const presignedResponse = await fetch("http://dekku.co.kr:8080/api/s3/presigned-url", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
           id: memberId,
-          fileCount: 2,  // JSON과 이미지를 위한 두 개의 Presigned URL 요청
+          fileCount: 2,  // JSON 파일과 이미지 파일 두 개
           directory: "3d"
         })
       });
@@ -28,32 +28,43 @@ export const useUploadToS3 = () => {
       }
 
       const presignedData = await presignedResponse.json();
-      const [jsonPresignedUrl, imagePresignedUrl] = presignedData.data.preSignedUrl;
+      const presignedUrls = presignedData.data.preSignedUrl;
 
       // S3에 JSON 파일 업로드
-      const jsonBlob = new Blob([sceneState], { type: 'application/json' });
-      await fetch(jsonPresignedUrl, {
+      const sceneStateBlob = new Blob([sceneState], { type: 'application/json' });
+      const uploadSceneResponse = await fetch(presignedUrls[0], {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": 'application/json'
         },
-        body: jsonBlob
+        body: sceneStateBlob
       });
+
+      if (!uploadSceneResponse.ok) {
+        throw new Error("Failed to upload JSON file");
+      }
 
       // S3에 이미지 파일 업로드
       const imageBlob = await fetch(thumbnailUrl).then(res => res.blob());
-      await fetch(imagePresignedUrl, {
+      const uploadImageResponse = await fetch(presignedUrls[1], {
         method: "PUT",
         headers: {
-          "Content-Type": "image/png" // 이미지의 Content-Type을 설정
+          "Content-Type": imageBlob.type
         },
         body: imageBlob
       });
 
-      return {
-        jsonUrl: jsonPresignedUrl.split("?")[0],
-        imageUrl: imagePresignedUrl.split("?")[0]
-      };
+      if (!uploadImageResponse.ok) {
+        throw new Error("Failed to upload image file");
+      }
+
+      // 업로드된 파일의 URL 반환
+      const jsonUrl = presignedUrls[0].split("?")[0];
+      const imageUrl = presignedUrls[1].split("?")[0];
+      console.log(jsonUrl)
+      console.log(imageUrl)
+
+      return { jsonUrl, imageUrl };
 
     } catch (err) {
       setError(err.message);
