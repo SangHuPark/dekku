@@ -48,6 +48,7 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
+    @Transactional
     public CreateDeskteriorPostResponseDto addDeskteriorPost(String token, CreateDeskteriorPostRequestDto request) {
         if (token == null || token.isEmpty()) {
             throw new AccessTokenException(ErrorCode.INVALID_TOKEN);
@@ -106,7 +107,7 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<FindDeskteriorPostResponseDto> findAll() {
         List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findAll();
         if (deskteriorPosts.isEmpty()) {
