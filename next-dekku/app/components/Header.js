@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useLogin } from "./AuthContext";
 import LoginModal from "./LoginModal";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const Header = () => {
   const { isLoggedIn } = useLogin();
@@ -14,8 +14,9 @@ const Header = () => {
     "flex justify-between px-4 py-6 max-w-6xl mx-auto"
   );
 
-  // 사용자 데이터 상태 관리
-  const [userData, setUserData] = useState({ memberId: null, imageUrl: null });
+  const [memberId, setMemberId] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+  const queryParams = useSearchParams();
 
   useEffect(() => {
     // 경로에 따라 클래스를 설정합니다.
@@ -27,25 +28,23 @@ const Header = () => {
   }, [pathname]);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      // 서버에서 사용자 데이터를 가져오는 API 호출
-      const fetchUserData = async () => {
-        try {
-          const response = await fetch("/api/getUserData", { method: "GET" }); // 이 URL을 실제 API 엔드포인트로 교체
-          const data = await response.json();
-
-          setUserData({
-            memberId: data.memberId,
-            imageUrl: data.image_url,
-          });
-        } catch (error) {
-          console.error("Failed to fetch user data", error);
-        }
-      };
-
-      fetchUserData();
-    }
-  }, [isLoggedIn]);
+    const OAuth2JwtHeaderFetch = async () => {
+      try {
+        const response = await fetch("/api/oauth2-jwt-header", {
+          method: "POST",
+          credentials: "include",
+        });
+        console.log(response);
+        const id = queryParams.get("memberId");
+        const imageUrl = queryParams.get("image_url");
+        setMemberId(id);
+        setImageUrl(imageUrl);
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
+    OAuth2JwtHeaderFetch();
+  }, []);
 
   return (
     <header className="fixed top-0 w-full z-50 bg-white">
@@ -67,9 +66,9 @@ const Header = () => {
             {isLoggedIn && (
               <>
                 <li>
-                  <Link href={`/users/${userData.memberId}`}>
+                  <Link href={`/users/${memberId}`}>
                     <img
-                      src={userData.imageUrl || "/default_profile.png"}
+                      src={imageUrl || "/default_profile.png"}
                       alt="Profile"
                       className="w-10 h-10 rounded-full object-cover cursor-pointer"
                     />
