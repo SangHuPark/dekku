@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import DeskSetupCard from "./deskSetup/DeskSetupCard";
 import { useRecentTopDeveloperPosts } from "./components/useRecentTopDeveloperPosts";
+import { useRecentProducts } from "./components/useRecentProducts"
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -11,6 +12,7 @@ import "slick-carousel/slick/slick-theme.css";
 export default function HomePage() {
   const [hoveredIndex, setHoveredIndex] = useState(0);
   const recentTopDeveloperPosts = useRecentTopDeveloperPosts();
+  const recentProducts = useRecentProducts();
 
   const images = [
     { src: "/desk1.jpg", title: "3D Desk", link: "/threeD" },
