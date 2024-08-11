@@ -7,9 +7,11 @@ import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
 import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.comment.repository.CommentRepository;
 import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
+import dekku.spring_dekku.domain.member.exception.NotExistsUserException;
 import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
+import dekku.spring_dekku.global.status.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,11 +30,11 @@ public class CommentService {
     @Transactional
     public void createComment(Long postId, String token, CommentDto commentDto) {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
-        Member member = memberRepository.findByUsername(username);
-        if (member == null) {
-            throw new MemberNotFoundException("멤버를 찾을 수 없습니다.");
-        }
-        Long memberId = memberRepository.findByUsername(username).getId();
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+
+        Long memberId = member.getId();
+
         //내용이 비었거나 글자수 제한 초과에 대한 처리는 validator로 처리할 것이다.
         Comment comment = commentDto.toEntity(postId, memberId, commentDto);
         commentRepository.save(comment);
@@ -41,7 +43,9 @@ public class CommentService {
     @Transactional
     public void deleteComment(String commentId, String token) {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
-        Long memberId = memberRepository.findByUsername(username).getId();
+        Long memberId = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER))
+                .getId();
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("댓글을 찾을 수 없습니다."));
@@ -66,7 +70,7 @@ public class CommentService {
         for (Comment comment : comments) {
             Long memberId = comment.getMemberId();
             Member member = memberRepository.findById(memberId)
-                    .orElseThrow(() -> new MemberNotFoundException("Member not found with id: " + memberId));
+                    .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
             CommentResponseDto commentResponseDto = new CommentResponseDto(
                     comment.getCommentId(),

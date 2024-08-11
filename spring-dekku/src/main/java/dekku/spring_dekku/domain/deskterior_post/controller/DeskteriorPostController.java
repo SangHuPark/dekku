@@ -54,14 +54,10 @@ public class DeskteriorPostController {
 
         System.out.println("post");
 
+
+
         CreateDeskteriorPostResponseDto response = null;
-        try {
-            response = deskteriorPostService.addDeskteriorPost(token, request);
-        } catch (AccessTokenException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        } catch (MemberNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        response = deskteriorPostService.addDeskteriorPost(token, request);
 
         return ResponseUtil.created(
                 Success.builder()
