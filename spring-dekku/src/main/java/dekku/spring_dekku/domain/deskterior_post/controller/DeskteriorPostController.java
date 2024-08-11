@@ -5,10 +5,7 @@ import dekku.spring_dekku.domain.deskterior_post.model.dto.response.CreateDeskte
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindByIdDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.UpdateDeskteriorPostRequestDto;
-import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
-import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
-import dekku.spring_dekku.global.exception.AccessTokenException;
 import dekku.spring_dekku.global.model.dto.Success;
 import dekku.spring_dekku.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -135,13 +132,7 @@ public class DeskteriorPostController {
     })
     @PutMapping("/{postId}")
     public ResponseEntity<?> updateDeskteriorPost(@PathVariable Long postId, @RequestBody @Valid UpdateDeskteriorPostRequestDto request, @RequestHeader(name = "access") String token) {
-        try {
-            deskteriorPostService.updateDeskteriorPost(postId, token, request);
-        } catch (AccessTokenException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        } catch (MemberNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        deskteriorPostService.updateDeskteriorPost(postId, token, request);
 
         return ResponseUtil.ok(
                 Success.builder()
@@ -166,13 +157,7 @@ public class DeskteriorPostController {
     })
     @DeleteMapping("/{postId}")
     public ResponseEntity deleteDeskteriorPost(@PathVariable Long postId, @RequestHeader(name = "access") String token) {
-        try {
-            deskteriorPostService.deleteDeskteriorPost(postId, token);
-        } catch (AccessTokenException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        } catch (MemberNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        deskteriorPostService.deleteDeskteriorPost(postId, token);
 
         return ResponseUtil.ok(
                 Success.builder()

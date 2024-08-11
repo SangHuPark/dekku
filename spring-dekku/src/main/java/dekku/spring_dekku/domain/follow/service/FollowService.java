@@ -1,11 +1,12 @@
 package dekku.spring_dekku.domain.follow.service;
 
-import dekku.spring_dekku.domain.follow.exception.FollowException;
+import dekku.spring_dekku.domain.follow.exception.AlreadyFollowUserException;
+import dekku.spring_dekku.domain.follow.exception.NotFollowUserException;
 import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowerListResponseDto;
 import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowingListResponseDto;
 import dekku.spring_dekku.domain.follow.model.entity.Follow;
 import dekku.spring_dekku.domain.follow.repository.FollowRepository;
-import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
+import dekku.spring_dekku.domain.member.exception.NotExistsUserException;
 import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
@@ -30,7 +31,7 @@ public class FollowService {
     public List<CreateFollowerListResponseDto> getFollowerList(String token) {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         List<Follow> followerEntities = followRepository.findByToMember(member);
         List<CreateFollowerListResponseDto> followers = new ArrayList<>();
@@ -50,7 +51,7 @@ public class FollowService {
     public List<CreateFollowingListResponseDto> getFollowingList(String token) {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         List<Follow> followingEntities = followRepository.findByFromMember(member);
         List<CreateFollowingListResponseDto> followings = new ArrayList<>();
@@ -70,14 +71,15 @@ public class FollowService {
     public void follow(String token, Long toMemberId) {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member fromMember = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         Member toMember = memberRepository.findById(toMemberId)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
-        if(followRepository.findByFromMemberAndToMember(fromMember, toMember).isPresent()) {
-            throw new FollowException("이미 팔로우한 사용자입니다.");
+        if (followRepository.findByFromMemberAndToMember(fromMember, toMember).isPresent()) {
+            throw new AlreadyFollowUserException(ErrorCode.CONFLICT_FOLLOW_USER);
         }
+
         Follow follow = new Follow(fromMember, toMember);
         followRepository.save(follow);
     }
@@ -86,13 +88,14 @@ public class FollowService {
     public void unfollow(String token, Long toMemberId) {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member fromMember = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         Member toMember = memberRepository.findById(toMemberId)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         Follow follow = followRepository.findByFromMemberAndToMember(fromMember, toMember)
-                .orElseThrow(() -> new FollowException("팔로우하지 않은 사용자입니다."));
+                .orElseThrow(() -> new NotFollowUserException(ErrorCode.FAIL_TO_FOLLOW));
+
         followRepository.delete(follow);
     }
 }

@@ -1,9 +1,7 @@
 package dekku.spring_dekku.domain.member.controller;
 
-import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
 import dekku.spring_dekku.domain.member.model.dto.MemberUpdateDto;
 import dekku.spring_dekku.domain.member.service.oauth2.MemberService;
-import dekku.spring_dekku.global.exception.AccessTokenException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -54,13 +52,8 @@ public class MemberController {
 	})
 	@PatchMapping("/update")
 	public ResponseEntity<Void> update(@RequestHeader(value="Access") String token, @RequestBody MemberUpdateDto requestDto) throws Exception {
-		try {
-			memberService.updateMember(requestDto, token);
-		} catch (AccessTokenException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		} catch (MemberNotFoundException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
+		memberService.updateMember(requestDto, token);
+
         return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
@@ -81,17 +74,13 @@ public class MemberController {
 	})
 	@DeleteMapping("/delete")
 	public ResponseEntity<?> delete(@RequestHeader(value="access") String token) {
-		try {
-			memberService.deleteMember(token);
-		} catch(AccessTokenException e){
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-		} catch (MemberNotFoundException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}
+		memberService.deleteMember(token);
+
 		ResponseCookie responseCookie = ResponseCookie.from("refresh-token", null)
 				.maxAge(0)
 				.path("/")
 				.build();
+
 		return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.SET_COOKIE, responseCookie.toString())
 				.build();
 	}
