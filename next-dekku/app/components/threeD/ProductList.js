@@ -14,7 +14,7 @@ const products = {
     { name: 'SSAFY DESK', description: '2학기 책상', image: '/products_image/ssafydesk.png', modelPath: 'threedmodels/ssafydesk.glb', scale: [1, 1, 1] },
   ],
   '마우스': [
-    { name: '삼성 무선 마우스', description: 'black color', image: '/products_image/삼성무선마우스.PNG', modelPath: 'threedmodels/simple_pc_mouse.glb', scale: [1.2, 1.2, 1.2], price: '10,000원' },
+    { name: '삼성 무선 마우스', description: 'black color', image: '/products_image/삼성무선마우스.png', modelPath: 'threedmodels/simple_pc_mouse.glb', scale: [1.2, 1.2, 1.2], price: '10,000원' },
     { name: '로지텍 G604', description: 'LIGHTSPEED WIRELESS', image: '/products_image/logitech_g604.png', modelPath: 'threedmodels/logitech-g604.glb', scale: [2.5, 2.5, 2.5], price: '117,190원' },
     { name: '애플 매직 마우스', description: 'Magic Mouse 2', image: '/products_image/magicmouse.png', modelPath: 'threedmodels/apple_magic_mouse.glb', scale: [2, 2, 2], price: '99,000원' },
   ],

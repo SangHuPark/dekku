@@ -7,6 +7,7 @@ import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
 import dekku.spring_dekku.domain.member.service.RedisService;
 import dekku.spring_dekku.global.exception.AccessTokenException;
+import dekku.spring_dekku.global.status.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,26 +23,23 @@ public class MemberService {
     @Transactional
     public void updateMember(MemberUpdateDto request, String token) throws Exception {
         if(!jwtTokenProvider.validateToken(token)){
-            throw new AccessTokenException("JWT Token 만료");
+            throw new AccessTokenException(ErrorCode.EXPIRED_TOKEN);
         }
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
-        Member member = memberRepository.findByUsername(username);
-        if (member == null) {
-            throw new MemberNotFoundException("정보를 찾을 수 없습니다.");
-        }
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+
         memberRepository.update(username, request.nickname(), request.ageRange(), request.gender(), request.imageUrl());
     }
 
     @Transactional
     public void deleteMember(String requestAccessToken) {
         if (requestAccessToken == null || requestAccessToken.isEmpty()) {
-            throw new AccessTokenException("액세스 토큰이 없습니다.");
+            throw new AccessTokenException(ErrorCode.EMPTY_TOKEN);
         }
         String username = jwtTokenProvider.getKeyFromClaims(requestAccessToken, "username");
-        Member member = memberRepository.findByUsername(username);
-        if (member == null) {
-            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
-        }
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
 
         // Redis에서 Refresh Token 삭제
         String refreshTokenInRedis = redisService.getValues("RT:SERVER:" + username);

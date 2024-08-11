@@ -1,7 +1,9 @@
 package dekku.spring_dekku.global.exception;
 
-public class AccessTokenException extends RuntimeException {
-    public AccessTokenException(String message) {
-        super(message);
+import dekku.spring_dekku.global.status.ErrorCode;
+
+public class AccessTokenException extends BaseException {
+    public AccessTokenException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }
