@@ -1,16 +1,16 @@
 spring:
   data:
     mongodb:
-      host: localhost
+      host: dekku.co.kr
       port: 27017
       database: dekkudb
     redis:
-      host: localhost
+      host: dekku.co.kr
       port: 6379
   datasource:
-    url: jdbc:mysql://localhost:3306/dekkudb?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://dekku.co.kr:3306/dekkudb?serverTimezone=Asia/Seoul
     username: root
-    password: 12345678
+    password: Dekku1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
