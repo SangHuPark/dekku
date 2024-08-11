@@ -49,7 +49,7 @@ public class LikeService {
 
         Like like = new Like(member, post);
         likeRepository.save(like);
-        member.getLikes().add(like);
+        likeRepository.upCount(member.getId());
 
         return LikeDto.builder()
                 .id(like.getId())
@@ -76,7 +76,7 @@ public class LikeService {
         for(Like like : likeList) {
             if(like.getDeskteriorPost().equals(post)) {
                 likeRepository.delete(like);
-                member.getLikes().remove(like);
+                likeRepository.downCount(member.getId());
                 return LikeDto.builder()
                         .id(like.getId())
                         .postId(like.getDeskteriorPost().getId())
