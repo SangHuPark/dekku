@@ -1,7 +1,7 @@
 package dekku.spring_dekku.global.config.security;
 
 import dekku.spring_dekku.domain.member.jwt.JWTFilter;
-import dekku.spring_dekku.domain.member.jwt.JWTUtil;
+import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.repository.RefreshRepository;
 import dekku.spring_dekku.domain.member.service.RefreshTokenService;
 import dekku.spring_dekku.domain.member.service.oauth2.CustomOAuth2UserService;
@@ -33,7 +33,7 @@ import java.util.Collections;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final JWTUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final RefreshTokenService refreshTokenService;
     private final RefreshRepository refreshRepository;
@@ -56,7 +56,7 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .userInfoEndpoint((userinfo) -> userinfo
                                 .userService(customOAuth2UserService))
-                        .successHandler(new CustomOAuth2SuccessHandler(jwtUtil, refreshTokenService))
+                        .successHandler(new CustomOAuth2SuccessHandler(jwtTokenProvider, refreshTokenService))
                         .failureHandler(authenticationFailureHandler())
                         .permitAll());
 
@@ -68,8 +68,7 @@ public class SecurityConfig {
         // authorization
         httpSecurity.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/", "/login", "/logout", "/update", "/oauth2-jwt-header").permitAll()
-//                .requestMatchers("/users/login", "/posts/all", "posts/details/**").permitAll()
-                .requestMatchers("/admin").hasRole("ADMIN")
+//                .requestMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated());
 
         // 인가되지 않은 사용자에 대한 exception
@@ -82,6 +81,7 @@ public class SecurityConfig {
                 .cors((cors) -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000/"));
+                    configuration.setAllowedOrigins(Collections.singletonList("http://dekku.co.kr/"));
                     configuration.setAllowedMethods(Collections.singletonList("*"));
                     configuration.setAllowCredentials(true);
                     configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -94,11 +94,11 @@ public class SecurityConfig {
 
         // jwt filter
         httpSecurity
-                .addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(new JWTFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         // custom logout filter 등록
         httpSecurity
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
+                .addFilterBefore(new CustomLogoutFilter(jwtTokenProvider, refreshRepository), LogoutFilter.class);
 
         // session stateless
         httpSecurity

@@ -13,11 +13,11 @@ import java.util.Date;
 public class RefreshTokenService {
     private final RefreshRepository refreshRepository;
     @Transactional
-    public void saveRefresh(String username, Integer expireS, String refresh) {
+    public void saveRefresh(String username, Long expireS, String refresh) {
         RefreshEntity refreshEntity = RefreshEntity.builder()
                 .username(username)
                 .refresh(refresh)
-                .expiration(new Date(System.currentTimeMillis() + expireS * 1000L).toString())
+                .expiration(new Date(System.currentTimeMillis() + expireS).toString())
                 .build();
 
         refreshRepository.save(refreshEntity);

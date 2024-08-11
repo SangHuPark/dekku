@@ -1,5 +1,6 @@
 package dekku.spring_dekku.global.handler;
 
+import dekku.spring_dekku.global.exception.AccessTokenException;
 import dekku.spring_dekku.global.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

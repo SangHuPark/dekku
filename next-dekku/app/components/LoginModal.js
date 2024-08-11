@@ -34,14 +34,32 @@ export default function LoginModal({ showModal, setShowModal }) {
               <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
                 <div className="mt-2 w-full">
                   <div className="flex flex-col items-center space-y-2 w-full">
-                    
-                    <Link href="http://localhost:8080/oauth2/authorization/kakao">
-                      <img className="w-60" src="/kakao_login_medium_narrow.png" />
-                    </Link>
-                    <Link href="http://localhost:8080/oauth2/authorization/naver">
-                      <img className="w-60" src="/btnG_완성형.png" />
-                    </Link>
-
+                    <div className="w-full">
+                      <a
+                        href="http://dekku.co.kr:8080/oauth2/authorization/kakao"
+                        className="shadow w-full inline-flex justify-center items-center px-4 py-4 border border-transparent font-medium rounded-md text-black bg-[#FDDC3F] hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+                      >
+                        <img
+                          src="/kakao_icon.svg"
+                          className="absolute left-10 w-10 h-10 items-start"
+                          alt="kakao"
+                        />
+                        카카오로 로그인
+                      </a>
+                    </div>
+                    <div className="w-full">
+                      <a
+                        href="http://dekku.co.kr:8080/oauth2/authorization/naver"
+                        className="shadow w-full inline-flex justify-center items-center px-4 py-4 border border-transparent font-medium rounded-md text-white bg-[#03C75A] hover:bg-[#04A94D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                      >
+                        <img
+                          src="/naver_icon.svg"
+                          className="absolute left-10 w-10 h-10 items-start"
+                          alt="naver"
+                        />
+                        네이버로 로그인
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

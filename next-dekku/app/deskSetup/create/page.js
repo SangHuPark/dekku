@@ -42,7 +42,7 @@ const CreatePage = () => {
     // Presigned URL 생성 요청
     let presignedUrl;
     try {
-      const presignedResponse = await fetch("http://localhost:8080/api/s3/presigned-url", {
+      const presignedResponse = await fetch("http://dekku.co.kr:8080/api/s3/presigned-url", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -50,7 +50,7 @@ const CreatePage = () => {
         body: JSON.stringify({
           id: "memberId", // 고유 식별자. 필요에 따라 변경하세요. 로그인 정보에서 유저아이디 가져와서 보내기
           fileCount: 2,
-          directory: "3d"
+          directory: "post"
         })
       });
 
@@ -118,23 +118,23 @@ const CreatePage = () => {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    router.push('/deskSetup/2'); // 게시글 디테일 페이지 경로로 변경
+    router.push('/deskSetup/1'); // 게시글 디테일 페이지 경로로 변경
   };
 
   return (
-    <div className="max-w-6xl mx-auto flex justify-center">
+    <div className="max-w-6xl mx-auto flex justify-center items-center mt-20">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col w-3/4 space-y-5"
       >
         <div className="flex flex-row w-full space-x-5">
-          <div className="flex-1 flex justify-center items-center border border-gray-300 bg-gray-200 p-8">
+          <div className="flex-1 flex justify-center items-center">
             <label
               htmlFor="imageUpload"
               className="cursor-pointer flex flex-col items-center"
             >
               {image ? (
-                <img src={image} alt="Uploaded" className="w-full h-auto" />
+                <img src={image} alt="Uploaded" className="w-full h-auto rounded-lg" />
               ) : (
                 <div className="text-center">
                   <p>이곳에 사진을 올려주세요</p>
@@ -180,11 +180,14 @@ const CreatePage = () => {
                 className="w-full p-2 border border-gray-300 rounded"
               >
                 <option value="">스타일 정보 추가</option>
-                <option value="minimalist">미니멀리스트</option>
-                <option value="industrial">인더스트리얼</option>
                 <option value="modern">모던</option>
-                <option value="rustic">러스틱</option>
-                <option value="traditional">전통적인</option>
+                <option value="minimal">미니멀</option>
+                <option value="retro">레트로</option>
+                <option value="lovely">러블리</option>
+                <option value="gamer">게이머</option>
+                <option value="study">서재</option>
+                <option value="natural">자연</option>
+                <option value="other">기타</option>
               </select>
             </div>
             <div className="w-full">
@@ -194,11 +197,18 @@ const CreatePage = () => {
                 className="w-full p-2 border border-gray-300 rounded"
               >
                 <option value="">컬러 정보 추가</option>
-                <option value="white">화이트</option>
+                <option value="black_white">블랙&화이트</option>
                 <option value="black">블랙</option>
+                <option value="white">화이트</option>
                 <option value="gray">그레이</option>
+                <option value="mint">민트</option>
                 <option value="blue">블루</option>
+                <option value="pink">핑크</option>
                 <option value="green">그린</option>
+                <option value="red">레드</option>
+                <option value="yellow">옐로우</option>
+                <option value="brown">브라운</option>
+                <option value="other">기타</option>
               </select>
             </div>
             <div className="w-full">
@@ -208,12 +218,16 @@ const CreatePage = () => {
                 className="w-full p-2 border border-gray-300 rounded"
               >
                 <option value="">직업 정보 추가</option>
+                <option value="office_worker">회사원</option>
                 <option value="developer">개발자</option>
+                <option value="architecture">건축</option>
                 <option value="designer">디자이너</option>
+                <option value="editor">편집자</option>
                 <option value="writer">작가</option>
-                <option value="artist">예술가</option>
+                <option value="freelancer">프리랜서</option>
+                <option value="homemaker">주부</option>
                 <option value="student">학생</option>
-               
+                <option value="other">기타</option>
               </select>
             </div>
           </div>

@@ -1,9 +1,10 @@
 package dekku.spring_dekku.domain.deskterior_post.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.code.OpenStatus;
 import dekku.spring_dekku.domain.member.model.entity.Member;
-import dekku.spring_dekku.domain.member.model.entity.Like;
+import dekku.spring_dekku.domain.like.model.entity.Like;
 import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
 import dekku.spring_dekku.global.model.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -25,29 +26,30 @@ public class DeskteriorPost extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @JsonManagedReference
     private Member member;
 
     private String thumnailUrl;
 
-    @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DeskteriorPostImage> deskteriorPostImages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "deskteriorPost")
+    @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Like> likes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DeskteriorPostProductInfo> deskteriorPostProductInfos = new ArrayList<>();
 
-    private String title;
+    public String title;
 
-    private String content;
+    public String content;
 
     private int viewCount;
 
     private int likeCount;
 
     @Enumerated(EnumType.STRING)
-    private OpenStatus openStatus;
+    public OpenStatus openStatus;
 
     @Embedded
     private DeskteriorAttributes deskteriorAttributes;
@@ -80,5 +82,4 @@ public class DeskteriorPost extends BaseEntity {
             deskteriorPostProductInfo.setDeskteriorPost(this);
         }
     }
-
 }

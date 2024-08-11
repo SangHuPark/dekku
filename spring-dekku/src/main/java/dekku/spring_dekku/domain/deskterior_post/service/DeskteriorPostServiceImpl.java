@@ -1,5 +1,7 @@
 package dekku.spring_dekku.domain.deskterior_post.service;
 
+import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
+import dekku.spring_dekku.domain.comment.service.CommentService;
 import dekku.spring_dekku.domain.deskterior_post.exception.NotExistsDeskteriorPostException;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.request.CreateDeskteriorPostRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.CreateDeskteriorPostResponseDto;
@@ -9,18 +11,20 @@ import dekku.spring_dekku.domain.deskterior_post.model.dto.response.UpdateDeskte
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPostImage;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
-import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostImageRepository;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostRepository;
+import dekku.spring_dekku.domain.member.exception.NotExistsUserException;
+import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
 import dekku.spring_dekku.domain.product.exception.NotExistsProductException;
 import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
 import dekku.spring_dekku.domain.product.model.entity.Product;
 import dekku.spring_dekku.domain.product.repository.ProductRepository;
+import dekku.spring_dekku.global.exception.AccessTokenException;
 import dekku.spring_dekku.global.status.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,16 +37,25 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
 
     private final DeskteriorPostRepository deskteriorPostRepository;
 
-    private final DeskteriorPostImageRepository deskteriorPostImageRepository;
+//    private final DeskteriorPostImageRepository deskteriorPostImageRepository;
 
     private final ProductRepository productRepository;
 
-    private final ModelMapper modelMapper;
+//    private final ModelMapper modelMapper;
+
+    private final CommentService commentService;
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public CreateDeskteriorPostResponseDto addDeskteriorPost(String username, CreateDeskteriorPostRequestDto request) {
+    public CreateDeskteriorPostResponseDto addDeskteriorPost(String token, CreateDeskteriorPostRequestDto request) {
+        if (token == null || token.isEmpty()) {
+            throw new AccessTokenException(ErrorCode.INVALID_TOKEN);
+        }
 
-        Member member = memberRepository.findByUsername(username);
+        String username = jwtTokenProvider.getUsername(token);
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         // Embeddable 생성
         DeskteriorAttributes deskteriorAttributes = CreateDeskteriorPostRequestDto.createDeskteriorAttributes(
@@ -93,8 +106,12 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     }
 
     @Override
+    @Transactional
     public List<FindDeskteriorPostResponseDto> findAll() {
         List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findAll();
+        if (deskteriorPosts.isEmpty()) {
+            throw new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST);
+        }
 
         List<FindDeskteriorPostResponseDto> response = new ArrayList<>();
 
@@ -107,70 +124,95 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     }
 
 
-    @Override
     public FindByIdDeskteriorPostResponseDto findById(Long id) {
         DeskteriorPost foundDeskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
 
-        return new FindByIdDeskteriorPostResponseDto(foundDeskteriorPost);
+        List<CommentResponseDto> commentResponseDtos = commentService.getCommentsByPostId(id);
+
+        return new FindByIdDeskteriorPostResponseDto(foundDeskteriorPost, commentResponseDtos);
     }
 
 
-    // 게시물 업데이트 추가
     @Override
-    public DeskteriorPost updateDeskteriorPost(Long id, UpdateDeskteriorPostRequestDto request) {
+    @Transactional
+    public DeskteriorPost updateDeskteriorPost(Long id, String token, UpdateDeskteriorPostRequestDto request) {
+        String username = extractUsernameFromToken(token);
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
+
         DeskteriorPost existingDeskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
 
-        DeskteriorAttributes deskteriorAttributes = DeskteriorAttributes.builder()
-                .style(request.style() != null ? request.style() : existingDeskteriorPost.getDeskteriorAttributes().getStyle())
-                .color(request.color() != null ? request.color() : existingDeskteriorPost.getDeskteriorAttributes().getColor())
-                .job(request.job() != null ? request.job() : existingDeskteriorPost.getDeskteriorAttributes().getJob())
-                .build();
+        if (!existingDeskteriorPost.getMember().getId().equals(member.getId())) {
+            throw new AccessTokenException(ErrorCode.INVALID_TOKEN);
+        }
 
-        DeskteriorPost updatedDeskteriorPost = DeskteriorPost.builder()
-                .member(existingDeskteriorPost.getMember())
-                .title(request.title() != null ? request.title() : existingDeskteriorPost.getTitle())
-                .content(request.content() != null ? request.content() : existingDeskteriorPost.getContent())
-                .deskteriorAttributes(deskteriorAttributes)
-                .openStatus(request.openStatus() != null ? request.openStatus() : existingDeskteriorPost.getOpenStatus())
-                .build();
+        if (request.title() != null) {
+            existingDeskteriorPost.title = request.title();
+        }
+        if (request.content() != null) {
+            existingDeskteriorPost.content = request.content();
+        }
+
+        DeskteriorAttributes existingAttributes = existingDeskteriorPost.getDeskteriorAttributes();
+        if (request.style() != null) {
+            existingAttributes.style = request.style();
+        }
+        if (request.color() != null) {
+            existingAttributes.color = request.color();
+        }
+        if (request.job() != null) {
+            existingAttributes.job = request.job();
+        }
+        if (request.openStatus() != null) {
+            existingDeskteriorPost.openStatus = request.openStatus();
+        }
 
         if (request.deskteriorPostImages() != null && !request.deskteriorPostImages().isEmpty()) {
-            updatedDeskteriorPost.getDeskteriorPostImages().clear();
+            existingDeskteriorPost.getDeskteriorPostImages().clear();
             for (String imageUrl : request.deskteriorPostImages()) {
                 DeskteriorPostImage deskteriorPostImage = DeskteriorPostImage.builder()
-                        .deskteriorPost(updatedDeskteriorPost)
+                        .deskteriorPost(existingDeskteriorPost)
                         .imageUrl(imageUrl)
                         .build();
-                updatedDeskteriorPost.insertDeskteriorPostImages(deskteriorPostImage);
+                existingDeskteriorPost.insertDeskteriorPostImages(deskteriorPostImage);
             }
-        } else {
-            updatedDeskteriorPost.getDeskteriorPostImages().addAll(existingDeskteriorPost.getDeskteriorPostImages());
         }
 
         if (request.productIds() != null && !request.productIds().isEmpty()) {
-            updatedDeskteriorPost.getDeskteriorPostProductInfos().clear();
+            existingDeskteriorPost.getDeskteriorPostProductInfos().clear();
             for (Long productId : request.productIds()) {
                 Product product = productRepository.findById(productId)
                         .orElseThrow(() -> new NotExistsProductException(ErrorCode.NOT_EXISTS_PRODUCT));
                 DeskteriorPostProductInfo deskteriorPostProductInfo = DeskteriorPostProductInfo.builder()
-                        .deskteriorPost(updatedDeskteriorPost)
+                        .deskteriorPost(existingDeskteriorPost)
                         .product(product)
                         .build();
-                updatedDeskteriorPost.insertDeskteriorPostProductInfos(deskteriorPostProductInfo);
+                existingDeskteriorPost.insertDeskteriorPostProductInfos(deskteriorPostProductInfo);
             }
-        } else {
-            updatedDeskteriorPost.getDeskteriorPostProductInfos().addAll(existingDeskteriorPost.getDeskteriorPostProductInfos());
         }
 
-        return deskteriorPostRepository.save(updatedDeskteriorPost);
+        return deskteriorPostRepository.save(existingDeskteriorPost);
     }
 
     @Override
-    public void deleteDeskteriorPost(Long id) {
+    public void deleteDeskteriorPost(Long id, String token) {
+        String username = extractUsernameFromToken(token);
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
+
         DeskteriorPost existingDeskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
+
+        if (!existingDeskteriorPost.getMember().getId().equals(member.getId())) {
+            throw new AccessTokenException(ErrorCode.INVALID_TOKEN);
+        }
+
         deskteriorPostRepository.delete(existingDeskteriorPost);
+    }
+
+    private String extractUsernameFromToken(String token) {
+        return jwtTokenProvider.getUsername(token);
     }
 }
