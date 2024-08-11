@@ -145,7 +145,7 @@ const Head = ({ onSave }) => {
   };
 
   const handleShare = () => {
-    router.push('/deskSetup/create');
+    router.push('/deskSetup/create-afterthreed');
   };
   
 

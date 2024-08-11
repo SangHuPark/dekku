@@ -6,30 +6,7 @@ import MouseControls from './MouseControls';
 import TransformControls from './TransformControls';
 import SelectedProducts from './SelectedProducts';
 import { v4 as uuidv4 } from 'uuid';
-// import AWS from 'aws-sdk';
 
-// const s3 = new AWS.S3({
-//   accessKeyId: 'YOUR_ACCESS_KEY',
-//   secretAccessKey: 'YOUR_SECRET_KEY',
-//   region: 'YOUR_REGION'
-// });
-
-// const uploadToS3 = (data, fileName) => {
-//   const params = {
-//     Bucket: 'YOUR_BUCKET_NAME',
-//     Key: fileName,
-//     Body: JSON.stringify(data),
-//     ContentType: 'application/json'
-//   };
-
-//   s3.upload(params, (err, data) => {
-//     if (err) {
-//       console.error("Error uploading JSON data:", err);
-//     } else {
-//       console.log("Successfully uploaded JSON data:", data);
-//     }
-//   });
-// };
 
 const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) => {
   const mountRef = useRef(null);
