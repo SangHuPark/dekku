@@ -15,12 +15,12 @@ const products = {
   ],
   '마우스': [
     { name: '삼성 무선 마우스', description: 'black color', image: '/products_image/삼성무선마우스.png', modelPath: 'threedmodels/simple_pc_mouse.glb', scale: [1.2, 1.2, 1.2], price: '10,000원', update: '2024-08-03' },
-    { name: '로지텍 G604', description: 'LIGHTSPEED WIRELESS', image: '/products_image/logitech_g604.PNG', modelPath: 'threedmodels/logitech-g604.glb', scale: [2.5, 2.5, 2.5], price: '117,190원', update: '2024-08-08' },
-    { name: '애플 매직 마우스', description: 'Magic Mouse 2', image: '/products_image/magicmouse.PNG', modelPath: 'threedmodels/apple_magic_mouse.glb', scale: [2, 2, 2], price: '99,000원', update: '2024-08-08' },
+    { name: '로지텍 G604', description: 'LIGHTSPEED WIRELESS', image: '/products_image/logitech_g604.png', modelPath: 'threedmodels/logitech-g604.glb', scale: [2.5, 2.5, 2.5], price: '117,190원', update: '2024-08-08' },
+    { name: '애플 매직 마우스', description: 'Magic Mouse 2', image: '/products_image/magicmouse.png', modelPath: 'threedmodels/apple_magic_mouse.glb', scale: [2, 2, 2], price: '99,000원', update: '2024-08-08' },
   ],
   '키보드': [    
-    { name: '로지텍 텐키리스 키보드', description: 'Logitech G913 Wireless TKL', image: '/products_image/logitech_g913.PNG', modelPath: 'threedmodels/logicool_g913_tkl_gaming_keyboard.glb', scale: [3, 3, 3], price: '199,000원', update: '2024-08-09' },
-    { name: '애플 매직 키보드', description: 'WITH NUMERIC KEYPAD', image: '/products_image/magickeyboard.PNG', modelPath: 'threedmodels/apple_magic_keyboard.glb', scale: [0.2, 0.4, 0.2], price: '149,000원', update: '2024-08-09' },
+    { name: '로지텍 텐키리스 키보드', description: 'Logitech G913 Wireless TKL', image: '/products_image/logitech_g913.png', modelPath: 'threedmodels/logicool_g913_tkl_gaming_keyboard.glb', scale: [3, 3, 3], price: '199,000원', update: '2024-08-09' },
+    { name: '애플 매직 키보드', description: 'WITH NUMERIC KEYPAD', image: '/products_image/magickeyboard.png', modelPath: 'threedmodels/apple_magic_keyboard.glb', scale: [0.2, 0.4, 0.2], price: '149,000원', update: '2024-08-09' },
   ],
   '기타': [
     { name: '미니 자동차', description: '고퀄 파란색 자동차', image: '/products_image/파란색자동차.png', modelPath: 'threedmodels/car_example.glb', scale: [0.03, 0.03, 0.03], price: '2,000d원', update: '2024-07-23' },    

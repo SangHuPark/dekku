@@ -6,32 +6,8 @@ import MouseControls from './MouseControls';
 import TransformControls from './TransformControls';
 import SelectedProducts from './SelectedProducts';
 import { v4 as uuidv4 } from 'uuid';
-// import AWS from 'aws-sdk';
 
-// const s3 = new AWS.S3({
-//   accessKeyId: 'YOUR_ACCESS_KEY',
-//   secretAccessKey: 'YOUR_SECRET_KEY',
-//   region: 'YOUR_REGION'
-// });
-
-// const uploadToS3 = (data, fileName) => {
-//   const params = {
-//     Bucket: 'YOUR_BUCKET_NAME',
-//     Key: fileName,
-//     Body: JSON.stringify(data),
-//     ContentType: 'application/json'
-//   };
-
-//   s3.upload(params, (err, data) => {
-//     if (err) {
-//       console.error("Error uploading JSON data:", err);
-//     } else {
-//       console.log("Successfully uploaded JSON data:", data);
-//     }
-//   });
-// };
-
-const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) => {
+const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete, jsonUrl }) => {
   const mountRef = useRef(null);
   const controlsRef = useRef(null);
   const [deskHeight, setDeskHeight] = useState(0);
@@ -163,10 +139,13 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
       scene.add(desk);
       console.log("Desk model loaded and added to scene.");
 
-      const jsonUrl = 'https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/3d/memberId/47270356-1d1c-4fcf-8776-4bba416ca87e';
-      fetchModelData(jsonUrl).then(data => {
-        loadModelsFromData(data, scene, loader, setSelectedProducts);
-      });
+      if (jsonUrl) {
+        fetchModelData(jsonUrl).then(data => {
+          if (data) {
+            loadModelsFromData(data, scene, loader, setSelectedProducts);
+          }
+        });
+      }
     });
 
     const animate = () => {
@@ -180,7 +159,7 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
     return () => {
       mount.removeChild(renderer.domElement);
     };
-  }, []);
+  }, [jsonUrl]);
 
   useEffect(() => {
     if (scene) {

@@ -52,7 +52,7 @@ const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searc
                   className={`h-6 w-6 ${activeCategory === category ? 'h-8 w-8' : ''}`} 
                 />
                 {activeCategory === category && (
-                  <span className="text-black whitespace-nowrap">
+                  <span className="text-black text-sm tracking-tighter">
                     {category}
                   </span>
                 )}
