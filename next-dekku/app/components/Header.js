@@ -10,8 +10,10 @@ const Header = () => {
   const { isLoggedIn } = useLogin();
   const [showModal, setShowModal] = useState(false);
   const pathname = usePathname();
-
   const [headerClasses, setHeaderClasses] = useState('flex justify-between px-4 py-6 max-w-6xl mx-auto');
+
+  // 사용자 데이터 상태 관리
+  const [userData, setUserData] = useState({ memberId: null, imageUrl: null });
 
   useEffect(() => {
     // 경로에 따라 클래스를 설정합니다.
@@ -20,7 +22,28 @@ const Header = () => {
     } else {
       setHeaderClasses('flex justify-between px-4 py-6 max-w-6xl mx-auto');
     }
-  }, [pathname]); // pathname이 변경될 때마다 useEffect가 호출됩니다.
+  }, [pathname]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      // 서버에서 사용자 데이터를 가져오는 API 호출
+      const fetchUserData = async () => {
+        try {
+          const response = await fetch('/api/getUserData');  // 이 URL을 실제 API 엔드포인트로 교체
+          const data = await response.json();
+
+          setUserData({
+            memberId: data.memberId,
+            imageUrl: data.image_url
+          });
+        } catch (error) {
+          console.error('Failed to fetch user data', error);
+        }
+      };
+
+      fetchUserData();
+    }
+  }, [isLoggedIn]);
 
   return (
     <header className="fixed top-0 w-full z-50 bg-white">
@@ -40,9 +63,20 @@ const Header = () => {
               <Link href="/deskSetup">데스크 셋업</Link>
             </li>
             {isLoggedIn && (
-              <li>
-                <Link href="/social">프로필</Link>
-              </li>
+              <>
+                <li>
+                  <Link href={`/users/${userData.memberId}`}>
+                    <img
+                      src={userData.imageUrl || "/default_profile.png"}
+                      alt="Profile"
+                      className="w-10 h-10 rounded-full object-cover cursor-pointer"
+                    />
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/logout">로그아웃</Link>
+                </li>
+              </>
             )}
             {!isLoggedIn && (
               <li>
@@ -50,15 +84,10 @@ const Header = () => {
                 <LoginModal showModal={showModal} setShowModal={setShowModal} />
               </li>
             )}
-            {isLoggedIn && (
-              <li>
-                <Link href="/logout">로그아웃</Link>
-              </li>
-            )}
           </ul>
         </nav>
       </div>
-      <hr className=""/>
+      <hr />
     </header>
   );
 };
