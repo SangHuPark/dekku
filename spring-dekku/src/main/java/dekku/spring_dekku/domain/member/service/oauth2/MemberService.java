@@ -1,6 +1,6 @@
 package dekku.spring_dekku.domain.member.service.oauth2;
 
-import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
+import dekku.spring_dekku.domain.member.exception.NotExistsUserException;
 import dekku.spring_dekku.domain.member.model.dto.MemberUpdateDto;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
@@ -25,9 +25,10 @@ public class MemberService {
         if(!jwtTokenProvider.validateToken(token)){
             throw new AccessTokenException(ErrorCode.EXPIRED_TOKEN);
         }
+
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         memberRepository.update(username, request.nickname(), request.ageRange(), request.gender(), request.imageUrl());
     }
@@ -37,9 +38,10 @@ public class MemberService {
         if (requestAccessToken == null || requestAccessToken.isEmpty()) {
             throw new AccessTokenException(ErrorCode.EMPTY_TOKEN);
         }
+
         String username = jwtTokenProvider.getKeyFromClaims(requestAccessToken, "username");
         Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         // Redis에서 Refresh Token 삭제
         String refreshTokenInRedis = redisService.getValues("RT:SERVER:" + username);
