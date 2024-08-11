@@ -12,6 +12,7 @@ const OAuth2Redirect = () => {
   useEffect(() => {
     const OAuth2JwtHeaderFetch = async () => {
       try {
+        
         const response = await fetch("/api/oauth2-jwt-header", {
           method: "POST",
           credentials: "include",
