@@ -10,7 +10,10 @@ export const datas = [
     views: "21,000",
     likes: "4,200",
     comments: "140",
-    createdAt: "2024-06-01"
+    createdAt: "2024-06-01",
+    style: "modern",
+    color: "black_white",
+    job: "designer"
   },
   {
     id: 2,
@@ -23,7 +26,10 @@ export const datas = [
     views: "8,000",
     likes: "2,000",
     comments: "90",
-    createdAt: "2024-06-08"
+    createdAt: "2024-06-08",
+    style: "gamer",
+    color: "black",
+    job: "gamer"
   },
   {
     id: 3,
@@ -36,7 +42,10 @@ export const datas = [
     views: "12,000",
     likes: "1,500",
     comments: "105",
-    createdAt: "2024-06-15"
+    createdAt: "2024-06-15",
+    style: "minimal",
+    color: "white",
+    job: "freelancer"
   },
   {
     id: 4,
@@ -49,7 +58,10 @@ export const datas = [
     views: "15,000",
     likes: "3,800",
     comments: "125",
-    createdAt: "2024-06-22"
+    createdAt: "2024-06-22",
+    style: "modern",
+    color: "gray",
+    job: "designer"
   },
   {
     id: 5,
@@ -62,7 +74,10 @@ export const datas = [
     views: "17,000",
     likes: "5,000",
     comments: "155",
-    createdAt: "2024-07-17"
+    createdAt: "2024-07-17",
+    style: "gamer",
+    color: "black",
+    job: "developer"
   },
   {
     id: 6,
@@ -75,7 +90,10 @@ export const datas = [
     views: "10,000",
     likes: "2,200",
     comments: "95",
-    createdAt: "2024-07-18"
+    createdAt: "2024-07-18",
+    style: "minimal",
+    color: "white",
+    job: "designer"
   },
   {
     id: 7,
@@ -88,7 +106,10 @@ export const datas = [
     views: "14,000",
     likes: "3,600",
     comments: "110",
-    createdAt: "2024-07-19"
+    createdAt: "2024-07-19",
+    style: "gamer",
+    color: "black",
+    job: "gamer"
   },
   {
     id: 8,
@@ -101,7 +122,10 @@ export const datas = [
     views: "13,000",
     likes: "2,800",
     comments: "85",
-    createdAt: "2024-07-20"
+    createdAt: "2024-07-20",
+    style: "modern",
+    color: "gray",
+    job: "office_worker"
   },
   {
     id: 9,
@@ -114,7 +138,10 @@ export const datas = [
     views: "18,000",
     likes: "4,300",
     comments: "130",
-    createdAt: "2024-07-21"
+    createdAt: "2024-07-21",
+    style: "creative",
+    color: "blue",
+    job: "designer"
   },
   {
     id: 10,
@@ -127,7 +154,10 @@ export const datas = [
     views: "20,000",
     likes: "4,500",
     comments: "150",
-    createdAt: "2024-07-22"
+    createdAt: "2024-07-22",
+    style: "modern",
+    color: "black_white",
+    job: "freelancer"
   },
   {
     id: 11,
@@ -140,7 +170,10 @@ export const datas = [
     views: "19,000",
     likes: "4,800",
     comments: "115",
-    createdAt: "2024-07-24"
+    createdAt: "2024-07-24",
+    style: "modern",
+    color: "gray",
+    job: "office_worker"
   },
   {
     id: 12,
@@ -153,7 +186,10 @@ export const datas = [
     views: "17,500",
     likes: "4,300",
     comments: "120",
-    createdAt: "2024-07-25"
+    createdAt: "2024-07-25",
+    style: "minimal",
+    color: "white",
+    job: "homemaker"
   },
   {
     id: 13,
@@ -166,7 +202,10 @@ export const datas = [
     views: "22,000",
     likes: "5,200",
     comments: "160",
-    createdAt: "2024-07-26"
+    createdAt: "2024-07-26",
+    style: "modern",
+    color: "black",
+    job: "freelancer"
   },
   {
     id: 14,
@@ -179,7 +218,10 @@ export const datas = [
     views: "19,000",
     likes: "4,600",
     comments: "110",
-    createdAt: "2024-07-27"
+    createdAt: "2024-07-27",
+    style: "gamer",
+    color: "black",
+    job: "developer"
   },
   {
     id: 15,
@@ -192,7 +234,10 @@ export const datas = [
     views: "15,500",
     likes: "3,800",
     comments: "100",
-    createdAt: "2024-07-28"
+    createdAt: "2024-07-28",
+    style: "study",
+    color: "blue",
+    job: "student"
   },
   {
     id: 16,
@@ -205,7 +250,10 @@ export const datas = [
     views: "16,500",
     likes: "4,100",
     comments: "120",
-    createdAt: "2024-07-29"
+    createdAt: "2024-07-29",
+    style: "minimal",
+    color: "white",
+    job: "freelancer"
   },
   {
     id: 17,
@@ -218,7 +266,10 @@ export const datas = [
     views: "23,000",
     likes: "5,500",
     comments: "135",
-    createdAt: "2024-07-30"
+    createdAt: "2024-07-30",
+    style: "creative",
+    color: "pink",
+    job: "designer"
   },
   {
     id: 18,
@@ -231,7 +282,10 @@ export const datas = [
     views: "14,500",
     likes: "3,600",
     comments: "95",
-    createdAt: "2024-07-31"
+    createdAt: "2024-07-31",
+    style: "minimal",
+    color: "gray",
+    job: "designer"
   },
   {
     id: 19,
@@ -244,7 +298,9 @@ export const datas = [
     views: "20,500",
     likes: "4,900",
     comments: "125",
-    createdAt: "2024-08-01"
+    createdAt: "2024-08-01",
+    color: "black_white",
+    job: "office_worker"
   },
   {
     id: 20,
@@ -257,7 +313,10 @@ export const datas = [
     views: "26,000",
     likes: "6,500",
     comments: "170",
-    createdAt: "2024-08-02"
+    createdAt: "2024-08-02",
+    style: "gamer",
+    color: "black",
+    job: "gamer"
   },
   {
     id: 21,
@@ -270,7 +329,10 @@ export const datas = [
     views: "25,000",
     likes: "6,000",
     comments: "160",
-    createdAt: "2024-08-03"
+    createdAt: "2024-08-03",
+    style: "modern",
+    color: "blue",
+    job: "developer"
   },
   {
     id: 22,
@@ -283,7 +345,10 @@ export const datas = [
     views: "18,500",
     likes: "4,700",
     comments: "120",
-    createdAt: "2024-08-04"
+    createdAt: "2024-08-04",
+    style: "modern",
+    color: "gray",
+    job: "developer"
   },
   {
     id: 23,
@@ -296,7 +361,10 @@ export const datas = [
     views: "22,500",
     likes: "5,300",
     comments: "130",
-    createdAt: "2024-08-05"
+    createdAt: "2024-08-05",
+    style: "lovely",
+    color: "pink",
+    job: "designer"
   },
   {
     id: 24,
@@ -309,7 +377,10 @@ export const datas = [
     views: "19,000",
     likes: "4,400",
     comments: "110",
-    createdAt: "2024-08-06"
+    createdAt: "2024-08-06",
+    style: "modern",
+    color: "gray",
+    job: "developer"
   },
   {
     id: 25,
@@ -322,7 +393,10 @@ export const datas = [
     views: "16,000",
     likes: "4,000",
     comments: "105",
-    createdAt: "2024-08-07"
+    createdAt: "2024-08-07",
+    style: "minimal",
+    color: "white",
+    job: "designer"
   },
   {
     id: 26,
@@ -335,7 +409,10 @@ export const datas = [
     views: "23,500",
     likes: "5,800",
     comments: "145",
-    createdAt: "2024-08-08"
+    createdAt: "2024-08-08",
+    style: "modern",
+    color: "gray",
+    job: "developer"
   },
   {
     id: 27,
@@ -348,7 +425,10 @@ export const datas = [
     views: "20,000",
     likes: "4,900",
     comments: "125",
-    createdAt: "2024-08-09"
+    createdAt: "2024-08-09",
+    style: "lovely",
+    color: "blue",
+    job: "developer"
   },
   {
     id: 28,
@@ -361,7 +441,10 @@ export const datas = [
     views: "24,000",
     likes: "6,200",
     comments: "155",
-    createdAt: "2024-08-10"
+    createdAt: "2024-08-10",
+    style: "modern",
+    color: "black_white",
+    job: "freelancer"
   },
   {
     id: 29,
@@ -374,7 +457,10 @@ export const datas = [
     views: "27,000",
     likes: "6,500",
     comments: "170",
-    createdAt: "2024-08-11"
+    createdAt: "2024-08-11",
+    style: "gamer",
+    color: "black",
+    job: "gamer"
   },
   {
     id: 30,
@@ -387,6 +473,9 @@ export const datas = [
     views: "24,500",
     likes: "6,800",
     comments: "180",
-    createdAt: "2024-08-12"
+    createdAt: "2024-08-12",
+    style: "creative",
+    color: "blue",
+    job: "designer"
   }
 ];

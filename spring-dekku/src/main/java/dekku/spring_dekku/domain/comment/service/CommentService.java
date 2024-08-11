@@ -6,7 +6,6 @@ import dekku.spring_dekku.domain.comment.model.dto.CommentDto;
 import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
 import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.comment.repository.CommentRepository;
-import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
 import dekku.spring_dekku.domain.member.exception.NotExistsUserException;
 import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.model.entity.Member;
@@ -31,7 +30,7 @@ public class CommentService {
     public void createComment(Long postId, String token, CommentDto commentDto) {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         Long memberId = member.getId();
 
@@ -48,10 +47,10 @@ public class CommentService {
                 .getId();
 
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException("댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CommentNotFoundException(ErrorCode.NOT_EXISTS_COMMENT));
 
         if (!comment.getMemberId().equals(memberId)) {
-            throw new UnauthorizedCommentDeleteException("댓글을 삭제할 권한이 없습니다.");
+            throw new UnauthorizedCommentDeleteException(ErrorCode.FAIL_TO_DELETE_UNAUTHORIZED_COMMENT);
         }
 
         commentRepository.delete(comment);

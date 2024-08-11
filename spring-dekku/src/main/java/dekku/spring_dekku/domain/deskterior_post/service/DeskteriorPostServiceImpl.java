@@ -12,7 +12,7 @@ import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPostImage;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostRepository;
-import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
+import dekku.spring_dekku.domain.member.exception.NotExistsUserException;
 import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
@@ -48,6 +48,7 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
+    @Transactional
     public CreateDeskteriorPostResponseDto addDeskteriorPost(String token, CreateDeskteriorPostRequestDto request) {
         if (token == null || token.isEmpty()) {
             throw new AccessTokenException(ErrorCode.INVALID_TOKEN);
@@ -55,7 +56,7 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
 
         String username = jwtTokenProvider.getUsername(token);
         Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         // Embeddable 생성
         DeskteriorAttributes deskteriorAttributes = CreateDeskteriorPostRequestDto.createDeskteriorAttributes(
@@ -106,7 +107,7 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<FindDeskteriorPostResponseDto> findAll() {
         List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findAll();
         if (deskteriorPosts.isEmpty()) {
@@ -139,7 +140,7 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     public DeskteriorPost updateDeskteriorPost(Long id, String token, UpdateDeskteriorPostRequestDto request) {
         String username = extractUsernameFromToken(token);
         Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         DeskteriorPost existingDeskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
@@ -200,7 +201,7 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     public void deleteDeskteriorPost(Long id, String token) {
         String username = extractUsernameFromToken(token);
         Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         DeskteriorPost existingDeskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));

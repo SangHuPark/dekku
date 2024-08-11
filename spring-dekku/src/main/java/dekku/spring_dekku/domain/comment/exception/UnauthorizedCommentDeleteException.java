@@ -1,7 +1,10 @@
 package dekku.spring_dekku.domain.comment.exception;
 
-public class UnauthorizedCommentDeleteException extends RuntimeException {
-    public UnauthorizedCommentDeleteException(String message) {
-        super(message);
+import dekku.spring_dekku.global.exception.BaseException;
+import dekku.spring_dekku.global.status.ErrorCode;
+
+public class UnauthorizedCommentDeleteException extends BaseException {
+    public UnauthorizedCommentDeleteException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

@@ -7,7 +7,7 @@ import dekku.spring_dekku.domain.like.exception.LikeException;
 import dekku.spring_dekku.domain.like.model.dto.LikeDto;
 import dekku.spring_dekku.domain.like.model.entity.Like;
 import dekku.spring_dekku.domain.like.repository.LikeRepository;
-import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
+import dekku.spring_dekku.domain.member.exception.NotExistsUserException;
 import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
@@ -37,13 +37,13 @@ public class LikeService {
 
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         DeskteriorPost post = deskteriorPostRepository.findById(postId)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
 
         if (likeRepository.existsByMemberAndDeskteriorPost(member, post)) {
-            throw new LikeException("이미 좋아요를 눌렀습니다.");
+            throw new LikeException(ErrorCode.CONFLICT_LIKE_TO_POST);
         }
 
         Like like = new Like(member, post);
@@ -64,7 +64,7 @@ public class LikeService {
         }
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
         Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         DeskteriorPost post = deskteriorPostRepository.findById(postId)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
@@ -81,6 +81,7 @@ public class LikeService {
                         .build();
             }
         }
-        throw new LikeException("이미 좋아요를 취소했니다.");
+
+        throw new LikeException(ErrorCode.CONFLICT_UNLIKE_TO_POST);
     }
 }

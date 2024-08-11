@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -80,8 +81,7 @@ public class SecurityConfig {
         httpSecurity
                 .cors((cors) -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000/"));
-                    configuration.setAllowedOrigins(Collections.singletonList("http://dekku.co.kr/"));
+                    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000/", "http://dekku.co.kr/", "https://dekku.co.kr/"));
                     configuration.setAllowedMethods(Collections.singletonList("*"));
                     configuration.setAllowCredentials(true);
                     configuration.setAllowedHeaders(Collections.singletonList("*"));

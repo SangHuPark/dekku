@@ -3,6 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import slick-carousel styles */
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
 /* 카테고리 바의 고정 크기를 설정 */
 .category-container {
   display: flex;
