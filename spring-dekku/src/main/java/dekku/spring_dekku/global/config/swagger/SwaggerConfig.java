@@ -20,7 +20,6 @@ public class SwaggerConfig {
         localServer.setDescription("local");
         localServer.setUrl("http://localhost:8080");
 
-
         return new OpenAPI()
                 .info(getInfo())
                 .servers(Arrays.asList(localServer));
