@@ -7,8 +7,7 @@ import TransformControls from './TransformControls';
 import SelectedProducts from './SelectedProducts';
 import { v4 as uuidv4 } from 'uuid';
 
-
-const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) => {
+const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete, jsonUrl }) => {
   const mountRef = useRef(null);
   const controlsRef = useRef(null);
   const [deskHeight, setDeskHeight] = useState(0);
@@ -140,10 +139,13 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
       scene.add(desk);
       console.log("Desk model loaded and added to scene.");
 
-      const jsonUrl = 'https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/3d/MemberId/1dbc693f-f276-4429-9ec7-0101696e2f08';
-      fetchModelData(jsonUrl).then(data => {
-        loadModelsFromData(data, scene, loader, setSelectedProducts);
-      });
+      if (jsonUrl) {
+        fetchModelData(jsonUrl).then(data => {
+          if (data) {
+            loadModelsFromData(data, scene, loader, setSelectedProducts);
+          }
+        });
+      }
     });
 
     const animate = () => {
@@ -157,7 +159,7 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
     return () => {
       mount.removeChild(renderer.domElement);
     };
-  }, []);
+  }, [jsonUrl]);
 
   useEffect(() => {
     if (scene) {
