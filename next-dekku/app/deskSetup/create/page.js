@@ -15,12 +15,6 @@ const CreatePage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false); // 제출 상태
   const router = useRouter();
 
-  useEffect(() => {
-    const storedThumbnail = localStorage.getItem('thumbnail');
-    if (storedThumbnail) {
-      setImage(storedThumbnail);
-    }
-  }, []);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -31,95 +25,91 @@ const CreatePage = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // 로컬 스토리지에서 씬 상태 가져오기
-    const storedSceneState = localStorage.getItem('sceneState');
-    if (!storedSceneState) {
-      console.error("No scene state found in localStorage.");
-      setIsSubmitting(false);
-      return;
+  // 이미지 파일을 S3에 업로드
+  let presignedUrl;
+  try {
+    const presignedResponse = await fetch("http://dekku.co.kr:8080/api/s3/presigned-url", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        id: "memberId", // 로그인 정보에서 유저아이디 가져와서 보내기
+        fileCount: 1, // 이미지만 전송
+        directory: "post"
+      })
+    });
+
+    if (!presignedResponse.ok) {
+      const errorMessage = await presignedResponse.text();
+      console.error("Error:", errorMessage);
+      throw new Error(errorMessage);
     }
 
-    // Presigned URL 생성 요청
-    let presignedUrl;
-    try {
-      const presignedResponse = await fetch("http://dekku.co.kr:8080/api/s3/presigned-url", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          id: "memberId", // 고유 식별자. 필요에 따라 변경하세요. 로그인 정보에서 유저아이디 가져와서 보내기
-          fileCount: 2,
-          directory: "post"
-        })
-      });
-
-      if (!presignedResponse.ok) {
-        const errorMessage = await presignedResponse.text();
-        console.error("Error:", errorMessage);
-        throw new Error(errorMessage);
-      }
-
-      const presignedData = await presignedResponse.json();
-      presignedUrl = presignedData.data.preSignedUrl;
-
-      console.log("Presigned URLs:", presignedUrl);
-    } catch (error) {
-      console.error("Failed to fetch presigned URL:", error);
-      setIsSubmitting(false);
-      return;
-    }
+    const presignedData = await presignedResponse.json();
+    presignedUrl = presignedData.data.preSignedUrl[0];
 
     // S3에 파일 업로드
-    try {
-      const sceneStateBlob = new Blob([storedSceneState], { type: 'application/json' });
-      const imageBlob = await fetch(image).then(res => res.blob());
+    const imageBlob = await fetch(image).then(res => res.blob());
 
-      const uploadSceneResponse = await fetch(presignedUrl[0], {
-        method: "PUT",
-        headers: {
-          "Content-Type": 'application/json'
-        },
-        body: sceneStateBlob
-      });
+    const uploadImageResponse = await fetch(presignedUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": imageBlob.type
+      },
+      body: imageBlob
+    });
 
-      if (!uploadSceneResponse.ok) {
-        const errorMessage = await uploadSceneResponse.text();
-        console.error("Error uploading scene state:", errorMessage);
-        throw new Error(errorMessage);
-      }
-
-      const uploadImageResponse = await fetch(presignedUrl[1], {
-        method: "PUT",
-        headers: {
-          "Content-Type": imageBlob.type
-        },
-        body: imageBlob
-      });
-
-      if (!uploadImageResponse.ok) {
-        const errorMessage = await uploadImageResponse.text();
-        console.error("Error uploading image:", errorMessage);
-        throw new Error(errorMessage);
-      }
-
-      console.log("Uploaded file URLs:", presignedUrl.map(url => url.split("?")[0]));
-
-      // 모달 띄우기
-      setIsModalOpen(true);
-    } catch (error) {
-      console.error("Failed to upload files:", error);
-      setIsSubmitting(false);
-      return;
+    if (!uploadImageResponse.ok) {
+      const errorMessage = await uploadImageResponse.text();
+      console.error("Error uploading image:", errorMessage);
+      throw new Error(errorMessage);
     }
 
+    const imageUrl = presignedUrl.split("?")[0]; // 업로드된 이미지의 URL
+
+    console.log("Uploaded image URL:", imageUrl);
+
+    // 백엔드 서버로 포스트 생성 요청 보내기
+    const response = await fetch('http://localhost:8080/api/deskterior-post', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title,
+        content,
+        style: styleInfo,
+        color: colorInfo,
+        job: jobInfo,
+        deskteriorPostImages: [imageUrl], // 이미지 URL 전달
+        productIds: [], // 관련된 제품 ID가 있다면 추가
+        OPENED: 'PUBLIC', // 공개 상태 설정
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create post');
+    }
+
+    console.log("Post successfully created!");
+
+    // 모달 띄우기
+    setIsModalOpen(true);
+  } catch (err) {
+    console.error("Failed to upload files:", err);
     setIsSubmitting(false);
+    return;
+  }
+
+  setIsSubmitting(false);
   };
 
   const handleModalClose = () => {
-    setIsModalOpen(false);
-    router.push('/deskSetup/1'); // 게시글 디테일 페이지 경로로 변경
+  setIsModalOpen(false);
+  router.push('/deskSetup/1'); // 게시글 디테일 페이지 경로로 변경
   };
+
 
   return (
     <div className="max-w-6xl mx-auto flex justify-center items-center mt-20">
@@ -137,7 +127,7 @@ const CreatePage = () => {
                 <img src={image} alt="Uploaded" className="w-full h-auto rounded-lg" />
               ) : (
                 <div className="text-center">
-                  <p>이곳에 사진을 올려주세요</p>
+                  <p>이곳을 클릭해 사진을 올려주세요</p>
                   <div
                     type="button"
                     className="mt-2 bg-black text-white py-2 px-4 rounded"
@@ -179,15 +169,15 @@ const CreatePage = () => {
                 onChange={(e) => setStyleInfo(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option value="">스타일 정보 추가</option>
-                <option value="modern">모던</option>
-                <option value="minimal">미니멀</option>
-                <option value="retro">레트로</option>
-                <option value="lovely">러블리</option>
-                <option value="gamer">게이머</option>
-                <option value="study">서재</option>
-                <option value="natural">자연</option>
-                <option value="other">기타</option>
+                <option value="NON_SELECT">스타일 정보 추가</option>
+                <option value="MODERN">모던</option>
+                <option value="MINIMAL">미니멀</option>
+                <option value="RETRO">레트로</option>
+                <option value="LOVELY">러블리</option>
+                <option value="GAMER">게이머</option>
+                <option value="LIBRARY">서재</option>
+                <option value="NATURE">자연</option>
+                <option value="ETC">기타</option>
               </select>
             </div>
             <div className="w-full">
@@ -196,19 +186,19 @@ const CreatePage = () => {
                 onChange={(e) => setColorInfo(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option value="">컬러 정보 추가</option>
-                <option value="black_white">블랙&화이트</option>
-                <option value="black">블랙</option>
-                <option value="white">화이트</option>
-                <option value="gray">그레이</option>
-                <option value="mint">민트</option>
-                <option value="blue">블루</option>
-                <option value="pink">핑크</option>
-                <option value="green">그린</option>
-                <option value="red">레드</option>
-                <option value="yellow">옐로우</option>
-                <option value="brown">브라운</option>
-                <option value="other">기타</option>
+                <option value="NON_SELECT">컬러 정보 추가</option>
+                <option value="BLACK_AND_WHITE">블랙&화이트</option>
+                <option value="BLACK">블랙</option>
+                <option value="WHITE">화이트</option>
+                <option value="GRAY">그레이</option>
+                <option value="MINT">민트</option>
+                <option value="BLUE">블루</option>
+                <option value="PINK">핑크</option>
+                <option value="GREEN">그린</option>
+                <option value="RED">레드</option>
+                <option value="YELLOW">옐로우</option>
+                <option value="BROWN">브라운</option>
+                <option value="ETC">기타</option>
               </select>
             </div>
             <div className="w-full">
@@ -217,17 +207,17 @@ const CreatePage = () => {
                 onChange={(e) => setJobInfo(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option value="">직업 정보 추가</option>
-                <option value="office_worker">회사원</option>
-                <option value="developer">개발자</option>
-                <option value="architecture">건축</option>
-                <option value="designer">디자이너</option>
-                <option value="editor">편집자</option>
-                <option value="writer">작가</option>
-                <option value="freelancer">프리랜서</option>
-                <option value="homemaker">주부</option>
-                <option value="student">학생</option>
-                <option value="other">기타</option>
+                <option value="NON_SELECT">직업 정보 추가</option>
+                <option value="OFFICE_WORKER">회사원</option>
+                <option value="DEVELOPER">개발자</option>
+                <option value="ARCHITECT">건축</option>
+                <option value="DESIGNER">디자이너</option>
+                <option value="EDITOR">편집자</option>
+                <option value="WRITER">작가</option>
+                <option value="FREELANCER">프리랜서</option>
+                <option value="HOMEMAKER">주부</option>
+                <option value="STUDENT">학생</option>
+                <option value="ETC">기타</option>
               </select>
             </div>
           </div>

@@ -140,7 +140,7 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete }) 
       scene.add(desk);
       console.log("Desk model loaded and added to scene.");
 
-      const jsonUrl = 'https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/3d/memberId/47270356-1d1c-4fcf-8776-4bba416ca87e';
+      const jsonUrl = 'https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/3d/MemberId/1dbc693f-f276-4429-9ec7-0101696e2f08';
       fetchModelData(jsonUrl).then(data => {
         loadModelsFromData(data, scene, loader, setSelectedProducts);
       });

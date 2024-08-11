@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'; // useRouter를 next/navigation에�
 import PostModal from '../../components/deskSetup/PostModal'; // 모달 컴포넌트 임포트
 import { useUploadToS3 } from '../../components/threeDafter/ThreedUpload'; // ThreedUpload 훅을 임포트
 
-const CreatePage = () => {
+const CreateAfterThreedPage = () => {
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -67,7 +67,7 @@ const CreatePage = () => {
           job: jobInfo,
           deskteriorPostImages: [imageUrl, jsonUrl], // 이미지, 모델json URL 전달
           productIds: [], // 관련된 제품 ID가 있다면 추가
-          openStatus: 'PUBLIC', // 공개 상태 설정
+          OPENED: 'PUBLIC', // 공개 상태 설정
         }),
       });
 
@@ -222,4 +222,4 @@ const CreatePage = () => {
   );
 }
 
-export default CreatePage;
+export default CreateAfterThreedPage;

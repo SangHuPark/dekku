@@ -61,8 +61,8 @@ export const useUploadToS3 = () => {
       // 업로드된 파일의 URL 반환
       const jsonUrl = presignedUrls[0].split("?")[0];
       const imageUrl = presignedUrls[1].split("?")[0];
-      console.log(jsonUrl)
-      console.log(imageUrl)
+      console.log('json url:', jsonUrl)
+      console.log('image url:', imageUrl)
 
       return { jsonUrl, imageUrl };
 
