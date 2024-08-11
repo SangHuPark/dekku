@@ -10,17 +10,19 @@ const Header = () => {
   const { isLoggedIn } = useLogin();
   const [showModal, setShowModal] = useState(false);
   const pathname = usePathname();
-  const [headerClasses, setHeaderClasses] = useState('flex justify-between px-4 py-6 max-w-6xl mx-auto');
+  const [headerClasses, setHeaderClasses] = useState(
+    "flex justify-between px-4 py-6 max-w-6xl mx-auto"
+  );
 
   // 사용자 데이터 상태 관리
   const [userData, setUserData] = useState({ memberId: null, imageUrl: null });
 
   useEffect(() => {
     // 경로에 따라 클래스를 설정합니다.
-    if (pathname === '/threeD') {
-      setHeaderClasses('flex justify-between px-4 py-6');
+    if (pathname === "/threeD") {
+      setHeaderClasses("flex justify-between px-4 py-6");
     } else {
-      setHeaderClasses('flex justify-between px-4 py-6 max-w-6xl mx-auto');
+      setHeaderClasses("flex justify-between px-4 py-6 max-w-6xl mx-auto");
     }
   }, [pathname]);
 
@@ -29,15 +31,15 @@ const Header = () => {
       // 서버에서 사용자 데이터를 가져오는 API 호출
       const fetchUserData = async () => {
         try {
-          const response = await fetch('/api/getUserData');  // 이 URL을 실제 API 엔드포인트로 교체
+          const response = await fetch("/api/getUserData", { method: "GET" }); // 이 URL을 실제 API 엔드포인트로 교체
           const data = await response.json();
 
           setUserData({
             memberId: data.memberId,
-            imageUrl: data.image_url
+            imageUrl: data.image_url,
           });
         } catch (error) {
-          console.error('Failed to fetch user data', error);
+          console.error("Failed to fetch user data", error);
         }
       };
 
