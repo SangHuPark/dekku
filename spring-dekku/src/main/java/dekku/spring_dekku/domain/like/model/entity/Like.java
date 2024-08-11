@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "members_liked_posts_info")
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Like {
 
     @Id
@@ -31,7 +32,5 @@ public class Like {
     public Like(Member member, DeskteriorPost post) {
         this.member = member;
         this.deskteriorPost = post;
-        member.getLikes().add(this);
-        post.getLikes().add(this);
     }
 }
