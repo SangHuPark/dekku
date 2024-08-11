@@ -40,7 +40,8 @@ public enum ErrorCode {
      * {@code 409 Conflict}
      */
     CONFLICT_FOLLOW_USER(HttpStatus.CONFLICT, "이미 팔로우한 사용자입니다."),
-    CONFLICT_UNLIKE_TO_POST(HttpStatus.CONFLICT, "이미 취소한 좋아요입니다.");
+    CONFLICT_UNLIKE_TO_POST(HttpStatus.CONFLICT, "이미 취소한 좋아요입니다."),
+    CONFLICT_LIKE_TO_POST(HttpStatus.CONFLICT, "이미 좋아요한 게시글입니다.");
 
     private HttpStatus code;
     private String message;

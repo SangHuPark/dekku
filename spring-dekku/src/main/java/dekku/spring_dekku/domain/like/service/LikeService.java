@@ -43,7 +43,7 @@ public class LikeService {
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
 
         if (likeRepository.existsByMemberAndDeskteriorPost(member, post)) {
-            throw new LikeException("이미 좋아요를 눌렀습니다.");
+            throw new LikeException(ErrorCode.CONFLICT_LIKE_TO_POST);
         }
 
         Like like = new Like(member, post);
