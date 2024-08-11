@@ -32,13 +32,12 @@ public class LikeService {
     @Transactional
     public LikeDto likePost(Long postId, String token) {
         if (token == null || token.isEmpty()) {
-            throw new AccessTokenException("액세스 토큰이 없습니다.");
+            throw new AccessTokenException(ErrorCode.EMPTY_TOKEN);
         }
+
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
-        Member member = memberRepository.findByUsername(username);
-        if(member == null) {
-            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
-        }
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
 
         DeskteriorPost post = deskteriorPostRepository.findById(postId)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
@@ -61,13 +60,11 @@ public class LikeService {
     @Transactional
     public LikeDto unlikePost(Long postId, String token) {
         if (token == null || token.isEmpty()) {
-            throw new AccessTokenException("액세스 토큰이 없습니다.");
+            throw new AccessTokenException(ErrorCode.EMPTY_TOKEN);
         }
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
-        Member member = memberRepository.findByUsername(username);
-        if(member == null) {
-            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
-        }
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.NOT_EXISTS_USER));
 
         DeskteriorPost post = deskteriorPostRepository.findById(postId)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));

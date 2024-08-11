@@ -19,6 +19,9 @@ public enum ErrorCode {
      * {@code 401 Unauthorized}
      */
     FAIL_TO_LOGIN(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호를 잘못 입력했습니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
+    EMPTY_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 없습니다."),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다." ),
 
     /**
      * {@code 404 Not Found}
