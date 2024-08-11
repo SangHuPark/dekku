@@ -81,7 +81,7 @@ public class SecurityConfig {
         httpSecurity
                 .cors((cors) -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000/", "http://dekku.co.kr/", "https://dekku.co.kr/"));
+                    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://dekku.co.kr", "https://dekku.co.kr"));
                     configuration.setAllowedMethods(Collections.singletonList("*"));
                     configuration.setAllowCredentials(true);
                     configuration.setAllowedHeaders(Collections.singletonList("*"));
