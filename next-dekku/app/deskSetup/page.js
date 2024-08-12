@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from "react";
 import DeskSetupCard from "./DeskSetupCard";
-import { datas } from "./data";
 import Link from "next/link";
 import SortDropdown from "./SortDropdown";
 import StyleFilter from "./StyleFilter";
@@ -12,8 +11,8 @@ import { useRecentTopPosts } from "../components/useRecentTopPosts";
 
 export default function DeskSetupPage() {
   const recentTopPosts = useRecentTopPosts();
-  const [allPosts, setAllPosts] = useState(datas);
-  const [filteredData, setFilteredData] = useState(datas);
+  const [allPosts, setAllPosts] = useState([]); // API로 불러올 데이터를 위한 상태
+  const [filteredData, setFilteredData] = useState([]);
   const [sortOrder, setSortOrder] = useState("latest");
   const [styleFilter, setStyleFilter] = useState("all");
   const [colorFilter, setColorFilter] = useState("all");
@@ -22,6 +21,27 @@ export default function DeskSetupPage() {
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
 
   const loadMoreRef = useRef(null); // "Load More" 버튼의 ref
+
+  useEffect(() => {
+    // API 호출하여 데이터 가져오기
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://dekku.co.kr:8080/api/deskterior-post", {
+          method: "GET",
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        setAllPosts(data); // API로 받은 데이터를 allPosts에 저장
+        setFilteredData(data); // 필터링을 위해 초기 상태를 설정
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []); // 컴포넌트가 마운트될 때 한 번만 호출
 
   useEffect(() => {
     let sortedData = [...allPosts];
