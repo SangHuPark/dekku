@@ -82,7 +82,7 @@ public class SecurityConfig {
                 .cors((cors) -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://dekku.co.kr", "https://dekku.co.kr"));
-                    configuration.setAllowedMethods(Collections.singletonList("*"));
+                    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     configuration.setAllowCredentials(true);
                     configuration.setAllowedHeaders(Collections.singletonList("*"));
                     configuration.setMaxAge(3600L);
