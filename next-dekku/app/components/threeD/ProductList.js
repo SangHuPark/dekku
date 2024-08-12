@@ -33,6 +33,8 @@ const products = {
     { id: 17, name: '장패드', description: '근본 black-red', image: '/products_image/longpad.png', modelPath: 'threedmodels/longpad.glb', scale: [7, 1, 6], update: '2024-08-12' },
     { id: 18, name: '마우스패드', description: '무려 ssafy 로고가 박힌', image: '/products_image/mousepad_ssafy.png', modelPath: 'threedmodels/mousepad_ssafy.glb', scale: [3, 1, 3], update: '2024-08-12' },
     { id: 19, name: 'room', description: 'ssafy classroom', image: '/products_image/mousepad_ssafy.png', modelPath: 'threedmodels/ssafyroom.glb', scale: [3, 3, 3], update: '2024-08-12' },
+    { id: 20, name: '게이밍 헤드셋', description: 'RAZER Kraken V3 X', image: '/products_image/headset.png', modelPath: 'threedmodels/headset.glb', scale: [0.05, 0.05, 0.05], price: '74,140원', update: '2024-08-12' },
+    { id: 21, name: '볼펜꽂이', description: 'black, mesh', image: '/products_image/penholder.png', modelPath: 'threedmodels/penholder.glb', scale: [0.15, 0.15, 0.15], update: '2024-08-12' },
   ],
 };
 
