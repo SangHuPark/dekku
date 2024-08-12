@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useLogin } from "./AuthContext";
 import LoginModal from "./LoginModal";
 import { useEffect, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
   const { isLoggedIn } = useLogin();
@@ -16,7 +16,6 @@ const Header = () => {
 
   const [memberId, setMemberId] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
-  const queryParams = useSearchParams();
 
   useEffect(() => {
     // 경로에 따라 클래스를 설정합니다.
@@ -28,22 +27,42 @@ const Header = () => {
   }, [pathname]);
 
   useEffect(() => {
-    const OAuth2JwtHeaderFetch = async () => {
+    const GetUserInfo = async () => {
       try {
-        const response = await fetch("http://dekku.co.kr:8080/oauth2-jwt-header", {
-          method: "POST",
-          credentials: "include",
+        const accessToken = window.localStorage.getItem("access");
+
+        if (!accessToken) {
+          console.log("No access token found");
+          return;
+        }
+
+        const response = await fetch("https://dekku.co.kr/api/users/info", {
+          method: "GET",
+          headers: {
+            access: accessToken,
+          },
         });
-        console.log(response);
-        const id = queryParams.get("memberId");
-        const imageUrl = queryParams.get("image_url");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user info");
+        }
+
+        const data = await response.json();
+        console.log(data);
+
+        const id = data.id;
+        const imageUrl = data.imageUrl;
+        console.log(id);
+        console.log(imageUrl);
+
         setMemberId(id);
         setImageUrl(imageUrl);
       } catch (error) {
         console.log("error: ", error);
       }
     };
-    OAuth2JwtHeaderFetch();
+
+    GetUserInfo();
   }, []);
 
   return (
@@ -66,6 +85,9 @@ const Header = () => {
             {isLoggedIn && (
               <>
                 <li>
+                  <Link href="/logout">로그아웃</Link>
+                </li>
+                <li>
                   <Link href={`/users/${memberId}`}>
                     <img
                       src={imageUrl || "/default_profile.png"}
@@ -73,9 +95,6 @@ const Header = () => {
                       className="w-10 h-10 rounded-full object-cover cursor-pointer"
                     />
                   </Link>
-                </li>
-                <li>
-                  <Link href="/logout">로그아웃</Link>
                 </li>
               </>
             )}
