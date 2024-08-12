@@ -23,11 +23,6 @@ const ThreeDAfter = () => {
     }
   }, []);
 
-  // 저장버튼 없앨 예정
-  const handleSave = () => {
-    router.push('/test3');
-  };
-
   const handleShare = () => {
     // router.push('/deskSetup/create1');
   };
@@ -68,7 +63,7 @@ const ThreeDAfter = () => {
   return (
     <div>
       <div>
-        <Head onSave={handleSave} onShare={handleShare} />
+        <Head onShare={handleShare} />
       </div>
       <div>
         <UsedProducts selectedProducts={selectedProducts} />
