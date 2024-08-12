@@ -10,10 +10,16 @@ const CompleteBtn = ({ scene, captureThumbnail, saveModelData }) => {
   useEffect(() => {
     // localStorage에서 access 토큰 확인
     const accessToken = localStorage.getItem('access');
-    setIsLoggedIn(!!accessToken);
+    if (accessToken) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
   }, []);
 
   const handleComplete = () => {
+    console.log('isLoggedIn', isLoggedIn) // 로그인 상태 확인용
+
     if (!isLoggedIn) {
       // 로그인이 되어있지 않으면 알림을 띄운 후 로그인 페이지로 리다이렉트
       alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');

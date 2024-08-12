@@ -10,55 +10,41 @@ const ThreeDAfter = () => {
   const router = useRouter();
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const [selectedProducts, setSelectedProducts] = useState([]); // 선택된 제품 상태
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const storedThumbnail = localStorage.getItem('thumbnail');
-    if (storedThumbnail) {
-      setThumbnailUrl(storedThumbnail); // 로컬 스토리지에서 썸네일 설정
+    // localStorage에서 access 토큰 확인
+    const accessToken = localStorage.getItem('access');
+    if (!accessToken) {
+      // 로그인이 되어 있지 않다면 로그인 페이지로 리다이렉트
+      alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+      router.push('/login');
+    } else {
+      setIsLoggedIn(true);
     }
+  }, [router]);
 
-    const storedProducts = localStorage.getItem('selectedProducts');
-    if (storedProducts) {
-      setSelectedProducts(JSON.parse(storedProducts)); // 로컬 스토리지에서 선택한 제품 목록 설정
+  useEffect(() => {
+    if (isLoggedIn) {
+      const storedThumbnail = localStorage.getItem('thumbnail');
+      if (storedThumbnail) {
+        setThumbnailUrl(storedThumbnail); // 로컬 스토리지에서 썸네일 설정
+      }
+
+      const storedProducts = localStorage.getItem('selectedProducts');
+      if (storedProducts) {
+        setSelectedProducts(JSON.parse(storedProducts)); // 로컬 스토리지에서 선택한 제품 목록 설정
+      }
     }
-  }, []);
+  }, [isLoggedIn]);
 
   const handleShare = () => {
-    // router.push('/deskSetup/create1');
+    router.push('/deskSetup/create-afterthreed'); // 공유 버튼 동작
   };
 
-  const recommendedPosts = [
-    {
-      id: 1,
-      imgSrc: '/images/desk1.jpg',
-      profileImg: '/images/profile1.jpg',
-      username: 'John Doe',
-      title: 'My Awesome Desk Setup',
-      views: 1234,
-      likes: 56,
-      comments: 18,
-    },
-    {
-      id: 2,
-      imgSrc: '/images/desk2.jpg',
-      profileImg: '/images/profile2.jpg',
-      username: 'Jane Doe',
-      title: 'Minimalist Desk Setup',
-      views: 2345,
-      likes: 67,
-      comments: 23,
-    },
-    {
-      id: 3,
-      imgSrc: '/images/desk3.jpg',
-      profileImg: '/images/profile3.jpg',
-      username: 'Bob Smith',
-      title: 'Productive Workspace',
-      views: 3456,
-      likes: 78,
-      comments: 34,
-    },
-  ];
+  if (!isLoggedIn) {
+    return null; // 로그인 상태가 확인될 때까지 아무것도 렌더링하지 않음
+  }
 
   return (
     <div>
@@ -69,7 +55,7 @@ const ThreeDAfter = () => {
         <UsedProducts selectedProducts={selectedProducts} />
       </div>
       <div>
-        <RecommendSetup posts={recommendedPosts} />
+        <RecommendSetup posts={selectedProducts} /> {/* 선택된 제품 기반 추천 세팅 */}
       </div>
     </div>
   );

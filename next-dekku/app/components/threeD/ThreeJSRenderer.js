@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -6,10 +8,12 @@ import MouseControls from './MouseControls';
 import TransformControls from './TransformControls';
 import SelectedProducts from './SelectedProducts';
 import { v4 as uuidv4 } from 'uuid';
+import { useRouter } from 'next/navigation';
 
 const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete, jsonUrl }) => {
   const mountRef = useRef(null);
   const controlsRef = useRef(null);
+  const router = useRouter(); // useRouter hook for navigation
   const [deskHeight, setDeskHeight] = useState(0);
   const [deskSize, setDeskSize] = useState({ x: 0, z: 0 });
   const [models, setModels] = useState([]);
@@ -34,9 +38,6 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete, js
     }));
     localStorage.setItem('sceneState', JSON.stringify(data));
     console.log(data);
-
-    // S3 업로드 호출
-    // uploadToS3(data, 'modelData.json');
   };
 
   const captureThumbnail = () => {
@@ -44,20 +45,6 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete, js
     const thumbnail = renderer.domElement.toDataURL('image/png');
     localStorage.setItem('thumbnail', thumbnail);
     return thumbnail;
-  };
-
-  const fetchModelData = async (url) => {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error("Failed to fetch file from S3");
-      }
-      const data = await response.json();
-      console.log("Fetched JSON data:", data);
-      return data;
-    } catch (error) {
-      console.error("Error fetching JSON file:", error);
-    }
   };
 
   const loadModelsFromData = (data, scene, loader, setSelectedProducts) => {
@@ -139,7 +126,12 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete, js
       scene.add(desk);
       console.log("Desk model loaded and added to scene.");
 
-      if (jsonUrl) {
+      // 로그인 후 복원 시 사용될 로컬스토리지의 sceneState 데이터 로드
+      const savedSceneState = localStorage.getItem('sceneState');
+      if (savedSceneState) {
+        const savedData = JSON.parse(savedSceneState);
+        loadModelsFromData(savedData, scene, loader, setSelectedProducts);
+      } else if (jsonUrl) {
         fetchModelData(jsonUrl).then(data => {
           if (data) {
             loadModelsFromData(data, scene, loader, setSelectedProducts);
