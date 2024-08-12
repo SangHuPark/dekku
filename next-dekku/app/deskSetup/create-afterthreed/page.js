@@ -39,10 +39,20 @@ const CreateAfterThreedPage = () => {
     const storedSceneState = localStorage.getItem('sceneState');
     const storedThumbnail = localStorage.getItem('thumbnail');
     const accessToken = localStorage.getItem('access');
-    const productIds = localStorage.getItem('selectedProducts')
-    console.log(productIds.id)
+    const selectedProducts = localStorage.getItem('selectedProducts')
 
-    console.log('선택한 상품들 Id:', productIds)
+    // 선택한 상품 ID 추출
+    let productIds = [];
+    if (selectedProducts) {
+      try {
+        const productsArray = JSON.parse(selectedProducts);
+        productIds = productsArray.map(product => product.id);
+      } catch (error) {
+        console.error("Error parsing selectedProducts:", error);
+      }
+    }
+
+    console.log('선택한 상품들 Id:', productIds);
 
     if (!storedSceneState || !storedThumbnail) {
       console.error("No scene state or thumbnail found in localStorage.");
@@ -73,7 +83,7 @@ const CreateAfterThreedPage = () => {
           color: colorInfo,
           job: jobInfo,
           deskteriorPostImages: [imageUrl, jsonUrl], // 이미지, 모델json URL 전달
-          productIds: [], // 관련된 제품 ID가 있다면 추가
+          productId: productIds, // 관련된 제품 ID가 있다면 추가
           OPENED: 'PUBLIC', // 공개 상태 설정
         }),
       });

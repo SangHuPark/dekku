@@ -23,6 +23,7 @@ const ThreeDAfter = () => {
     }
   }, []);
 
+  // 저장버튼 없앨 예정
   const handleSave = () => {
     router.push('/test3');
   };
@@ -75,12 +76,6 @@ const ThreeDAfter = () => {
       <div>
         <RecommendSetup posts={recommendedPosts} />
       </div>
-      {/* {thumbnailUrl && (
-        <div>
-          <img src={thumbnailUrl} alt="Thumbnail" />
-          <p>Thumbnail loaded from localStorage.</p>
-        </div>
-      )} */}
     </div>
   );
 };
