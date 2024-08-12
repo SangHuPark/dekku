@@ -82,9 +82,9 @@ const CreateAfterThreedPage = () => {
       }
 
       const result = await response.json();
-      console.log('Sever Response:', result)
+      console.log('Sever Response:', result.data)
 
-      const postId = result.id; // 서버에서 반환한 생성된 게시글 ID 사용
+      const postId = result.postId; // 서버에서 반환한 생성된 게시글 ID 사용
       if (!postId) {
         console.error('Post id 응답에 없음')
         throw new Error('Post id 응답에 없음')
