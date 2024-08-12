@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation'; // useRouter를 next/navigation에서 임포트
 import PostModal from '../../components/deskSetup/PostModal'; // 모달 컴포넌트 임포트
 
@@ -232,12 +232,10 @@ const CreatePage = () => {
           </button>
         </div>
       </form>
-      <Suspense>
-        <PostModal 
-          isOpen={isModalOpen} 
-          onClose={handleModalClose} 
-        />
-      </Suspense>
+      <PostModal 
+        isOpen={isModalOpen} 
+        onClose={handleModalClose} 
+      />
     </div>
   );
 }
