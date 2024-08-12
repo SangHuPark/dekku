@@ -26,9 +26,10 @@ export default function DeskSetupPage() {
     // API 호출하여 데이터 가져오기
     const fetchData = async () => {
       try {
-        const response = await fetch("http://dekku.co.kr:8080/api/deskterior-post", {
+        const response = await fetch("https://dekku.co.kr/api/deskterior-post", {
           method: "GET",
         });
+        console.log(response)
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
