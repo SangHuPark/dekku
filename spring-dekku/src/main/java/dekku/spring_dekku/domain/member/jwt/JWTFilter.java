@@ -44,8 +44,8 @@ public class JWTFilter extends OncePerRequestFilter {
 
         //token validate
         try {
-            log.error("Token is not vaild");
             if (!jwtTokenProvider.validateToken(access)) {
+                log.error("Token is not vaild");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
@@ -65,7 +65,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String category = jwtTokenProvider.getCategory(access);
 
-        logger.error("category: " + category);
+        log.error("category: {}", category);
 
         // not access token
         if(!category.equals("access")){
