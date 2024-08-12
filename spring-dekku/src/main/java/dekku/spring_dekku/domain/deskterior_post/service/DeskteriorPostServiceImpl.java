@@ -101,7 +101,8 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
         DeskteriorPost savedDeskteriorPost = deskteriorPostRepository.save(newDeskteriorPost);
 
 //        CreateDeskteriorPostResponseDto response = modelMapper.map(deskteriorPost, CreateDeskteriorPostResponseDto.class);
-        CreateDeskteriorPostResponseDto response = new CreateDeskteriorPostResponseDto(savedDeskteriorPost.getTitle(), savedDeskteriorPost.getContent());
+        CreateDeskteriorPostResponseDto response = new CreateDeskteriorPostResponseDto(savedDeskteriorPost.getTitle(), savedDeskteriorPost.getContent(),
+                                                        savedDeskteriorPost.getId());
 
         return response;
     }
