@@ -36,7 +36,7 @@ export default function LoginModal({ showModal, setShowModal }) {
                   <div className="flex flex-col items-center space-y-2 w-full">
                     <div className="w-full">
                       <a
-                        href="http://dekku.co.kr:8080/api/oauth2/authorization/kakao"
+                        href="http://dekku.co.kr:8080/oauth2/authorization/kakao"
                         className="shadow w-full inline-flex justify-center items-center px-4 py-4 border border-transparent font-medium rounded-md text-black bg-[#FDDC3F] hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
                       >
                         <img
