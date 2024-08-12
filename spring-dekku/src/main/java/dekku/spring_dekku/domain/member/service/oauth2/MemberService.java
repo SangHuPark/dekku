@@ -1,6 +1,7 @@
 package dekku.spring_dekku.domain.member.service.oauth2;
 
 import dekku.spring_dekku.domain.member.exception.NotExistsUserException;
+import dekku.spring_dekku.domain.member.model.dto.MemberDto;
 import dekku.spring_dekku.domain.member.model.dto.MemberUpdateDto;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
@@ -69,6 +70,19 @@ public class MemberService {
         }
         memberRepository.delete(member);
         jwtTokenProvider.invalidateToken(requestAccessToken);
+    }
+
+    public MemberDto findByToken(String token) {
+        String username = jwtTokenProvider.getKeyFromClaims(token, "username");
+        Member member = memberRepository.findByUsername(username).orElseThrow();
+        return MemberDto.builder()
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .imageUrl(member.getImageUrl())
+                .id(member.getId())
+                .gender(member.getGender())
+                .ageRange(member.getAgeRange())
+                .build();
     }
 
 //    @Transactional

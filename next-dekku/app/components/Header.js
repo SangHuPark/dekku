@@ -4,23 +4,47 @@ import Link from "next/link";
 import { useLogin } from "./AuthContext";
 import LoginModal from "./LoginModal";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const Header = () => {
   const { isLoggedIn } = useLogin();
   const [showModal, setShowModal] = useState(false);
   const pathname = usePathname();
+  const [headerClasses, setHeaderClasses] = useState(
+    "flex justify-between px-4 py-6 max-w-6xl mx-auto"
+  );
 
-  const [headerClasses, setHeaderClasses] = useState('flex justify-between px-4 py-6 max-w-6xl mx-auto');
+  const [memberId, setMemberId] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+  const queryParams = useSearchParams();
 
   useEffect(() => {
     // 경로에 따라 클래스를 설정합니다.
-    if (pathname === '/threeD') {
-      setHeaderClasses('flex justify-between px-4 py-6');
+    if (pathname === "/threeD") {
+      setHeaderClasses("flex justify-between px-4 py-6");
     } else {
-      setHeaderClasses('flex justify-between px-4 py-6 max-w-6xl mx-auto');
+      setHeaderClasses("flex justify-between px-4 py-6 max-w-6xl mx-auto");
     }
-  }, [pathname]); // pathname이 변경될 때마다 useEffect가 호출됩니다.
+  }, [pathname]);
+
+  useEffect(() => {
+    const OAuth2JwtHeaderFetch = async () => {
+      try {
+        const response = await fetch("http://dekku.co.kr:8080/oauth2-jwt-header", {
+          method: "POST",
+          credentials: "include",
+        });
+        console.log(response);
+        const id = queryParams.get("memberId");
+        const imageUrl = queryParams.get("image_url");
+        setMemberId(id);
+        setImageUrl(imageUrl);
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
+    OAuth2JwtHeaderFetch();
+  }, []);
 
   return (
     <header className="fixed top-0 w-full z-50 bg-white">
@@ -40,9 +64,20 @@ const Header = () => {
               <Link href="/deskSetup">데스크 셋업</Link>
             </li>
             {isLoggedIn && (
-              <li>
-                <Link href="/social">프로필</Link>
-              </li>
+              <>
+                <li>
+                  <Link href={`/users/${memberId}`}>
+                    <img
+                      src={imageUrl || "/default_profile.png"}
+                      alt="Profile"
+                      className="w-10 h-10 rounded-full object-cover cursor-pointer"
+                    />
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/logout">로그아웃</Link>
+                </li>
+              </>
             )}
             {!isLoggedIn && (
               <li>
@@ -50,15 +85,10 @@ const Header = () => {
                 <LoginModal showModal={showModal} setShowModal={setShowModal} />
               </li>
             )}
-            {isLoggedIn && (
-              <li>
-                <Link href="/logout">로그아웃</Link>
-              </li>
-            )}
           </ul>
         </nav>
       </div>
-      <hr className=""/>
+      <hr />
     </header>
   );
 };

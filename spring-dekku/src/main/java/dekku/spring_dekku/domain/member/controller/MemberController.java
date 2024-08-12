@@ -1,5 +1,6 @@
 package dekku.spring_dekku.domain.member.controller;
 
+import dekku.spring_dekku.domain.member.model.dto.MemberDto;
 import dekku.spring_dekku.domain.member.model.dto.MemberUpdateDto;
 import dekku.spring_dekku.domain.member.service.oauth2.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +35,28 @@ public class MemberController {
 //				.map(ResponseEntity::ok)
 //				.orElseGet(() -> ResponseEntity.notFound().build());
 //	}
+
+	@Operation(summary = "회원정보 가져오기")
+	@ApiResponses({
+			@ApiResponse(
+					responseCode = "200",
+					description = "회원정보 요청 완료"
+			),
+			@ApiResponse(
+					responseCode = "404",
+					description = "정보를 찾으려는 계정이 없는 경우"
+			),
+			@ApiResponse(
+					responseCode = "401",
+					description = "만료된 토큰으로 계정 정보를 취득하려는 경우"
+			)
+	})
+	@GetMapping("/info")
+	public ResponseEntity<?> getMemberInfo(@RequestHeader(value = "access") String token) {
+		MemberDto member = memberService.findByToken(token);
+		System.out.println("Memnber: " + member.username());
+		return ResponseEntity.status(HttpStatus.OK).body(member);
+	}
 
 	@Operation(summary = "회원정보 수정")
 	@ApiResponses({

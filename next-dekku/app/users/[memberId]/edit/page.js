@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useLogin } from "../components/AuthContext";
+import { useLogin } from "../../../components/AuthContext";
 
 export default function ProfileEdit() {
   const [profileImage, setProfileImage] = useState("");
