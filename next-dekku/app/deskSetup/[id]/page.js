@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer"; // ThreeJSRenderer 임포트
 import DeskSetupCard from "../DeskSetupCard";
 
@@ -139,14 +139,12 @@ export default function Details({ params }) {
         )}
 
         {showThreeJSRenderer && (
-          <Suspense>
-            <ThreeJSRenderer
-              selectedProducts={[]} 
-              setSelectedProducts={() => {}} 
-              onComplete={() => {}} 
-              jsonUrl={jsonUrl}
-            />
-          </Suspense>
+          <ThreeJSRenderer
+            selectedProducts={[]} 
+            setSelectedProducts={() => {}} 
+            onComplete={() => {}} 
+            jsonUrl={jsonUrl}
+          />
         )}
 
         <h2 className="text-xl font-bold mb-4">다른 게시물</h2>
