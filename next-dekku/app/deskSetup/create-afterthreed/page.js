@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation'; // useRouter를 next/navigation에서 임포트
 import PostModal from '../../components/deskSetup/PostModal'; // 모달 컴포넌트 임포트
 import { useUploadToS3 } from '../../components/threeDafter/ThreedUpload'; // ThreedUpload 훅을 임포트
-import local from "next/font/local";
 
 const CreateAfterThreedPage = () => {
   const [image, setImage] = useState(null);
@@ -35,14 +34,10 @@ const CreateAfterThreedPage = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // 로컬 스토리지에서 씬 상태와 썸네일, access토큰, selectedProducts 가져오기
+    // 로컬 스토리지에서 씬 상태와 썸네일 가져오기
     const storedSceneState = localStorage.getItem('sceneState');
     const storedThumbnail = localStorage.getItem('thumbnail');
-    const accessToken = localStorage.getItem('access');
-    const productIds = localStorage.getItem('selectedProducts')
-
-    console.log('선택한 상품들 Id:', productIds)
-
+    
     if (!storedSceneState || !storedThumbnail) {
       console.error("No scene state or thumbnail found in localStorage.");
       setIsSubmitting(false);
@@ -59,11 +54,11 @@ const CreateAfterThreedPage = () => {
       console.log("Uploaded file URLs:", { jsonUrl, imageUrl });
 
       // 업로드된 URL을 백엔드 서버에 전달
-      const response = await fetch('https://dekku.co.kr/api/deskterior-post', {
+      const response = await fetch('http://localhost:8080/api/deskterior-post', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'access': accessToken, // localstorage에서 가져온 access 토큰을 헤더에 추가
+          'access': 'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJuYW1lIjoia2FrYW8gMzY1NTg0NDIwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjM0MjY3OTUsImV4cCI6MTcyMzQzMDM5NX0.UMm6_pJ_C-n-3HoJQNya5YKMFdhfsNNa6o8NRvSbkTQ',
         },
         body: JSON.stringify({
           title,
