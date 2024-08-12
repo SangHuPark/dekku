@@ -31,7 +31,7 @@ public class MemberService {
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
-        memberRepository.update(username, request.nickname(), request.ageRange(), request.gender(), request.imageUrl());
+        memberRepository.update(request.nickname(), request.ageRange(), request.introduction(), request.gender(), request.imageUrl());
     }
 
     @Transactional
@@ -82,6 +82,7 @@ public class MemberService {
                 .id(member.getId())
                 .gender(member.getGender())
                 .ageRange(member.getAgeRange())
+                .Introduction(member.getIntroduction())
                 .build();
     }
 

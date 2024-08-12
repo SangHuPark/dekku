@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
@@ -15,9 +14,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByUsername(String username);
 
     @Modifying
-    @Query(value = "UPDATE Member u set u.nickname=:nickname, u.ageRange=:ageRange, u.gender=:gender, u.imageUrl=:imageUrl " +
+    @Query(value = "UPDATE Member u set u.nickname=:nickname, u.ageRange=:ageRange, u.introduction=:introduction, u.gender=:gender, u.imageUrl=:imageUrl " +
             "WHERE u.username= :username")
-    void update(String username, String nickname, Integer ageRange, String gender, String imageUrl);
+    void update(String nickname, Integer ageRange, String introduction, String gender, String imageUrl);
 
     @Modifying
     @Query(value = "UPDATE Member m set m.name=:name, m.email=:email, m.imageUrl=:imageUrl " +
