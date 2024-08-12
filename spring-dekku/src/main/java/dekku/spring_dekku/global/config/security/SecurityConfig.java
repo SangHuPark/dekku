@@ -81,7 +81,7 @@ public class SecurityConfig {
         httpSecurity
                 .cors((cors) -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://localhost:3000", "http://dekku.co.kr", "https://dekku.co.kr"));
+                    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://dekku.co.kr", "https://dekku.co.kr"));
                     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     configuration.setAllowCredentials(true);
                     configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -118,7 +118,6 @@ public class SecurityConfig {
                         "/auth/**", "/sign-up/**", "/verification/**",
                         "/users/find-password", "/users/update-password", "/s3/**", "/test");
     }
-
 
     @Bean
     public AuthenticationManager authenticationManagerBean() {
