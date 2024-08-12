@@ -8,7 +8,10 @@ const products = {
   ],
   '노트북': [
     { name: 'samsung Galaxy Book4', description: 'NT750XGK-KD51G', image: '/products_image/갤럭시북프로4.PNG', modelPath: 'threedmodels/ssatbook.glb', scale: [1, 1, 1], price: '1,460,000원', update: '2024-08-01'},
-    { name: '게이밍 노트북', description: '게이밍용', image: '/products_image/게이밍노트북.PNG', modelPath: 'threedmodels/gaming_laptop.glb', scale: [0.2, 0.2, 0.2], price: '2,250,000원', update: '2024-08-04' },
+    { name: 'samsung Galaxy Book4', description: 'with stand', image: '/products_image/ssatbookwithstand.png', modelPath: 'threedmodels/ssatbookwithstand.glb', scale: [1, 1, 1], price: '1,460,000원', update: '2024-08-01'},
+    { name: '삼성 오디세이', description: 'NT850XBX-GD7A', image: '/products_image/게이밍노트북.PNG', modelPath: 'threedmodels/gaming_laptop.glb', scale: [0.2, 0.2, 0.2], price: '2,250,000원', update: '2024-08-04' },
+    { name: '삼성 오디세이', description: 'with stand', image: '/products_image/gaminglaptopwithstand.PNG', modelPath: 'threedmodels/gaminglaptopwithstand.glb', scale: [0.2, 0.2, 0.2], price: '2,250,000원', update: '2024-08-04' },
+
   ],
   '데스크': [
     { name: 'SSAFY DESK', description: '2학기 책상', image: '/products_image/ssafydesk.png', modelPath: 'threedmodels/ssafydesk.glb', scale: [1, 1, 1], update: '2024-08-03' },
