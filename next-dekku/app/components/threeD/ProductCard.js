@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 
 // ProductCard 컴포넌트 정의
-const ProductCard = ({ name, description, image, modelPath, scale, price, addProduct, small }) => {
+const ProductCard = ({ id, name, description, image, modelPath, scale, price, addProduct, small }) => {
   // 클릭 시 호출되는 핸들러 함수
   const handleClick = () => {
     const uniqueId = uuidv4(); // 고유한 uniqueId 생성
-    addProduct && addProduct({ uniqueId, name, description, image, modelPath, scale, price  }); // 제품 추가 함수 호출
+    addProduct && addProduct({ id, uniqueId, name, description, image, modelPath, scale, price  }); // 제품 추가 함수 호출
   };
 
   return (
