@@ -44,6 +44,8 @@ public class SecurityConfig {
 
         httpSecurity
 
+                .cors(cors -> cors.disable())
+
                 .httpBasic(HttpBasicConfigurer::disable)
 
                 .csrf(CsrfConfigurer::disable)
