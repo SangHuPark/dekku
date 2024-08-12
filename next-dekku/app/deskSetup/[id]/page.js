@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer"; // ThreeJSRenderer 임포트
 import DeskSetupCard from "../DeskSetupCard";
 

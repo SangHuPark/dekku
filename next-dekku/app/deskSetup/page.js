@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import DeskSetupCard from "./DeskSetupCard";
 import Link from "next/link";
 import SortDropdown from "./SortDropdown";
@@ -141,9 +141,11 @@ export default function DeskSetupPage() {
           </h1>
           <h3 className="text-2xl text-[#A4A4A4] mb-6">이번주 인기 급상승</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-            {recentTopPosts.map((data) => (
-              <DeskSetupCard key={data.id} data={data} isNoProfilePost={true} />
-            ))}
+            <Suspense>
+              {recentTopPosts.map((data) => (
+                <DeskSetupCard key={data.id} data={data} isNoProfilePost={true} />
+              ))}
+            </Suspense>
           </div>
         </div>
       </div>
@@ -168,16 +170,18 @@ export default function DeskSetupPage() {
 
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-2">
-            <SortDropdown sortOrder={sortOrder} setSortOrder={setSortOrder} />
-            <StyleFilter
-              styleFilter={styleFilter}
-              setStyleFilter={setStyleFilter}
-            />
-            <ColorFilter
-              colorFilter={colorFilter}
-              setColorFilter={setColorFilter}
-            />
-            <JobFilter jobFilter={jobFilter} setJobFilter={setJobFilter} />
+            <Suspense>
+              <SortDropdown sortOrder={sortOrder} setSortOrder={setSortOrder} />
+              <StyleFilter
+                styleFilter={styleFilter}
+                setStyleFilter={setStyleFilter}
+              />
+              <ColorFilter
+                colorFilter={colorFilter}
+                setColorFilter={setColorFilter}
+              />
+              <JobFilter jobFilter={jobFilter} setJobFilter={setJobFilter} />
+            </Suspense>
           </div>
           <Link
             className="bg-[#FF6E30] text-white px-2 py-3 rounded-lg"
