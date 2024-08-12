@@ -139,14 +139,12 @@ export default function Details({ params }) {
         )}
 
         {showThreeJSRenderer && (
-          <Suspense>
             <ThreeJSRenderer
               selectedProducts={[]} 
               setSelectedProducts={() => {}} 
               onComplete={() => {}} 
               jsonUrl={jsonUrl}
             />
-          </Suspense>
         )}
 
         <h2 className="text-xl font-bold mb-4">다른 게시물</h2>

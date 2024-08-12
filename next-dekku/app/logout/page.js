@@ -34,8 +34,6 @@ const Logout = () => {
 
     fetchLogout();
   }, []); // 빈 배열로 설정하여, 컴포넌트가 마운트될 때만 실행
-
-  return null;
 };
 
 export default Logout;
