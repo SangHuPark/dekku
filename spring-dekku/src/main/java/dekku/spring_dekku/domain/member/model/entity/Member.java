@@ -70,7 +70,7 @@ public class Member extends BaseEntity {
 	private List<Follow> followers = new ArrayList<>();
 
     @Builder
-	public Member(String username, String name, String email, String imageUrl, String role) {
+	public Member(String username, String name, String email, String imageUrl, String role, String introduction) {
 		this.username = username;
 		this.email = email;
 		this.name = name;
@@ -79,6 +79,7 @@ public class Member extends BaseEntity {
 		this.ageRange = 20;
 		this.imageUrl = imageUrl;
 		this.role = role;
+		this.introduction = "";
 	}
 
 }
