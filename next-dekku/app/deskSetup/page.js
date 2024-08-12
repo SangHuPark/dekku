@@ -29,11 +29,11 @@ export default function DeskSetupPage() {
         const response = await fetch("https://dekku.co.kr/api/deskterior-post", {
           method: "GET",
         });
-        console.log(response)
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
         const data = await response.json();
+        console.log(data)
         setAllPosts(data); // API로 받은 데이터를 allPosts에 저장
         setFilteredData(data); // 필터링을 위해 초기 상태를 설정
       } catch (error) {

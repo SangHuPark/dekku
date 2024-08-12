@@ -40,6 +40,7 @@ const CreateAfterThreedPage = () => {
     const storedThumbnail = localStorage.getItem('thumbnail');
     const accessToken = localStorage.getItem('access');
     const productIds = localStorage.getItem('selectedProducts')
+    console.log(productIds.id)
 
     console.log('선택한 상품들 Id:', productIds)
 
