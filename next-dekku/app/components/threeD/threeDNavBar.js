@@ -69,7 +69,7 @@ const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searc
         <SearchBar onSearch={onSearch} />
       </div>
       {/* 필터링된 제품 목록 영역 */}
-      <div className="p-8 bg-white w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="p-8 overflow-y-auto bg-white w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {filteredProducts.map((product) => (
           <ProductCard 
             key={product.uniqueId} // 각 제품에 고유한 key prop으로 uniqueId를 사용합니다.

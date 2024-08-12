@@ -12,7 +12,7 @@ const TransformControls = ({ activeModel, onRotateChange, onHeightChange }) => {
   };
 
   return (
-    <div style={{ position: 'absolute', top: '0px', right: '10px', backgroundColor: 'white', padding: '3px', borderRadius: '5px', zIndex: 10 }}>
+    <div style={{ position: 'absolute', top: '4px', right: '10px', backgroundColor: 'white', padding: '3px', borderRadius: '5px', zIndex: 10 }}>
       <label>회전: </label>
       <input
         type="range"
