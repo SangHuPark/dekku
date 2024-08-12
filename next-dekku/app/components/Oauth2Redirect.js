@@ -1,11 +1,12 @@
-import { useRouter, useSearchParams } from "next/navigation";
+'use client'
+
+import { useRouter } from "next/navigation";
 import { useLogin } from "./AuthContext";
 import { useEffect } from "react";
 
 const OAuth2Redirect = () => {
   const router = useRouter();
   const { setIsLoggedIn, setLoginUser } = useLogin();
-  const queryParams = useSearchParams();
 
   useEffect(() => {
     const OAuth2JwtHeaderFetch = async () => {
@@ -20,9 +21,10 @@ const OAuth2Redirect = () => {
         if (response.ok) {
           // local storage access token set
           window.localStorage.setItem("access", response.headers.get("access"));
-          window.localStorage.setItem("access", response.headers.get("access"));
-          // local storage name set
-          const name = queryParams.get("name");
+          
+          // URLSearchParams를 사용하여 쿼리 파라미터에 접근
+          const params = new URLSearchParams(window.location.search);
+          const name = params.get("name");
           window.localStorage.setItem("name", name);
 
           setIsLoggedIn(true);
@@ -37,7 +39,7 @@ const OAuth2Redirect = () => {
     };
 
     OAuth2JwtHeaderFetch();
-  }, [queryParams, router, setIsLoggedIn, setLoginUser]);
+  }, [router, setIsLoggedIn, setLoginUser]);
 
   return null; // 이 컴포넌트는 화면에 아무 것도 렌더링하지 않으므로 `null` 반환
 };

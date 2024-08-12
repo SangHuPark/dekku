@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useLogin } from "./AuthContext";
 import LoginModal from "./LoginModal";
 import { useEffect, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
   const { isLoggedIn } = useLogin();
@@ -16,7 +16,6 @@ const Header = () => {
 
   const [memberId, setMemberId] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
-  const queryParams = useSearchParams();
 
   useEffect(() => {
     // 경로에 따라 클래스를 설정합니다.
@@ -35,8 +34,12 @@ const Header = () => {
           credentials: "include",
         });
         console.log(response);
-        const id = queryParams.get("memberId");
-        const imageUrl = queryParams.get("image_url");
+
+        // URLSearchParams를 사용하여 쿼리 파라미터에 접근
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("memberId");
+        const imageUrl = params.get("image_url");
+
         setMemberId(id);
         setImageUrl(imageUrl);
       } catch (error) {

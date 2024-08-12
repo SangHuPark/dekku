@@ -10,7 +10,7 @@ export const useUploadToS3 = () => {
 
     try { 
       // Presigned URL 생성 요청
-      const presignedResponse = await fetch("http://localhost:8080/api/s3/presigned-url", {
+      const presignedResponse = await fetch("https://dekku.co.kr/api/s3/presigned-url", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
