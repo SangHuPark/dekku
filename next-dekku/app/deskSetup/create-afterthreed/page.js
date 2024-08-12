@@ -58,6 +58,7 @@ const CreateAfterThreedPage = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'access': 'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJuYW1lIjoia2FrYW8gMzY1NTg0NDIwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjM0MjY3OTUsImV4cCI6MTcyMzQzMDM5NX0.UMm6_pJ_C-n-3HoJQNya5YKMFdhfsNNa6o8NRvSbkTQ',
         },
         body: JSON.stringify({
           title,
@@ -75,10 +76,22 @@ const CreateAfterThreedPage = () => {
         throw new Error('Failed to create post');
       }
 
-      console.log("Post successfully created!");
+      const result = await response.json();
+      console.log('Sever Response:', result)
 
+      const postId = result.id; // 서버에서 반환한 생성된 게시글 ID 사용
+      if (!postId) {
+        console.error('Post id 응답에 없음')
+        throw new Error('Post id 응답에 없음')
+      }
+      console.log("Post successfully created with ID:", postId);
+      
       // 모달 띄우기
       setIsModalOpen(true);
+
+      // 생성된 게시글 ID 저장
+      localStorage.setItem('createdPostId', postId);
+
     } catch (err) {
       console.error("Failed to upload files:", err);
       setIsSubmitting(false);
@@ -90,7 +103,8 @@ const CreateAfterThreedPage = () => {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    router.push('/deskSetup/1'); // 게시글 디테일 페이지 경로로 변경
+    const postId = localStorage.getItem('createdPostId') // 생성된 게시글 ID 가져오기
+    router.push(`/deskSetup/${postId}`); // 게시글 디테일 페이지 경로로 변경
   };
 
   return (
