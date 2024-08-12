@@ -55,7 +55,7 @@ public class DeskteriorPost extends BaseEntity {
     private DeskteriorAttributes deskteriorAttributes;
 
     @Builder
-    public DeskteriorPost(Member member, String title, String content, DeskteriorAttributes deskteriorAttributes, OpenStatus openStatus) {
+    public DeskteriorPost(Member member, String title, String content, DeskteriorAttributes deskteriorAttributes, OpenStatus openStatus, int viewCount) {
 
         this.member = member;
         this.title = title;
@@ -63,7 +63,7 @@ public class DeskteriorPost extends BaseEntity {
         this.deskteriorAttributes = deskteriorAttributes;
         this.openStatus = openStatus;
 
-        this.viewCount = 0;
+        this.viewCount = viewCount;
         this.likeCount = 0;
     }
 
@@ -81,5 +81,9 @@ public class DeskteriorPost extends BaseEntity {
         if (deskteriorPostProductInfo.getDeskteriorPost() != this) {
             deskteriorPostProductInfo.setDeskteriorPost(this);
         }
+    }
+
+    public void increase(int viewCount) {
+        this.viewCount += viewCount;
     }
 }

@@ -20,6 +20,7 @@ import dekku.spring_dekku.domain.product.exception.NotExistsProductException;
 import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
 import dekku.spring_dekku.domain.product.model.entity.Product;
 import dekku.spring_dekku.domain.product.repository.ProductRepository;
+import dekku.spring_dekku.global.aop.DistributeLock;
 import dekku.spring_dekku.global.exception.AccessTokenException;
 import dekku.spring_dekku.global.status.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -133,6 +134,19 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
         List<CommentResponseDto> commentResponseDtos = commentService.getCommentsByPostId(id);
 
         return new FindByIdDeskteriorPostResponseDto(foundDeskteriorPost, commentResponseDtos);
+    }
+
+    @DistributeLock(key = "#postId")
+    public void redissonLookup(Long postId, int quantity) {
+        DeskteriorPost post = deskteriorPostRepository.findById(postId).orElseThrow();
+        post.increase(quantity);
+        deskteriorPostRepository.saveAndFlush(post);
+    }
+
+    public void lookup(Long postId, int quantity) {
+        DeskteriorPost post = deskteriorPostRepository.findById(postId).orElseThrow();
+        post.increase(quantity);
+        deskteriorPostRepository.saveAndFlush(post);
     }
 
 
