@@ -5,7 +5,6 @@ import dekku.spring_dekku.domain.deskterior_post.model.dto.response.CreateDeskte
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindByIdDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.UpdateDeskteriorPostRequestDto;
-import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
 import dekku.spring_dekku.global.model.dto.Success;
 import dekku.spring_dekku.global.util.ResponseUtil;
@@ -17,8 +16,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "데스크테리어 게시판 관련 API")
 @RestController
@@ -32,17 +34,27 @@ public class DeskteriorPostController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201",
-                    description = "게시글 저장 성공"
-//                    content = @Content(schema = @Schema(implementation = CreateDeskteriorPostResponseDto.class))
+                    description = "게시글 저장 성공",
+                    content = @Content(schema = @Schema(implementation = CreateDeskteriorPostResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "게시자의 정보가 없거나 토큰 만료됨"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "만료된 토큰으로 게시글 작성 시도"
             )
     })
     @PostMapping("")
-//    public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorPostRequestDto request)
-public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorPostRequestDto request) {
+    public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorPostRequestDto request, @RequestHeader(name = "access") String token) {
 
         System.out.println("post");
 
-        CreateDeskteriorPostResponseDto response = deskteriorPostService.addDeskteriorPost("tkdgn407", request);
+
+
+        CreateDeskteriorPostResponseDto response = null;
+        response = deskteriorPostService.addDeskteriorPost(token, request);
 
         return ResponseUtil.created(
                 Success.builder()
@@ -56,29 +68,25 @@ public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorP
             @ApiResponse(
                     responseCode = "200",
                     description = "요청 완료",
+                    content = @Content(schema = @Schema(implementation = List.class))
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "게시글 없음",
                     content = @Content(schema = @Schema(implementation = FindDeskteriorPostResponseDto.class))
             ),
             @ApiResponse(
                     responseCode = "400",
                     description = "모든 게시글 조회 요청 실패"
             )
-            ,
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "존재하지 않는 계정"
-            )
     })
-//    @Parameter(name = "phoneNumber", description = "찾고 싶은 계정", example = "01012345678")
     @GetMapping("")
-    public ResponseEntity findAllDeskteriorPost(
-//            @RequestParam @Pattern(regexp = "^010\\d{8}$", message = "올바른 형식이 아닙니다.") String phoneNumber
-    ) {
-
-        return ResponseUtil.ok(
-                Success.builder()
-                        .data(deskteriorPostService.findAll())
-                        .build());
-
+    public ResponseEntity<List<FindDeskteriorPostResponseDto>> findAllDeskteriorPost() {
+        List<FindDeskteriorPostResponseDto> response = deskteriorPostService.findAll();
+        if(response == null || response.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Operation(summary = "단일 게시글 조회")
@@ -107,13 +115,11 @@ public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorP
                         .build());
     }
 
-    // 게시글 수정
     @Operation(summary = "게시글 수정")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "게시글 수정 성공",
-                    content = @Content(schema = @Schema(implementation = FindDeskteriorPostResponseDto.class))
+                    description = "게시글 수정 성공"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -124,16 +130,15 @@ public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorP
                     description = "존재하지 않는 게시글"
             )
     })
-
     @PutMapping("/{postId}")
-    public ResponseEntity updateDeskteriorPost(@PathVariable Long postId, @RequestBody @Valid UpdateDeskteriorPostRequestDto request) {
-        DeskteriorPost updatedDeskteriorPost = deskteriorPostService.updateDeskteriorPost(postId, request);
+    public ResponseEntity<?> updateDeskteriorPost(@PathVariable Long postId, @RequestBody @Valid UpdateDeskteriorPostRequestDto request, @RequestHeader(name = "access") String token) {
+        deskteriorPostService.updateDeskteriorPost(postId, token, request);
+
         return ResponseUtil.ok(
                 Success.builder()
-                        .data(updatedDeskteriorPost)
-                        .build());
+                        .build()
+        );
     }
-
 
     @Operation(summary = "게시글 삭제")
     @ApiResponses({
@@ -150,10 +155,10 @@ public ResponseEntity createDeskteriorPost(@RequestBody @Valid CreateDeskteriorP
                     description = "존재하지 않는 게시글"
             )
     })
-
     @DeleteMapping("/{postId}")
-    public ResponseEntity deleteDeskteriorPost(@PathVariable Long postId) {
-        deskteriorPostService.deleteDeskteriorPost(postId);
+    public ResponseEntity deleteDeskteriorPost(@PathVariable Long postId, @RequestHeader(name = "access") String token) {
+        deskteriorPostService.deleteDeskteriorPost(postId, token);
+
         return ResponseUtil.ok(
                 Success.builder()
                         .build()

@@ -1,15 +1,9 @@
 package dekku.spring_dekku.domain.comment.controller;
 
-import dekku.spring_dekku.domain.comment.exception.CommentNotFoundException;
-import dekku.spring_dekku.domain.comment.exception.UnauthorizedCommentDeleteException;
 import dekku.spring_dekku.domain.comment.model.dto.CommentDto;
 import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.comment.service.CommentService;
-import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindByIdDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
-import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
-import dekku.spring_dekku.global.model.dto.Success;
-import dekku.spring_dekku.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -68,11 +62,8 @@ public class CommentController {
     })
     @PostMapping("/{postId}")
     public ResponseEntity<?> createComment(@PathVariable(name = "postId") Long postId, @RequestHeader("Access") String token, @RequestBody CommentDto commentDto) {
-        try {
-            commentService.createComment(postId, token, commentDto);
-        } catch (MemberNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }
+        commentService.createComment(postId, token, commentDto);
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -93,14 +84,9 @@ public class CommentController {
     })
     @DeleteMapping("/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable(name = "commentId") String commentId, @RequestHeader("Access") String token) {
-        try {
-            commentService.deleteComment(commentId, token);
-            return ResponseEntity.status(HttpStatus.OK).body("댓글이 삭제되었습니다.");
-        } catch (CommentNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (UnauthorizedCommentDeleteException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }
+        commentService.deleteComment(commentId, token);
+
+        return ResponseEntity.status(HttpStatus.OK).body("댓글이 삭제되었습니다.");
     }
 
 //    @PutMapping("/{commentId}")

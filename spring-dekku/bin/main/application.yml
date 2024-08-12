@@ -10,7 +10,7 @@ spring:
   datasource:
     url: jdbc:mysql://dekku.co.kr:3306/dekkudb?serverTimezone=Asia/Seoul
     username: root
-    password: Dekku1234
+    password: 12345678
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

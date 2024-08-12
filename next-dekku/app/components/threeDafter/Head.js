@@ -5,7 +5,8 @@ import products from '../threeD/ProductList'; // 각 모델의 스케일 값을 
 import SaveModal from './SaveModal'; // 모달 컴포넌트 임포트
 import { useRouter } from 'next/navigation'; // useRouter를 import
 import { useUploadToS3 } from './ThreedUpload'; // 파일 업로드 훅을 import
-import '../../styles/ThreeDAfter.css'; // 글래스 모피즘 스타일
+// import '../../styles/ThreeDAfter.css'; // 글래스 모피즘 스타일
+import '../../styles/ThreeDafter.css'
 
 const Head = ({ onSave }) => {
   const mountRef = useRef(null);

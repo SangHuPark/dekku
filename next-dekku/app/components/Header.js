@@ -11,14 +11,14 @@ const Header = () => {
   const [showModal, setShowModal] = useState(false);
   const pathname = usePathname();
 
-  const [headerClasses, setHeaderClasses] = useState('flex justify-between px-4 pt-6 max-w-6xl mx-auto');
+  const [headerClasses, setHeaderClasses] = useState('flex justify-between px-4 py-6 max-w-6xl mx-auto');
 
   useEffect(() => {
     // 경로에 따라 클래스를 설정합니다.
     if (pathname === '/threeD') {
-      setHeaderClasses('flex justify-between px-4 pt-6');
+      setHeaderClasses('flex justify-between px-4 py-6');
     } else {
-      setHeaderClasses('flex justify-between px-4 pt-6 max-w-6xl mx-auto');
+      setHeaderClasses('flex justify-between px-4 py-6 max-w-6xl mx-auto');
     }
   }, [pathname]); // pathname이 변경될 때마다 useEffect가 호출됩니다.
 
@@ -58,7 +58,7 @@ const Header = () => {
           </ul>
         </nav>
       </div>
-      <hr className="mt-6"/>
+      <hr className=""/>
     </header>
   );
 };

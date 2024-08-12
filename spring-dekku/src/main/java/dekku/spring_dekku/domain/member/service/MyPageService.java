@@ -4,10 +4,10 @@ import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteri
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostRepository;
 import dekku.spring_dekku.domain.member.model.dto.response.CreateMyPageResponseDto;
-import dekku.spring_dekku.domain.member.model.entity.Like;
+import dekku.spring_dekku.domain.like.model.entity.Like;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.FollowCountRepository;
-import dekku.spring_dekku.domain.member.repository.LikeRepository;
+import dekku.spring_dekku.domain.like.repository.LikeRepository;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

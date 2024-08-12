@@ -1,9 +1,11 @@
 package dekku.spring_dekku.domain.member.service.oauth2;
 
+import dekku.spring_dekku.domain.member.exception.NotExistsUserException;
 import dekku.spring_dekku.domain.member.model.dto.*;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
 import dekku.spring_dekku.domain.member.service.RedisService;
+import dekku.spring_dekku.global.status.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.repository.query.Param;
@@ -79,7 +81,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
      */
     private void saveOrUpdate(OAuth2Response response, String username, String role) {
         // DB 조회
-        Member isExist = memberRepository.findByUsername(username);
+        Member isExist = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         log.info("here --> " + response.getName() + " && " + username + " && " + response.getProvider());
 

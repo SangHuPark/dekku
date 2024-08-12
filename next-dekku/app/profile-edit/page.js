@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useLogin } from "../components/AuthContext";
 
-export default function profileEdit() {
+export default function ProfileEdit() {
   const [profileImage, setProfileImage] = useState("");
   const [nickname, setNickname] = useState("");
   const [introduction, setIntroduction] = useState("");

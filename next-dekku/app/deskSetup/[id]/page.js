@@ -66,7 +66,7 @@ export default function Details({ params }) {
           />
         </div>
 
-        <div className="text-lg mb-10 text-center">{data.content}</div>
+        <div className="text mb-10">{data.content}</div>
 
         <h2 className="text-xl font-bold mb-4">제품 내용</h2>
         <div className="grid grid-cols-2 gap-4 mb-6">
@@ -111,7 +111,7 @@ export default function Details({ params }) {
           </div>
           <div className="ml-4">
             <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
-              Follow
+              팔로우
             </button>
           </div>
         </div>
@@ -147,29 +147,17 @@ export default function Details({ params }) {
         )}
 
         <h2 className="text-xl font-bold mb-4">다른 게시물</h2>
-        <div className="flex space-x-4">
+        <div className="flex justify-evenly">
           {prevPostId && (
-            <div className="w-1/2">
-              <a href={`/deskSetup/${prevPostId}`}>
-                <img
-                  src={datas.find((item) => item.id === prevPostId)?.imgSrc}
-                  alt="Previous post"
-                  className="w-full h-auto rounded-md"
-                />
-                <p className="text-center mt-2 font-bold text-gray-600">이전 게시물</p>
-              </a>
+            <div className="">
+              <DeskSetupCard key={prevPostData.id} data={prevPostData} />
+              <p className="text-center mt-2 font-bold text-gray-600">이전 게시물</p>
             </div>
           )}
           {nextPostId && (
-            <div className="w-1/2">
-              <a href={`/deskSetup/${nextPostId}`}>
-                <img
-                  src={datas.find((item) => item.id === nextPostId)?.imgSrc}
-                  alt="Next post"
-                  className="w-full h-auto rounded-md"
-                />
-                <p className="text-center mt-2 font-bold text-gray-600">다음 게시물</p>
-              </a>
+            <div className="">
+              <DeskSetupCard key={nextPostData.id} data={nextPostData} />
+              <p className="text-center mt-2 font-bold text-gray-600">다음 게시물</p>
             </div>
           )}
         </div>

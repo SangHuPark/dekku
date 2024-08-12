@@ -1,7 +1,10 @@
 package dekku.spring_dekku.domain.comment.exception;
 
-public class CommentNotFoundException extends RuntimeException {
-    public CommentNotFoundException(String message) {
-        super(message);
+import dekku.spring_dekku.global.exception.BaseException;
+import dekku.spring_dekku.global.status.ErrorCode;
+
+public class CommentNotFoundException extends BaseException {
+    public CommentNotFoundException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

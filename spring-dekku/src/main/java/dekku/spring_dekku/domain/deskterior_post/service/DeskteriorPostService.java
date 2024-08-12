@@ -11,13 +11,13 @@ import java.util.List;
 
 public interface DeskteriorPostService {
 
-    CreateDeskteriorPostResponseDto addDeskteriorPost(String email, CreateDeskteriorPostRequestDto requestDto);
+    CreateDeskteriorPostResponseDto addDeskteriorPost(String token, CreateDeskteriorPostRequestDto requestDto);
 
     List<FindDeskteriorPostResponseDto> findAll();
 
     FindByIdDeskteriorPostResponseDto findById(Long id);
 
-    DeskteriorPost updateDeskteriorPost(Long id, UpdateDeskteriorPostRequestDto requestDto);
+    DeskteriorPost updateDeskteriorPost(Long id, String token, UpdateDeskteriorPostRequestDto requestDto);
 
-    void deleteDeskteriorPost(Long id);
+    void deleteDeskteriorPost(Long id, String token);
 }

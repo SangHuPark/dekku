@@ -1,7 +1,8 @@
 "use client";
 
-export default function LoginModal({ showModal, setShowModal }) {
+import Link from "next/link";
 
+export default function LoginModal({ showModal, setShowModal }) {
   return (
     showModal && (
       <div className="fixed z-10 inset-0 overflow-y-auto">
