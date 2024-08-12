@@ -81,7 +81,7 @@ public class SecurityConfig {
         httpSecurity
                 .cors((cors) -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://dekku.co.kr", "https://dekku.co.kr"));
+                    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8080", "https://dekku.co.kr"));
                     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     configuration.setAllowCredentials(true);
                     configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -112,7 +112,7 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/api/**", "/**")
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/api/**")
                 .requestMatchers("/h2-console/**")
                 .requestMatchers(
                         "/auth/**", "/sign-up/**", "/verification/**",
