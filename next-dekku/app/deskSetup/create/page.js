@@ -1,139 +1,137 @@
-"use client";
+"use client"; // 클라이언트 컴포넌트로 명시
 
-import { useState, useEffect, Suspense } from "react";
-import { useRouter } from 'next/navigation'; // useRouter를 next/navigation에서 임포트
-import PostModal from '../../components/deskSetup/PostModal'; // 모달 컴포넌트 임포트
+import React, { useState } from "react";
+import { useRouter } from "next/navigation"; // next/navigation 모듈 사용
+import products from "../../components/threeD/ProductList";
 
-const CreatePage = () => {
-  const [image, setImage] = useState(null);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [styleInfo, setStyleInfo] = useState("");
-  const [colorInfo, setColorInfo] = useState("");
-  const [jobInfo, setJobInfo] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
+const CreateDeskSetupPage = () => {
+  const [image, setImage] = useState(null); // 이미지 파일 상태
+  const [title, setTitle] = useState(""); // 게시글 제목 상태
+  const [content, setContent] = useState(""); // 게시글 내용 상태
+  const [styleInfo, setStyleInfo] = useState(""); // 스타일 정보 상태
+  const [colorInfo, setColorInfo] = useState(""); // 색상 정보 상태
+  const [jobInfo, setJobInfo] = useState(""); // 직업 정보 상태
+  const [selectedProducts, setSelectedProducts] = useState([]); // 선택된 제품 상태
   const [isSubmitting, setIsSubmitting] = useState(false); // 제출 상태
-  const router = useRouter();
+  const router = useRouter(); // next/navigation의 useRouter 사용
 
-
+  // 이미지 파일 업로드 핸들러
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     setImage(URL.createObjectURL(file));
   };
 
+  // 상품 추가 핸들러
+  const handleProductSelect = (e, category) => {
+    const productId = parseInt(e.target.value);
+    const product = products[category].find((p) => p.id === productId);
+    setSelectedProducts([...selectedProducts, product]);
+  };
+
+  // 상품 제거 핸들러
+  const handleRemoveProduct = (productId) => {
+    const updatedProducts = selectedProducts.filter((item) => item.id !== productId);
+    setSelectedProducts(updatedProducts);
+  };
+
+  // 게시글 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-  // 이미지 파일을 S3에 업로드
-  let presignedUrl;
-  try {
-    const presignedResponse = await fetch("http://dekku.co.kr:8080/api/s3/presigned-url", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        id: "memberId", // 로그인 정보에서 유저아이디 가져와서 보내기
-        fileCount: 1, // 이미지만 전송
-        directory: "post"
-      })
-    });
+    let presignedUrl;
+    try {
+      // 이미지 업로드를 위한 presigned URL 요청
+      const presignedResponse = await fetch("http://dekku.co.kr:8080/api/s3/presigned-url", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: "memberId", // 실제 유저 아이디로 교체 필요
+          fileCount: 1,
+          directory: "post",
+        }),
+      });
 
-    if (!presignedResponse.ok) {
-      const errorMessage = await presignedResponse.text();
-      console.error("Error:", errorMessage);
-      throw new Error(errorMessage);
+      if (!presignedResponse.ok) {
+        const errorMessage = await presignedResponse.text();
+        console.error("Error:", errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      const presignedData = await presignedResponse.json();
+      presignedUrl = presignedData.data.preSignedUrl[0];
+
+      // 이미지 파일을 S3에 업로드
+      const imageBlob = await fetch(image).then((res) => res.blob());
+
+      const uploadImageResponse = await fetch(presignedUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": imageBlob.type,
+        },
+        body: imageBlob,
+      });
+
+      if (!uploadImageResponse.ok) {
+        const errorMessage = await uploadImageResponse.text();
+        console.error("Error uploading image:", errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      const imageUrl = presignedUrl.split("?")[0]; // 업로드된 이미지의 URL
+
+      console.log("Uploaded image URL:", imageUrl);
+
+      // 선택된 상품 ID들을 추출
+      const productIds = selectedProducts.map((product) => product.id);
+
+      // 백엔드 서버로 게시글 생성 요청 보내기
+      const response = await fetch("http://localhost:8080/api/deskterior-post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          content,
+          style: styleInfo,
+          color: colorInfo,
+          job: jobInfo,
+          deskteriorPostImages: [imageUrl], // 이미지 URL 전달
+          productIds, // 선택된 상품 ID들 전달
+          OPENED: "PUBLIC", // 공개 상태 설정
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create post");
+      }
+
+      console.log("Post successfully created!");
+      router.push("/deskSetup/1"); // 게시글 디테일 페이지 경로로 변경
+    } catch (err) {
+      console.error("Failed to upload files:", err);
+      setIsSubmitting(false);
+      return;
     }
 
-    const presignedData = await presignedResponse.json();
-    presignedUrl = presignedData.data.preSignedUrl[0];
-
-    // S3에 파일 업로드
-    const imageBlob = await fetch(image).then(res => res.blob());
-
-    const uploadImageResponse = await fetch(presignedUrl, {
-      method: "PUT",
-      headers: {
-        "Content-Type": imageBlob.type
-      },
-      body: imageBlob
-    });
-
-    if (!uploadImageResponse.ok) {
-      const errorMessage = await uploadImageResponse.text();
-      console.error("Error uploading image:", errorMessage);
-      throw new Error(errorMessage);
-    }
-
-    const imageUrl = presignedUrl.split("?")[0]; // 업로드된 이미지의 URL
-
-    console.log("Uploaded image URL:", imageUrl);
-
-    // 백엔드 서버로 포스트 생성 요청 보내기
-    const response = await fetch('http://localhost:8080/api/deskterior-post', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        title,
-        content,
-        style: styleInfo,
-        color: colorInfo,
-        job: jobInfo,
-        deskteriorPostImages: [imageUrl], // 이미지 URL 전달
-        productIds: [], // 관련된 제품 ID가 있다면 추가
-        OPENED: 'PUBLIC', // 공개 상태 설정
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to create post');
-    }
-
-    console.log("Post successfully created!");
-
-    // 모달 띄우기
-    setIsModalOpen(true);
-  } catch (err) {
-    console.error("Failed to upload files:", err);
     setIsSubmitting(false);
-    return;
-  }
-
-  setIsSubmitting(false);
   };
-
-  const handleModalClose = () => {
-  setIsModalOpen(false);
-  router.push('/deskSetup/1'); // 게시글 디테일 페이지 경로로 변경
-  };
-
 
   return (
     <div className="max-w-6xl mx-auto flex justify-center items-center mt-20">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col w-3/4 space-y-5"
-      >
+      <form onSubmit={handleSubmit} className="flex flex-col w-3/4 space-y-5">
         <div className="flex flex-row w-full space-x-5">
           <div className="flex-1 flex justify-center items-center">
-            <label
-              htmlFor="imageUpload"
-              className="cursor-pointer flex flex-col items-center"
-            >
+            <label htmlFor="imageUpload" className="cursor-pointer flex flex-col items-center">
               {image ? (
                 <img src={image} alt="Uploaded" className="w-full h-auto rounded-lg" />
               ) : (
                 <div className="text-center">
                   <p>이곳을 클릭해 사진을 올려주세요</p>
-                  <div
-                    type="button"
-                    className="mt-2 bg-black text-white py-2 px-4 rounded"
-                  >
-                    PC에서 불러오기
-                  </div>
+                  <div className="mt-2 bg-black text-white py-2 px-4 rounded">PC에서 불러오기</div>
                 </div>
               )}
               <input
@@ -222,24 +220,62 @@ const CreatePage = () => {
             </div>
           </div>
         </div>
+
+        {/* 카테고리별 상품 선택 */}
+        <div className="w-full">
+          <h3 className="font-bold text-xl">상품 선택</h3>
+          {Object.keys(products).map((category) => (
+            <div key={category} className="mb-4">
+              <label className="font-semibold">{category}</label>
+              <select
+                onChange={(e) => handleProductSelect(e, category)}
+                className="w-full p-2 border border-gray-300 rounded"
+                defaultValue="DEFAULT"
+              >
+                <option value="DEFAULT" disabled>제품을 선택하세요</option>
+                {products[category].map((product) => (
+                  <option key={product.id} value={product.id}>
+                    {product.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+
+        {/* 선택된 상품 표시 */}
+        <div className="w-full">
+          <h3 className="font-bold text-xl">선택된 상품</h3>
+          <div className="space-y-4">
+            {selectedProducts.map((product, index) => (
+              <div
+                key={`${product.id}-${index}`}
+                className="border p-2 rounded relative hover:bg-gray-200 flex justify-between items-center"
+              >
+                <p>{product.name}</p>
+                <button
+                  className="bg-red-500 text-white rounded-full p-1 text-xs"
+                  onClick={() => handleRemoveProduct(product.id)}
+                >
+                  X
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="flex justify-end">
           <button
             type="submit"
-            className={`bg-black text-white py-2 px-4 rounded ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`bg-black text-white py-2 px-4 rounded ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
             disabled={isSubmitting}
           >
-            {isSubmitting ? '제출 중...' : '제출'}
+            {isSubmitting ? "제출 중..." : "제출"}
           </button>
         </div>
       </form>
-      <Suspense>
-        <PostModal 
-          isOpen={isModalOpen} 
-          onClose={handleModalClose} 
-        />
-      </Suspense>
     </div>
   );
-}
+};
 
-export default CreatePage;
+export default CreateDeskSetupPage;

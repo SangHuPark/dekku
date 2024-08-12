@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import DeskSetupCard from "../../deskSetup/DeskSetupCard";
-import { datas } from "../../deskSetup/data";
+import { datas } from "../../deskSetup/dataFetching.js";
 import FollowerModal from "./followerModal";
 import { useLogin } from "../../components/AuthContext";
 import Link from "next/link";

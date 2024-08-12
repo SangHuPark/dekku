@@ -10,12 +10,13 @@ export default function Details({ params }) {
   const [data, setData] = useState(null);
   const [jsonUrl, setJsonUrl] = useState(null);
   const [showThreeJSRenderer, setShowThreeJSRenderer] = useState(false);
+  const [prevPostData, setPrevPostData] = useState(null);
+  const [nextPostData, setNextPostData] = useState(null);
 
   useEffect(() => {
-    // 게시글 상세 정보와 JSON URL을 가져오는 API 호출
     const fetchPostDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/deskterior-post/${postId}`);
+        const response = await fetch(`https://dekku.co.kr/api/deskterior-post/${postId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch post details");
         }
@@ -23,9 +24,21 @@ export default function Details({ params }) {
         const postData = await response.json();
         setData(postData);
 
-        // JSON URL이 있는 경우 설정
         if (postData.jsonUrl) {
           setJsonUrl(postData.jsonUrl);
+        }
+
+        // 이전 및 다음 게시물 데이터를 가져오기 위한 추가 요청
+        if (postId > 1) {
+          const prevResponse = await fetch(`https://dekku.co.kr/api/deskterior-post/${postId - 1}`);
+          if (prevResponse.ok) {
+            setPrevPostData(await prevResponse.json());
+          }
+        }
+
+        const nextResponse = await fetch(`https://dekku.co.kr/api/deskterior-post/${postId + 1}`);
+        if (nextResponse.ok) {
+          setNextPostData(await nextResponse.json());
         }
       } catch (error) {
         console.error("Error fetching post details:", error);
@@ -47,10 +60,6 @@ export default function Details({ params }) {
     return <p>게시물을 찾을 수 없습니다.</p>;
   }
 
-  // 이전과 다음 게시물의 ID를 계산합니다.
-  const prevPostId = postId > 1 ? postId - 1 : null;
-  const nextPostId = postId < data.length ? postId + 1 : null;
-
   return (
     <div className="bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
@@ -71,42 +80,35 @@ export default function Details({ params }) {
 
         <h2 className="text-xl font-bold mb-4">제품 내용</h2>
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-gray-200 h-32 rounded-md flex items-center justify-center">
-            빈 박스
-          </div>
-          <div className="bg-gray-200 h-32 rounded-md flex items-center justify-center">
-            빈 박스
-          </div>
-          <div className="bg-gray-200 h-32 rounded-md flex items-center justify-center">
-            빈 박스
-          </div>
-          <div className="bg-gray-200 h-32 rounded-md flex items-center justify-center">
-            빈 박스
-          </div>
+          {data.deskteriorPostProductInfos.map((product, index) => (
+            <div key={index} className="bg-gray-200 h-32 rounded-md flex items-center justify-center">
+              {product.name}
+            </div>
+          ))}
         </div>
 
         <div className="flex justify-end mb-6 text-gray-600 space-x-4">
           <div className="flex items-center space-x-2">
             <img src="/view_icon.png" alt="views" className="w-5 h-5" />
-            <span>{data.views}</span>
+            <span>{data.viewCount}</span>
           </div>
           <div className="flex items-center space-x-2">
             <img src="/like_icon.png" alt="likes" className="w-5 h-5" />
-            <span>{data.likes}</span>
+            <span>{data.likeCount}</span>
           </div>
         </div>
 
         <hr className="border-t-2 border-gray-300 mb-6" />
 
         <div className="flex items-center justify-between mb-6">
-          <div className="flex ">
+          <div className="flex">
             <img
-              src={data.profileImg}
-              alt={data.username}
+              src={data.memberImage}
+              alt={data.memberNickName}
               className="w-12 h-12 rounded-full mr-4"
             />
             <div>
-              <div className="font-semibold text-lg">{data.username}</div>
+              <div className="font-semibold text-lg">{data.memberNickName}</div>
               <div className="text-gray-500">{data.introduce}</div>
             </div>
           </div>
@@ -119,14 +121,13 @@ export default function Details({ params }) {
 
         <hr className="border-t-2 border-gray-300 mb-4" />
 
-        <div className="mb-4">댓글 : {data.comments}개</div>
+        <div className="mb-4">댓글 : {data.comments.length}개</div>
         <div className="bg-gray-100 p-4 rounded-md mb-4">
           댓글이 들어갈 공간
         </div>
 
         <hr className="border-t-2 border-gray-300 mb-6" />
 
-        {/* 불러오기 버튼 */}
         {jsonUrl && (
           <div className="mb-6 text-center">
             <button
@@ -139,23 +140,23 @@ export default function Details({ params }) {
         )}
 
         {showThreeJSRenderer && (
-            <ThreeJSRenderer
-              selectedProducts={[]} 
-              setSelectedProducts={() => {}} 
-              onComplete={() => {}} 
-              jsonUrl={jsonUrl}
-            />
+          <ThreeJSRenderer
+            selectedProducts={[]} 
+            setSelectedProducts={() => {}} 
+            onComplete={() => {}} 
+            jsonUrl={jsonUrl}
+          />
         )}
 
         <h2 className="text-xl font-bold mb-4">다른 게시물</h2>
         <div className="flex justify-evenly">
-          {prevPostId && (
+          {prevPostData && (
             <div className="">
               <DeskSetupCard key={prevPostData.id} data={prevPostData} />
               <p className="text-center mt-2 font-bold text-gray-600">이전 게시물</p>
             </div>
           )}
-          {nextPostId && (
+          {nextPostData && (
             <div className="">
               <DeskSetupCard key={nextPostData.id} data={nextPostData} />
               <p className="text-center mt-2 font-bold text-gray-600">다음 게시물</p>

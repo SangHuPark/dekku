@@ -8,6 +8,8 @@ import StyleFilter from "./StyleFilter";
 import ColorFilter from "./ColorFilter";
 import JobFilter from "./JobFilter";
 import { useRecentTopPosts } from "../components/useRecentTopPosts";
+import { fetchPosts } from "./dataFetching"; // Model import
+import { filterAndSortPosts } from "./DeskSetupController"; // Controller import
 
 export default function DeskSetupPage() {
   const recentTopPosts = useRecentTopPosts();
@@ -23,73 +25,28 @@ export default function DeskSetupPage() {
   const loadMoreRef = useRef(null); // "Load More" 버튼의 ref
 
   useEffect(() => {
-    // API 호출하여 데이터 가져오기
+    // 데이터 가져오기
     const fetchData = async () => {
-      try {
-        const response = await fetch("https://dekku.co.kr/api/deskterior-post", {
-          method: "GET",
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        console.log(data)
-        setAllPosts(data); // API로 받은 데이터를 allPosts에 저장
-        setFilteredData(data); // 필터링을 위해 초기 상태를 설정
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+      const data = await fetchPosts();
+      setAllPosts(data); // API로 받은 데이터를 allPosts에 저장
+      setFilteredData(data); // 필터링을 위해 초기 상태를 설정
     };
-
     fetchData();
-  }, []); // 컴포넌트가 마운트될 때 한 번만 호출
+  }, []);
 
   useEffect(() => {
-    let sortedData = [...allPosts];
-
-    // 필터링
-    if (styleFilter !== "all") {
-      sortedData = sortedData.filter((data) => data.style === styleFilter);
-    }
-    if (colorFilter !== "all") {
-      sortedData = sortedData.filter((data) => data.color === colorFilter);
-    }
-    if (jobFilter !== "all") {
-      sortedData = sortedData.filter((data) => data.job === jobFilter);
-    }
-
-    // 검색 필터링
-    if (searchTerm) {
-      sortedData = sortedData.filter(
-        (data) =>
-          data.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          data.description?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // 정렬
-    if (sortOrder === "latest") {
-      sortedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    } else if (sortOrder === "likes") {
-      sortedData.sort(
-        (a, b) =>
-          parseInt(b.likes.replace(/,/g, "")) -
-          parseInt(a.likes.replace(/,/g, ""))
-      );
-    } else if (sortOrder === "views") {
-      sortedData.sort(
-        (a, b) =>
-          parseInt(b.views.replace(/,/g, "")) -
-          parseInt(a.views.replace(/,/g, ""))
-      );
-    }
-
-    setFilteredData(sortedData);
+    // 필터 및 정렬 적용
+    const filteredAndSortedData = filterAndSortPosts(
+      allPosts,
+      { style: styleFilter, color: colorFilter, job: jobFilter },
+      sortOrder,
+      searchTerm
+    );
+    setFilteredData(filteredAndSortedData);
   }, [sortOrder, styleFilter, colorFilter, jobFilter, allPosts, searchTerm]);
 
   useEffect(() => {
     const handleScroll = () => {
-      // 페이지 전체 문서 높이와 현재 스크롤 위치를 비교하여 페이지 하단에 도달했는지 확인
       if (
         window.innerHeight + document.documentElement.scrollTop ===
         document.documentElement.offsetHeight
@@ -100,12 +57,10 @@ export default function DeskSetupPage() {
 
     window.addEventListener("scroll", handleScroll);
 
-    // 컴포넌트가 언마운트 될 때 스크롤 이벤트 핸들러 제거
     return () => window.removeEventListener("scroll", handleScroll);
   }, [filteredData, displayedCount]);
 
   useEffect(() => {
-    // "Load More" 버튼이 뷰포트에 들어오는지 확인하기 위해 IntersectionObserver 사용
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && displayedCount < filteredData.length) {
@@ -133,7 +88,7 @@ export default function DeskSetupPage() {
   };
 
   return (
-    <div className="">
+    <div>
       <div className="bg-[#F6F7FB] py-6 px-4">
         <div className="max-w-6xl mx-auto">
           <h1 className="font-bold text-3xl mt-3 mb-3">
@@ -200,7 +155,7 @@ export default function DeskSetupPage() {
         </div>
 
         <button
-          ref={loadMoreRef} // "Load More" 버튼에 ref를 설정
+          ref={loadMoreRef}
           className="text-blue-500 mt-3"
         >
           Load More
