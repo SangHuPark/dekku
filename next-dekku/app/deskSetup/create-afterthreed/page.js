@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation'; // useRouter를 next/navigation에서 임포트
 import PostModal from '../../components/deskSetup/PostModal'; // 모달 컴포넌트 임포트
+import { useUploadToS3 } from '../../components/threeDafter/ThreedUpload'; // ThreedUpload 훅을 임포트
 
-const CreatePage = () => {
+const CreateAfterThreedPage = () => {
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -15,6 +16,14 @@ const CreatePage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false); // 제출 상태
   const router = useRouter();
 
+  const { uploadToS3, uploading, error } = useUploadToS3(); // S3 업로드 훅 사용
+
+  useEffect(() => {
+    const storedThumbnail = localStorage.getItem('thumbnail');
+    if (storedThumbnail) {
+      setImage(storedThumbnail);
+    }
+  }, []);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -25,91 +34,64 @@ const CreatePage = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-  // 이미지 파일을 S3에 업로드
-  let presignedUrl;
-  try {
-    const presignedResponse = await fetch("http://dekku.co.kr:8080/api/s3/presigned-url", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        id: "memberId", // 로그인 정보에서 유저아이디 가져와서 보내기
-        fileCount: 1, // 이미지만 전송
-        directory: "post"
-      })
-    });
-
-    if (!presignedResponse.ok) {
-      const errorMessage = await presignedResponse.text();
-      console.error("Error:", errorMessage);
-      throw new Error(errorMessage);
+    // 로컬 스토리지에서 씬 상태와 썸네일 가져오기
+    const storedSceneState = localStorage.getItem('sceneState');
+    const storedThumbnail = localStorage.getItem('thumbnail');
+    
+    if (!storedSceneState || !storedThumbnail) {
+      console.error("No scene state or thumbnail found in localStorage.");
+      setIsSubmitting(false);
+      return;
     }
 
-    const presignedData = await presignedResponse.json();
-    presignedUrl = presignedData.data.preSignedUrl[0];
+    // 멤버 ID는 로그인 정보를 사용해 가져와야 합니다.
+    const memberId = "yourMemberId"; // 실제 구현 시 수정
 
-    // S3에 파일 업로드
-    const imageBlob = await fetch(image).then(res => res.blob());
+    try {
+      // JSON과 썸네일을 S3로 업로드
+      const { jsonUrl, imageUrl } = await uploadToS3(storedSceneState, storedThumbnail, memberId);
 
-    const uploadImageResponse = await fetch(presignedUrl, {
-      method: "PUT",
-      headers: {
-        "Content-Type": imageBlob.type
-      },
-      body: imageBlob
-    });
+      console.log("Uploaded file URLs:", { jsonUrl, imageUrl });
 
-    if (!uploadImageResponse.ok) {
-      const errorMessage = await uploadImageResponse.text();
-      console.error("Error uploading image:", errorMessage);
-      throw new Error(errorMessage);
+      // 업로드된 URL을 백엔드 서버에 전달
+      const response = await fetch('http://localhost:8080/api/deskterior-post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          content,
+          style: styleInfo,
+          color: colorInfo,
+          job: jobInfo,
+          deskteriorPostImages: [imageUrl, jsonUrl], // 이미지, 모델json URL 전달
+          productIds: [], // 관련된 제품 ID가 있다면 추가
+          OPENED: 'PUBLIC', // 공개 상태 설정
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create post');
+      }
+
+      console.log("Post successfully created!");
+
+      // 모달 띄우기
+      setIsModalOpen(true);
+    } catch (err) {
+      console.error("Failed to upload files:", err);
+      setIsSubmitting(false);
+      return;
     }
 
-    const imageUrl = presignedUrl.split("?")[0]; // 업로드된 이미지의 URL
-
-    console.log("Uploaded image URL:", imageUrl);
-
-    // 백엔드 서버로 포스트 생성 요청 보내기
-    const response = await fetch('http://localhost:8080/api/deskterior-post', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        title,
-        content,
-        style: styleInfo,
-        color: colorInfo,
-        job: jobInfo,
-        deskteriorPostImages: [imageUrl], // 이미지 URL 전달
-        productIds: [], // 관련된 제품 ID가 있다면 추가
-        OPENED: 'PUBLIC', // 공개 상태 설정
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to create post');
-    }
-
-    console.log("Post successfully created!");
-
-    // 모달 띄우기
-    setIsModalOpen(true);
-  } catch (err) {
-    console.error("Failed to upload files:", err);
     setIsSubmitting(false);
-    return;
-  }
-
-  setIsSubmitting(false);
   };
 
   const handleModalClose = () => {
-  setIsModalOpen(false);
-  router.push('/deskSetup/1'); // 게시글 디테일 페이지 경로로 변경
+    setIsModalOpen(false);
+    router.push('/deskSetup/1'); // 게시글 디테일 페이지 경로로 변경
   };
-
 
   return (
     <div className="max-w-6xl mx-auto flex justify-center items-center mt-20">
@@ -127,7 +109,7 @@ const CreatePage = () => {
                 <img src={image} alt="Uploaded" className="w-full h-auto rounded-lg" />
               ) : (
                 <div className="text-center">
-                  <p>이곳을 클릭해 사진을 올려주세요</p>
+                  <p>이곳에 사진을 올려주세요</p>
                   <div
                     type="button"
                     className="mt-2 bg-black text-white py-2 px-4 rounded"
@@ -240,4 +222,4 @@ const CreatePage = () => {
   );
 }
 
-export default CreatePage;
+export default CreateAfterThreedPage;

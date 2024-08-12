@@ -1,10 +1,46 @@
+'use client'
+
 import Link from "next/link";
-import { datas } from "../data"; // 데이터 파일의 경로를 조정하세요.
-import DeskSetupCard from "../DeskSetupCard";
+import { useState, useEffect } from "react";
+import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer"; // ThreeJSRenderer 임포트
 
 export default function Details({ params }) {
   const postId = parseInt(params.id, 10); // 문자열을 정수로 변환
-  const data = datas.find((item) => item.id === postId);
+  const [data, setData] = useState(null);
+  const [jsonUrl, setJsonUrl] = useState(null);
+  const [showThreeJSRenderer, setShowThreeJSRenderer] = useState(false);
+
+  useEffect(() => {
+    // 게시글 상세 정보와 JSON URL을 가져오는 API 호출
+    const fetchPostDetails = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/deskterior-post/${postId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch post details");
+        }
+
+        const postData = await response.json();
+        setData(postData);
+
+        // JSON URL이 있는 경우 설정
+        if (postData.jsonUrl) {
+          setJsonUrl(postData.jsonUrl);
+        }
+      } catch (error) {
+        console.error("Error fetching post details:", error);
+      }
+    };
+
+    fetchPostDetails();
+  }, [postId]);
+
+  const handleLoadModelClick = () => {
+    if (jsonUrl) {
+      setShowThreeJSRenderer(true);
+    } else {
+      console.error("No JSON URL found for this post.");
+    }
+  };
 
   if (!data) {
     return <p>게시물을 찾을 수 없습니다.</p>;
@@ -12,15 +48,11 @@ export default function Details({ params }) {
 
   // 이전과 다음 게시물의 ID를 계산합니다.
   const prevPostId = postId > 1 ? postId - 1 : null;
-  const nextPostId = postId < datas.length ? postId + 1 : null;
-
-  const prevPostData = datas.find((item) => item.id === prevPostId);
-  const nextPostData = datas.find((item) => item.id === nextPostId);
+  const nextPostId = postId < data.length ? postId + 1 : null;
 
   return (
     <div className="bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
-        {/* <Link className="" href={"/deskSetup"}>목록으로</Link> */}
         <h1 className="text-3xl font-bold mb-2">{data.title}</h1>
         <h3 className="text-gray-500 mb-4">
           {new Date(data.createdAt).toLocaleDateString()}
@@ -92,6 +124,27 @@ export default function Details({ params }) {
         </div>
 
         <hr className="border-t-2 border-gray-300 mb-6" />
+
+        {/* 불러오기 버튼 */}
+        {jsonUrl && (
+          <div className="mb-6 text-center">
+            <button
+              onClick={handleLoadModelClick}
+              className="bg-green-500 text-white px-6 py-2 rounded-md"
+            >
+              불러오기
+            </button>
+          </div>
+        )}
+
+        {showThreeJSRenderer && (
+          <ThreeJSRenderer
+            selectedProducts={[]} 
+            setSelectedProducts={() => {}} 
+            onComplete={() => {}} 
+            jsonUrl={jsonUrl}
+          />
+        )}
 
         <h2 className="text-xl font-bold mb-4">다른 게시물</h2>
         <div className="flex justify-evenly">
