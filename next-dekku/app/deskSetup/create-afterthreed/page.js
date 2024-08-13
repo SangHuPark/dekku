@@ -74,7 +74,7 @@ const CreateAfterThreedPage = () => {
         credentials: "include",
         headers: {
           'Content-Type': 'application/json',
-          'access': 'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJuYW1lIjoia2FrYW8gMzY1NTg0NDIwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjM0MjY3OTUsImV4cCI6MTcyMzQzMDM5NX0.UMm6_pJ_C-n-3HoJQNya5YKMFdhfsNNa6o8NRvSbkTQ',
+          'access': accessToken,
         },
         body: JSON.stringify({
           title,

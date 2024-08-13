@@ -4,7 +4,7 @@ import { Cookies } from "react-cookie"
 // access 토큰 만료 -> 백엔드에서 401 응답 -> 프론트에서 토큰 재발급 요청
 const fetchReissue = async () => {
     try {
-        const response = await fetch("http://dekku.co.kr:8080/api/reissue", {
+        const response = await fetch("https://dekku.co.kr/api/reissue", {
             method: "POST",
             credentials: "include",
         });
