@@ -87,6 +87,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         log.info("here --> " + response.getName() + " && " + username + " && " + response.getProvider());
 
         if (isExist != null) {
+            log.info("CustomOAuth2UserService -> saveOrUpdate() isExist is not null");
             memberRepository.renewMemberInfo(username, response.getName(), response.getEmail(), response.getImageUrl());
         } else {
             Member member = Member.builder()
@@ -96,6 +97,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                     .imageUrl(response.getImageUrl())
                     .role(role)
                     .build();
+
+            log.info("CustomOAuth2UserService -> saveOrUpdate() isExist is null");
             memberRepository.save(member);
         }
     }
