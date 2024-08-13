@@ -39,6 +39,7 @@ public class FollowService {
         for (Follow follower : followerEntities) {
             Member fromMember = follower.getFromMember();
             CreateFollowerListResponseDto dto = new CreateFollowerListResponseDto(
+                    fromMember.getId(),
                     fromMember.getNickname(),
                     fromMember.getImageUrl()
             );
@@ -58,6 +59,7 @@ public class FollowService {
         for (Follow following : followingEntities) {
             Member toMember = following.getToMember();
             CreateFollowingListResponseDto dto = new CreateFollowingListResponseDto(
+                    toMember.getId(),
                     toMember.getNickname(),
                     toMember.getImageUrl()
             );

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -18,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "사용자 관련 API")
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api/users")
 public class MemberController {
 
@@ -54,7 +56,7 @@ public class MemberController {
 	@GetMapping("/info")
 	public ResponseEntity<?> getMemberInfo(@RequestHeader(value = "access") String token) {
 		MemberDto member = memberService.findByToken(token);
-		System.out.println("Memnber: " + member.username());
+		log.info("Memnber: " + member.toString());
 		return ResponseEntity.status(HttpStatus.OK).body(member);
 	}
 
@@ -97,6 +99,34 @@ public class MemberController {
 	})
 	@DeleteMapping("/delete")
 	public ResponseEntity<?> delete(@RequestHeader(value="access") String token) {
+		memberService.deleteMember(token);
+
+		ResponseCookie responseCookie = ResponseCookie.from("refresh-token", null)
+				.maxAge(0)
+				.path("/")
+				.build();
+
+		return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+				.build();
+	}
+
+	@Operation(summary = "회원 탈퇴")
+	@ApiResponses({
+			@ApiResponse(
+					responseCode = "200",
+					description = "댓글 삭제 성공"
+			),
+			@ApiResponse(
+					responseCode = "404",
+					description = "삭제하려는 계정이 없는 경우"
+			),
+			@ApiResponse(
+					responseCode = "401",
+					description = "만료된 토큰으로 계정 삭제를 신청한 경우"
+			)
+	})
+	@GetMapping("/logout")
+	public ResponseEntity<?> logout(@RequestHeader(value="access") String token) {
 		memberService.deleteMember(token);
 
 		ResponseCookie responseCookie = ResponseCookie.from("refresh-token", null)

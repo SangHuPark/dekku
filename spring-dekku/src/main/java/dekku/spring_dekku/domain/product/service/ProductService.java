@@ -1,11 +1,12 @@
 package dekku.spring_dekku.domain.product.service;
 
-import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
+import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostRepository;
 import dekku.spring_dekku.domain.product.model.dto.request.CreateProductRequestDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreatePostProductMatchResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreateProductResponseDto;
+import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
 import dekku.spring_dekku.domain.product.model.entity.FilePath;
 import dekku.spring_dekku.domain.product.model.entity.Product;
 import dekku.spring_dekku.domain.product.model.entity.code.Category;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -160,6 +162,54 @@ public class ProductService {
         return postProductMatches;
     }
 
+    // 키워드를 포함하는 제품 이름 목록 조회
+    public List<String> searchProductNamesByKeyword(String keyword) {
+        List<Product> products = productRepository.findByNameContaining(keyword);
+        List<String> productNames = new ArrayList<>();
+
+        for (Product product : products) {
+            productNames.add(product.getName());
+        }
+
+        return productNames;
+    }
+
+    // 키워드를 포함하는 제품이 전부 포함된 게시물 조회
+    public List<FindDeskteriorPostResponseDto> findPostsByProductName(String keyword) {
+        List<Product> products = productRepository.findByNameContaining(keyword);
+
+        List<Long> productIds = new ArrayList<>();
+        for (Product product : products) {
+            productIds.add(product.getId());
+        }
+
+        Set<Long> uniquePostIds = new HashSet<>();
+        List<FindDeskteriorPostResponseDto> postResponseDtos = new ArrayList<>();
+
+        if (!productIds.isEmpty()) {
+            List<Long> postIds = deskteriorPostProductInfoRepository.findPostIdsByProductIds(productIds);
+
+            for (Long postId : postIds) {
+                if (uniquePostIds.add(postId)) {
+                    Optional<DeskteriorPost> optionalPost = deskteriorPostRepository.findById(postId);
+
+                    if (optionalPost.isPresent()) {
+                        DeskteriorPost post = optionalPost.get();
+
+                        List<DeskteriorPostProductInfo> productInfos = post.getDeskteriorPostProductInfos();
+                        if (productInfos.isEmpty()) {
+                            continue;
+                        }
+
+                        FindDeskteriorPostResponseDto dto = new FindDeskteriorPostResponseDto(post);
+                        postResponseDtos.add(dto);
+                    }
+                }
+            }
+        }
+
+        return postResponseDtos;
+    }
 
     // ExistStatus 처리 로직
     private ExistStatus determineExistStatus(String path) {
