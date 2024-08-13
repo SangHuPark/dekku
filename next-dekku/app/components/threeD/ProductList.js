@@ -20,6 +20,7 @@ const products = {
   '마우스': [
     { id: 8, name: '삼성 무선 마우스', description: 'black color', image: '/products_image/삼성무선마우스.PNG', modelPath: 'threedmodels/simple_pc_mouse.glb', scale: [1.2, 1.2, 1.2], price: '10,000원', update: '2024-08-03' },
     { id: 9, name: '로지텍 G604', description: 'LIGHTSPEED WIRELESS', image: '/products_image/logitech_g604.PNG', modelPath: 'threedmodels/logitech-g604.glb', scale: [2.5, 2.5, 2.5], price: '117,190원', update: '2024-08-08' },
+    { id: 9, name: '로지텍 Mx master 3s', description: 'white color', image: '/products_image/logitech-g604_white.PNG', modelPath: 'threedmodels/logitech-g604_white.glb', scale: [2.5, 2.5, 2.5], price: '121,840원', update: '2024-08-13' },
     { id: 10, name: '애플 매직 마우스', description: 'Magic Mouse 2', image: '/products_image/magicmouse.PNG', modelPath: 'threedmodels/apple_magic_mouse.glb', scale: [2, 2, 2], price: '99,000원', update: '2024-08-08' },
   ],
   '키보드': [    

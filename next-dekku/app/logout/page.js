@@ -11,7 +11,7 @@ const Logout = () => {
   useEffect(() => {
     const fetchLogout = async () => {
       try {
-        const response = await fetch("https://dekku.co.kr/logout", {
+        const response = await fetch("https://dekku.co.kr/api/logout", {
           method: "POST",
           credentials: "include",
         });
