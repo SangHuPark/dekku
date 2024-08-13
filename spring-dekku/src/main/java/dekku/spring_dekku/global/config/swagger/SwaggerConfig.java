@@ -20,14 +20,14 @@ public class SwaggerConfig {
         localServer.setDescription("local");
         localServer.setUrl("http://localhost:8080");
 
-//        Server domainServer = new Server();
-//        domainServer.setDescription("domain");
-//        domainServer.setUrl("http://dekku.co.kr:8080");
+        Server domainServer = new Server();
+        domainServer.setDescription("domain");
+        domainServer.setUrl("http://dekku.co.kr:8080");
 
         return new OpenAPI()
                 .info(getInfo())
-//                .servers(Arrays.asList(localServer, domainServer));
-                .servers(Arrays.asList(localServer));
+                .servers(Arrays.asList(localServer, domainServer));
+//                .servers(Arrays.asList(localServer));
 
     }
 
