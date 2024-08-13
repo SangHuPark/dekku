@@ -22,7 +22,7 @@ public class SwaggerConfig {
 
         Server domainServer = new Server();
         domainServer.setDescription("domain");
-        domainServer.setUrl("http://dekku.co.kr:8080");
+        domainServer.setUrl("https://dekku.co.kr/api");
 
         return new OpenAPI()
                 .info(getInfo())
