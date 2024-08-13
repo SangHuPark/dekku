@@ -2,13 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import { useLogin } from "../components/AuthContext";
-import { useEffect, Suspense } from "react";
+import { useEffect } from "react";
 
 const OAuth2Redirect = () => {
   const router = useRouter();
   const { setIsLoggedIn, setLoginUser } = useLogin();
 
   useEffect(() => {
+    if (typeof window === "undefined") return; // Ensure this runs only on the client
+
     const OAuth2JwtHeaderFetch = async () => {
       try {
         const response = await fetch("http://dekku.co.kr:8080/api/oauth2-jwt-header", {
@@ -52,4 +54,4 @@ const OAuth2RedirectWithSuspense = () => {
   );
 };
 
-export default OAuth2RedirectWithSuspense;
+export default OAuth2Redirect;
