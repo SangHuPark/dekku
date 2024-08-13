@@ -60,15 +60,21 @@ class ViewCountServiceTest {
     }
 
     @Test
-    @DisplayName("동시에 100명의 조회 : 동시성 이슈")
-    public void badTicketingTest() throws Exception {
+    @DisplayName("동시에 1000명의 조회 : 동시성 이슈")
+    public void badConcurrencyTest() throws Exception {
         viewTest((_no) -> deskteriorPostService.lookup(POST_ID, 1));
     }
 
     @Test
-    @DisplayName("동시에 100명의 조회 : 분산락")
-    public void redissonTicketingTest() throws Exception {
+    @DisplayName("동시에 1000명의 조회 : 분산락")
+    public void redissonConcurrencyTest() throws Exception {
         viewTest((_no) -> deskteriorPostService.redissonLookup(POST_ID, 1));
+    }
+
+    @Test
+    @DisplayName("실제 포스트 조회 시 분산 락 적용 여부 테스트")
+    public void viewCountTest() throws Exception {
+        viewTest((_no) -> deskteriorPostService.findById(POST_ID));
     }
 
 }
