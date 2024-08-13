@@ -1,6 +1,23 @@
-import Link from "next/link";
+"use client";
 
-const RecommendSetup = ({ posts = [] }) => {
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { fetchRecommendedPosts } from "./RecommendApi"; // API 함수 임포트
+
+const RecommendSetup = ({ selectedProductIds = [] }) => {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const loadRecommendedPosts = async () => {
+      const fetchedPosts = await fetchRecommendedPosts(selectedProductIds);
+      setPosts(fetchedPosts);
+    };
+
+    if (selectedProductIds.length > 0) {
+      loadRecommendedPosts();
+    }
+  }, [selectedProductIds]);
+
   return (
     <div className="max-w-6xl mx-auto pb-40">
       <h2 className="text-3xl mb-4">유사한 게시글</h2>
