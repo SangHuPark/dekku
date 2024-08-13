@@ -29,8 +29,8 @@ const products = {
   '기타': [
     { id: 13, name: '미니 자동차', description: '고퀄 파란색 자동차', image: '/products_image/파란색자동차.png', modelPath: 'threedmodels/car_example.glb', scale: [0.03, 0.03, 0.03], price: '2,000d원', update: '2024-07-23' },    
     { id: 14, name: 'SSAFY 명패', description: '싸피인의 필수품', image: '/products_image/nametag.png', modelPath: 'threedmodels/nametag.glb', scale: [2, 2, 2], update: '2024-08-09' },
-    { id: 15, name: '텀블러', description: 'blue', image: '/products_image/blue_tumbler.png', modelPath: 'threedmodels/blue_tumbler.glb', scale: [0.8, 0.8, 0.8], update: '2024-08-12' },
-    { id: 16, name: '텀블러', description: 'pink', image: '/products_image/pink_tumbler.png', modelPath: 'threedmodels/pink_tumbler.glb', scale: [0.8, 0.8, 0.8], update: '2024-08-12' },
+    { id: 15, name: '텀블러', description: 'black', image: '/products_image/tumbler_black.png', modelPath: 'threedmodels/tumbler_black.glb', scale: [0.8, 0.8, 0.8], update: '2024-08-12' },
+    { id: 16, name: '텀블러', description: 'white', image: '/products_image/tumbler_white.png', modelPath: 'threedmodels/tumbler_white.glb', scale: [0.8, 0.8, 0.8], update: '2024-08-12' },
     { id: 17, name: '장패드', description: '근본 black-red', image: '/products_image/longpad.png', modelPath: 'threedmodels/longpad.glb', scale: [7, 1, 6], update: '2024-08-12' },
     { id: 18, name: '마우스패드', description: '무려 ssafy 로고가 박힌', image: '/products_image/mousepad_ssafy.png', modelPath: 'threedmodels/mousepad_ssafy.glb', scale: [3, 1, 3], update: '2024-08-12' },
     { id: 19, name: 'room', description: 'ssafy classroom', image: '/products_image/mousepad_ssafy.png', modelPath: 'threedmodels/ssafyroom.glb', scale: [3, 3, 3], update: '2024-08-12' },
