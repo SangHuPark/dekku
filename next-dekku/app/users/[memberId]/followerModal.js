@@ -1,6 +1,40 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 export default function FollowerModal({ showModal, setShowModal }) {
+  const [allFollowers, setAllFollowers] = useState();
+
+  useEffect(() => {
+    const GetFollowers = async () => {
+      try {
+        const accessToken = window.localStorage.getItem("access");
+        if (!accessToken) {
+          console.log("No access token found");
+          return;
+        }
+        const response = await fetch(
+          "https://dekku.co.kr/api/follows/followers",
+          {
+            method: "GET",
+            headers: {
+              access: accessToken,
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch followers");
+        }
+        const data = await response.json();
+        console.log(data);
+        setAllFollowers(data);
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
+    GetFollowers();
+  });
+
   return (
     showModal && (
       <div className="fixed z-50 inset-0 overflow-y-auto">
@@ -23,7 +57,9 @@ export default function FollowerModal({ showModal, setShowModal }) {
             >
               &#x2715;
             </button>
-            <div className="flex justify-center items-center mb-4 text-2xl font-bold ">팔로워</div>
+            <div className="flex justify-center items-center mb-4 text-2xl font-bold ">
+              팔로워
+            </div>
             <div className="sm:flex sm:items-start">
               <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
                 <div className="mt-2 w-full">
