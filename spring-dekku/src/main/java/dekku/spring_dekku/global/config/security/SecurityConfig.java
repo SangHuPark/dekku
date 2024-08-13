@@ -5,7 +5,7 @@ import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.repository.RefreshRepository;
 import dekku.spring_dekku.domain.member.service.RefreshTokenService;
 import dekku.spring_dekku.domain.member.service.oauth2.CustomOAuth2UserService;
-import dekku.spring_dekku.global.filter.CustomLogoutFilter;
+//import dekku.spring_dekku.global.filter.CustomLogoutFilter;
 import dekku.spring_dekku.global.handler.CustomOAuth2SuccessHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -97,8 +97,8 @@ public class SecurityConfig {
                 .addFilterAfter(new JWTFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         // custom logout filter 등록
-        httpSecurity
-                .addFilterBefore(new CustomLogoutFilter(jwtTokenProvider, refreshRepository), LogoutFilter.class);
+//        httpSecurity
+//                .addFilterBefore(new CustomLogoutFilter(jwtTokenProvider, refreshRepository), LogoutFilter.class);
 
         // session stateless
         httpSecurity
