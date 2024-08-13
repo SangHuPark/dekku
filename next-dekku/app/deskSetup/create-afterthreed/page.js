@@ -37,7 +37,22 @@ const CreateAfterThreedPage = () => {
     // 로컬 스토리지에서 씬 상태와 썸네일 가져오기
     const storedSceneState = localStorage.getItem('sceneState');
     const storedThumbnail = localStorage.getItem('thumbnail');
-    
+    const accessToken = localStorage.getItem('access');
+    const selectedProducts = localStorage.getItem('selectedProducts')
+
+    // 선택한 상품 ID 추출
+    let productIds = [];
+    if (selectedProducts) {
+      try {
+        const productsArray = JSON.parse(selectedProducts);
+        productIds = productsArray.map(product => product.id);
+      } catch (error) {
+        console.error("Error parsing selectedProducts:", error);
+      }
+    }
+
+    console.log('선택한 상품들 Id:', productIds);
+
     if (!storedSceneState || !storedThumbnail) {
       console.error("No scene state or thumbnail found in localStorage.");
       setIsSubmitting(false);
@@ -54,8 +69,9 @@ const CreateAfterThreedPage = () => {
       console.log("Uploaded file URLs:", { jsonUrl, imageUrl });
 
       // 업로드된 URL을 백엔드 서버에 전달
-      const response = await fetch('http://localhost:8080/api/deskterior-post', {
+      const response = await fetch('http://dekku.co.kr:8080/api/deskterior-post', {
         method: 'POST',
+        credentials: "include",
         headers: {
           'Content-Type': 'application/json',
           'access': 'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJuYW1lIjoia2FrYW8gMzY1NTg0NDIwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjM0MjY3OTUsImV4cCI6MTcyMzQzMDM5NX0.UMm6_pJ_C-n-3HoJQNya5YKMFdhfsNNa6o8NRvSbkTQ',
@@ -67,7 +83,7 @@ const CreateAfterThreedPage = () => {
           color: colorInfo,
           job: jobInfo,
           deskteriorPostImages: [imageUrl, jsonUrl], // 이미지, 모델json URL 전달
-          productIds: [], // 관련된 제품 ID가 있다면 추가
+          productId: productIds, // 관련된 제품 ID가 있다면 추가
           OPENED: 'PUBLIC', // 공개 상태 설정
         }),
       });
