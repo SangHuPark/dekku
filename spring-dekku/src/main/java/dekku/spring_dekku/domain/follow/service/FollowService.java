@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -28,9 +29,8 @@ public class FollowService {
     private final FollowRepository followRepository;
 
     @Transactional
-    public List<CreateFollowerListResponseDto> getFollowerList(String token) {
-        String username = jwtTokenProvider.getKeyFromClaims(token, "username");
-        Member member = memberRepository.findByUsername(username)
+    public List<CreateFollowerListResponseDto> getFollowerList(Long memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         List<Follow> followerEntities = followRepository.findByToMember(member);
@@ -48,9 +48,8 @@ public class FollowService {
     }
 
     @Transactional
-    public List<CreateFollowingListResponseDto> getFollowingList(String token) {
-        String username = jwtTokenProvider.getKeyFromClaims(token, "username");
-        Member member = memberRepository.findByUsername(username)
+    public List<CreateFollowingListResponseDto> getFollowingList(Long memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         List<Follow> followingEntities = followRepository.findByFromMember(member);
@@ -66,6 +65,7 @@ public class FollowService {
         }
         return followings;
     }
+
 
     @Transactional
     public void follow(String token, Long toMemberId) {
@@ -97,5 +97,31 @@ public class FollowService {
                 .orElseThrow(() -> new NotFollowUserException(ErrorCode.FAIL_TO_FOLLOW));
 
         followRepository.delete(follow);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isFollowingUser(String token, Long toMemberId) {
+        // 토큰에서 사용자 이름 추출
+        String username = jwtTokenProvider.getKeyFromClaims(token, "username");
+
+        // 사용자 정보 가져오기
+        Member fromMember = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
+
+        // 특정 유저의 정보 확인
+        Member toMember = memberRepository.findById(toMemberId)
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
+
+        // 팔로우한 유저들의 목록 가져오기
+        List<Follow> followings = followRepository.findByFromMember(fromMember);
+
+        // for문을 사용하여 특정 유저의 memberId가 있는지 확인
+        for (Follow follow : followings) {
+            if (follow.getToMember().getId().equals(toMemberId)) {
+                return true;  // 특정 유저를 팔로우하고 있으면 true 반환
+            }
+        }
+
+        return false;  // 특정 유저를 팔로우하지 않으면 false 반환
     }
 }
