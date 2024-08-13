@@ -37,6 +37,10 @@ const products = {
     { id: 20, name: '게이밍 헤드셋', description: 'RAZER Kraken V3 X', image: '/products_image/headset.png', modelPath: 'threedmodels/headset.glb', scale: [0.05, 0.05, 0.05], price: '74,140원', update: '2024-08-12' },
     { id: 21, name: '볼펜꽂이', description: 'black, mesh', image: '/products_image/penholder.png', modelPath: 'threedmodels/penholder.glb', scale: [0.15, 0.15, 0.15], update: '2024-08-12' },
   ],
+  '방': [
+    { id: 19, name: 'room', description: 'ssafy classroom', image: '/products_image/ssafyroom.png', modelPath: 'threedmodels/ssafyroom.glb', scale: [2.8, 2.8, 2.8], update: '2024-08-12' },
+    { id: 22, name: 'room', description: 'ssafy classroom', image: '/products_image/gamingroom.png', modelPath: 'threedmodels/gamingroom.glb', scale: [2.1, 2.1, 2.1], update: '2024-08-13' },
+  ]
 };
 
 export default products;

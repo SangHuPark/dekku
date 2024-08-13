@@ -13,7 +13,7 @@ const MouseControls = ({ camera, models, setActiveModel, controls, scene, deskSi
 
   const createCustomGrid = (sizeX, sizeZ, divisionsX, divisionsZ) => {
     const grid = new THREE.Group();
-    const material = new THREE.LineBasicMaterial({ color: 0x000000 });
+    const material = new THREE.LineBasicMaterial({ color: 0x999999 });
     const stepX = sizeX / divisionsX;
     const stepZ = sizeZ / divisionsZ;
 

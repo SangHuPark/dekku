@@ -88,7 +88,7 @@ const CreateDeskSetupPage = () => {
       const productIds = selectedProducts.map((product) => product.id);
 
       // 백엔드 서버로 게시글 생성 요청 보내기
-      const response = await fetch("http://localhost:8080/api/deskterior-post", {
+      const response = await fetch("https://dekku.co.kr/api/deskterior-post", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
