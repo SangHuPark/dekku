@@ -69,7 +69,7 @@ const CreateAfterThreedPage = () => {
       console.log("Uploaded file URLs:", { jsonUrl, imageUrl });
 
       // 업로드된 URL을 백엔드 서버에 전달
-      const response = await fetch('http://dekku.co.kr:8080/api/deskterior-post', {
+      const response = await fetch('https://dekku.co.kr/api/deskterior-post', {
         method: 'POST',
         credentials: "include",
         headers: {
