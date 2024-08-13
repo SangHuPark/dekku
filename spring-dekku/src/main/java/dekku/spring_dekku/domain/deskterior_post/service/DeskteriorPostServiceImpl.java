@@ -144,7 +144,7 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     }
 
 
-//    @DistributeLock(key = "#id")
+    @DistributeLock(key = "#id")
     public FindByIdDeskteriorPostResponseDto findById(Long id) {
         DeskteriorPost foundDeskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
