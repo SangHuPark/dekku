@@ -1,9 +1,40 @@
 "use client";
 
-export default function FollowingModal({ showModal, setShowModal }) {
+import { useEffect, useState } from "react";
+
+export default function FollowingModal({ showFollowingModal, setShowFollowingModal, memberId }) {
+  const [allFollowings, setAllFollowings] = useState();
+
+  useEffect(() => {
+    const GetFollowings = async () => {
+      try {
+        const accessToken = window.localStorage.getItem("access");
+        if (!accessToken) {
+          console.log("No access token found");
+          return;
+        }
+        const response = await fetch(
+          `https://dekku.co.kr/api/follows/following/${memberId}`,
+          {
+            method: "GET",
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch followings");
+        }
+        const data = await response.json();
+        console.log(data);
+        setAllFollowings(data);
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
+    GetFollowings();
+  }, []);
+
   return (
-    showModal && (
-      <div className="fixed z-10 inset-0 overflow-y-auto">
+    showFollowingModal && (
+      <div className="fixed z-50 inset-0 overflow-y-auto">
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <div className="fixed inset-0 transition-opacity" aria-hidden="true">
             <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
@@ -16,23 +47,29 @@ export default function FollowingModal({ showModal, setShowModal }) {
             &#8203;
           </span>
 
-          <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6">
-            <div className="flex justify-end items-center mb-4">
-              <button
-                className="text-gray-500 hover:text-gray-800"
-                onClick={() => setShowModal(false)}
-              >
-                &#x2715;
-              </button>
-            </div>
-            <div className="flex justify-center mb-8">
-              <img src="/logo.png" alt="Logo" className="my-10 w-40" />
+          <div className="relative inline-block align-bottom bg-white rounded-2xl p-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
+            <button
+              className="absolute top-5 right-5 text-gray-500 hover:text-gray-800"
+              onClick={() => setShowFollowingModal(false)}
+            >
+              &#x2715;
+            </button>
+            <div className="flex justify-center items-center text-2xl font-bold ">
+              팔로워
             </div>
             <div className="sm:flex sm:items-start">
-              <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
-                <div className="mt-2 w-full">
+              <div className="text-center sm:mt-0 sm:text-left w-full">
+                <div className="w-full">
                   <div className="flex flex-col items-center space-y-2 w-full">
-                    <div className="w-full">팔로잉 목록</div>
+                    <div className="w-full">
+                      {allFollowings.map((data) => (
+                        <div key={data.nickname} className="flex justify-between items-end space-y-4">
+                          <img src={data.imageUrl} className="w-6 h-6" />
+                          <div className="">{data.nickname}</div>
+                          <button className="">팔로우</button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>

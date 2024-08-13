@@ -4,13 +4,15 @@ import { useEffect, useState } from "react";
 import DeskSetupCard from "../../deskSetup/DeskSetupCard";
 import { datas } from "../../deskSetup/dataFetching.js";
 import FollowerModal from "./followerModal";
+import FollowingModal from "./followingModal";
 import { useLogin } from "../../components/AuthContext";
 import Link from "next/link";
 
 const Profile = (id) => {
   const [allPosts, setAllPosts] = useState([]);
   const [activeTab, setActiveTab] = useState("uploads");
-  const [showModal, setShowModal] = useState(false);
+  const [showFollowerModal, setShowFollowerModal] = useState(false);
+  const [showFollowingModal, setShowFollowingModal] = useState(false);
   const { isLoggedIn } = useLogin();
   const [userData, setUserData] = useState(null);
   const [memberId, setMemberId] = useState(null);
@@ -39,7 +41,7 @@ const Profile = (id) => {
     };
 
     fetchUserData();
-  }, [id]);
+  }, []);
 
   useEffect(() => {
     const GetUserInfo = async () => {
@@ -70,7 +72,7 @@ const Profile = (id) => {
       }
     };
     GetUserInfo();
-  }, [id]);
+  }, []);
 
   if (!userData) {
     return <div>Loading...</div>;
@@ -112,7 +114,7 @@ const Profile = (id) => {
               <div>
                 <button
                   className="space-x-2"
-                  onClick={() => setShowModal(true)}
+                  onClick={() => setShowFollowerModal(true)}
                 >
                   <span>팔로워</span>
                   <span className="font-bold">
@@ -120,13 +122,28 @@ const Profile = (id) => {
                   </span>
                 </button>
                 <FollowerModal
-                  showModal={showModal}
-                  setShowModal={setShowModal}
+                  showFollowerModal={showFollowerModal}
+                  setShowFollowerModal={setShowFollowerModal}
+                  memberId={id.params.memberId}
                 />
               </div>
               <div className="text-gray-400">|</div>
-              <span>팔로잉</span>
-              <span className="font-bold">{userData.data.followingCount}</span>
+              <div>
+                <button
+                  className="space-x-2"
+                  onClick={() => setShowFollowingModal(true)}
+                >
+                  <span>팔로잉</span>
+                  <span className="font-bold">
+                    {userData.data.followingCount}
+                  </span>
+                </button>
+                <FollowingModal
+                  showFollowingModal={showFollowingModal}
+                  setShowFollowingModal={setShowFollowingModal}
+                  memberId={id.params.memberId}
+                />
+              </div>
             </div>
             <p>{userData.introduction || "소개글이 없습니다."}</p>
           </div>
