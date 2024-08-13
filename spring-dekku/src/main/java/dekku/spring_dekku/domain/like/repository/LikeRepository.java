@@ -20,5 +20,4 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     @Modifying
     @Query(value = "UPDATE DeskteriorPost d SET d.likeCount = d.likeCount - 1 where d.id=:id")
     void downCount(Long id);
-
 }
