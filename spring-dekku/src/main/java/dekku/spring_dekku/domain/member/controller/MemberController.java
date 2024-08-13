@@ -73,7 +73,7 @@ public class MemberController {
 					description = "만료된 토큰으로 계정 수정을 하려는 경우"
 			)
 	})
-	@PatchMapping("/update")
+	@PutMapping("/update")
 	public ResponseEntity<Void> update(@RequestHeader(value="Access") String token, @RequestBody MemberUpdateDto requestDto) throws Exception {
 		memberService.updateMember(requestDto, token);
 

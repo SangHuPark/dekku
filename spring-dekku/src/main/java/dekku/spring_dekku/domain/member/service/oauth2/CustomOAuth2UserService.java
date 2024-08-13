@@ -71,6 +71,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         String accessToken = userRequest.getAccessToken().getTokenValue();
         redisService.setSocialAccessToken(username, accessToken);
 
+        log.info("accessToken: {}", accessToken);
+
         // 서버 내부에서 사용하기 위한 인증 정보
         return customOAuth2Member;
     }
