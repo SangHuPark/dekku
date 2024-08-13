@@ -96,8 +96,8 @@ public class FollowController {
                     description = "이미 해당 계정을 팔로우한 상태"
             )
     })
-    @PostMapping("/follow")
-    public ResponseEntity<?> follow(@RequestHeader("Access") String token, @RequestParam Long toMemberId) {
+    @PostMapping("/follow/{toMemberId}")
+    public ResponseEntity<?> follow(@RequestHeader("Access") String token, @PathVariable Long toMemberId) {
         followService.follow(token, toMemberId);
 
         return ResponseUtil.ok(Success.builder().build());
@@ -119,8 +119,8 @@ public class FollowController {
             )
 
     })
-    @PostMapping("/unfollow")
-    public ResponseEntity<?> unfollow(@RequestHeader("Access") String token, @RequestParam Long toMemberId) {
+    @PostMapping("/unfollow/{toMemberId}")
+    public ResponseEntity<?> unfollow(@RequestHeader("Access") String token, @PathVariable Long toMemberId) {
         followService.unfollow(token, toMemberId);
 
         return ResponseUtil.ok(Success.builder().build());
@@ -138,9 +138,9 @@ public class FollowController {
                     description = "조회하려는 유저 또는 팔로우할 유저가 존재하지 않는 경우"
             )
     })
-    @GetMapping("/is-following")
+    @GetMapping("/is-following/{memberId}")
     public ResponseEntity<Boolean> isFollowingUser(@RequestHeader("Access") String token,
-                                                   @RequestParam Long memberId) {
+                                                   @PathVariable Long memberId) {
         boolean isFollowing = followService.isFollowingUser(token, memberId);
         return ResponseEntity.status(HttpStatus.OK).body(isFollowing);
     }
