@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { datas } from "../deskSetup/dataFetching.js";
+
 
 // 최근 일주일을 계산하는 함수
 const getOneWeekAgoDate = () => {
