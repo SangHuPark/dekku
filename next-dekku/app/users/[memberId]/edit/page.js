@@ -3,32 +3,45 @@
 import { useState, useEffect } from "react";
 import { useLogin } from "../../../components/AuthContext";
 
-export default function ProfileEdit() {
+export default function ProfileEdit(id) {
   const [profileImage, setProfileImage] = useState("");
   const [nickname, setNickname] = useState("");
   const [introduction, setIntroduction] = useState("");
   const { isLoggedIn } = useLogin();
 
-  // 서버에서 초기 데이터 불러오기
   useEffect(() => {
-    const fetchUserData = async () => {
+    const GetUserInfo = async () => {
       try {
-        const response = await fetch("http://dekku.co.kr:8080/api/user");
-        if (response.ok) {
-          const data = await response.json();
-          setProfileImage(data.profileImage || "");
-          setNickname(data.nickname || "");
-          setIntroduction(data.introduction || "");
-        } else {
-          console.error("Failed to fetch user data");
+        const accessToken = window.localStorage.getItem("access");
+        if (!accessToken) {
+          console.log("No access token found");
+          return;
         }
+        const response = await fetch("https://dekku.co.kr/api/users/info", {
+          method: "GET",
+          headers: {
+            access: accessToken,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch user info");
+        }
+        const data = await response.json();
+        console.log(data);
+
+        const profileImage = data.imageUrl;
+        const nickname = data.nickname;
+        const introduction = data.introduction;
+
+        setProfileImage(profileImage);
+        setNickname(nickname);
+        setIntroduction(introduction);
       } catch (error) {
-        console.error("An error occurred while fetching user data:", error);
+        console.log("error: ", error);
       }
     };
-
-    fetchUserData();
-  }, []);
+    GetUserInfo();
+  }, [id]);
 
   const handleProfileImageChange = (e) => {
     setProfileImage(URL.createObjectURL(e.target.files[0]));
@@ -43,8 +56,11 @@ export default function ProfileEdit() {
     formData.append("introduction", introduction);
 
     try {
-      const response = await fetch("http://dekku.co.kr:8080/api/user", {
+      const response = await fetch("https://dekku.co.kr/api/users/update", {
         method: "PUT",
+        headers: {
+          access: accessToken,
+        },
         body: formData,
       });
 
