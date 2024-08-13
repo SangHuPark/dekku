@@ -48,12 +48,5 @@ const OAuth2Redirect = () => {
   return null; // 이 컴포넌트는 화면에 아무 것도 렌더링하지 않으므로 `null` 반환
 };
 
-const OAuth2RedirectWithSuspense = () => {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <OAuth2Redirect />
-    </Suspense>
-  );
-};
 
 export default OAuth2Redirect;
