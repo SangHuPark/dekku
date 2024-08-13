@@ -11,6 +11,7 @@ const OAuth2Redirect = () => {
   useEffect(() => {
     const OAuth2JwtHeaderFetch = async () => {
       try {
+        
         const response = await fetch("https://dekku.co.kr/api/oauth2-jwt-header", {
           method: "POST",
           credentials: "include",
