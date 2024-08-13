@@ -27,6 +27,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(getInfo())
 //                .servers(Arrays.asList(localServer, domainServer));
+
                 .servers(Arrays.asList(localServer));
 
     }
