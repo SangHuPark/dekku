@@ -15,6 +15,7 @@ const products = {
   ],
   '데스크': [
     { id: 7, name: 'SSAFY DESK', description: '2학기 책상', image: '/products_image/ssafydesk.png', modelPath: 'threedmodels/ssafydesk.glb', scale: [1, 1, 1], update: '2024-08-03' },
+    { id: 7, name: 'SSAFY DESK', description: '게이밍 책상', image: '/products_image/ssafydesk.png', modelPath: 'threedmodels/ssafydesk.glb', scale: [1, 1, 1], update: '2024-08-03' },
   ],
   '마우스': [
     { id: 8, name: '삼성 무선 마우스', description: 'black color', image: '/products_image/삼성무선마우스.PNG', modelPath: 'threedmodels/simple_pc_mouse.glb', scale: [1.2, 1.2, 1.2], price: '10,000원', update: '2024-08-03' },
