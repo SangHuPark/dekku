@@ -4,6 +4,8 @@ import dekku.spring_dekku.domain.member.service.oauth2.OAuth2JwtHeaderService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,10 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class OAuth2Controller {
+    private static final Logger log = LoggerFactory.getLogger(OAuth2Controller.class);
     private final OAuth2JwtHeaderService oAuth2JwtHeaderService;
 
     @PostMapping("/api/oauth2-jwt-header")
     public String oauth2JwtHeader(HttpServletRequest request, HttpServletResponse response) {
+        log.info("request: {}", request);
+        log.info("response: {}", response);
         return oAuth2JwtHeaderService.oauth2JwtHeaderSet(request, response);
     }
 }

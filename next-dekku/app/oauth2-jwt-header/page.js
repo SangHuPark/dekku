@@ -14,7 +14,8 @@ const OAuth2Redirect = () => {
 
         const response = await fetch("https://dekku.co.kr/api/oauth2-jwt-header", {
           method: "POST",
-          // credentials: "include",
+          
+          credentials: "include",
         });
 
         console.log(response);
