@@ -28,7 +28,7 @@ const Profile = (id) => {
         if (response.ok) {
           const data = await response.json();
           setUserData(data);
-          setAllPosts(data.deskteriorPosts); // 게시물 데이터를 상태에 저장
+          setAllPosts(data.deskteriorPosts);
         } else {
           alert("접근할 수 없는 페이지입니다.");
         }
@@ -38,7 +38,7 @@ const Profile = (id) => {
     };
 
     fetchUserData();
-  }, [id]); // memberId가 변경될 때마다 이 효과가 실행됩니다.
+  }, [id]);
 
   useEffect(() => {
     const GetUserInfo = async () => {
@@ -71,7 +71,6 @@ const Profile = (id) => {
     GetUserInfo();
   }, [id]);
 
-  // 데이터가 로드되기 전에 로딩 상태를 처리하는 조건부 렌더링
   if (!userData) {
     return <div>Loading...</div>;
   }
