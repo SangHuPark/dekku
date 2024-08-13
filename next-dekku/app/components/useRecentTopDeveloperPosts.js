@@ -13,7 +13,7 @@ const getOneWeekAgoDate = () => {
 // 개발자 직군의 최근 인기 게시글을 가져오는 훅
 export const useRecentTopDeveloperPosts = () => {
   const [recentTopDeveloperPosts, setRecentTopDeveloperPosts] = useState([]); // 상태 초기화
-
+  const datas = null
   useEffect(() => {
     // 데이터가 존재할 때만 실행되도록 조건 추가
     if (datas && datas.length > 0) {
