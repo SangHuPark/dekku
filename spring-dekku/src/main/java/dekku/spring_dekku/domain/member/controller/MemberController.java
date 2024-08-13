@@ -1,9 +1,8 @@
 package dekku.spring_dekku.domain.member.controller;
 
-import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
+import dekku.spring_dekku.domain.member.model.dto.MemberDto;
 import dekku.spring_dekku.domain.member.model.dto.MemberUpdateDto;
 import dekku.spring_dekku.domain.member.service.oauth2.MemberService;
-import dekku.spring_dekku.global.exception.AccessTokenException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -37,6 +36,28 @@ public class MemberController {
 //				.orElseGet(() -> ResponseEntity.notFound().build());
 //	}
 
+	@Operation(summary = "회원정보 가져오기")
+	@ApiResponses({
+			@ApiResponse(
+					responseCode = "200",
+					description = "회원정보 요청 완료"
+			),
+			@ApiResponse(
+					responseCode = "404",
+					description = "정보를 찾으려는 계정이 없는 경우"
+			),
+			@ApiResponse(
+					responseCode = "401",
+					description = "만료된 토큰으로 계정 정보를 취득하려는 경우"
+			)
+	})
+	@GetMapping("/info")
+	public ResponseEntity<?> getMemberInfo(@RequestHeader(value = "access") String token) {
+		MemberDto member = memberService.findByToken(token);
+		System.out.println("Memnber: " + member.username());
+		return ResponseEntity.status(HttpStatus.OK).body(member);
+	}
+
 	@Operation(summary = "회원정보 수정")
 	@ApiResponses({
 			@ApiResponse(
@@ -52,15 +73,10 @@ public class MemberController {
 					description = "만료된 토큰으로 계정 수정을 하려는 경우"
 			)
 	})
-	@PatchMapping("/update")
+	@PutMapping("/update")
 	public ResponseEntity<Void> update(@RequestHeader(value="Access") String token, @RequestBody MemberUpdateDto requestDto) throws Exception {
-		try {
-			memberService.updateMember(requestDto, token);
-		} catch (AccessTokenException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		} catch (MemberNotFoundException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
+		memberService.updateMember(requestDto, token);
+
         return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
@@ -81,17 +97,13 @@ public class MemberController {
 	})
 	@DeleteMapping("/delete")
 	public ResponseEntity<?> delete(@RequestHeader(value="access") String token) {
-		try {
-			memberService.deleteMember(token);
-		} catch(AccessTokenException e){
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-		} catch (MemberNotFoundException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}
+		memberService.deleteMember(token);
+
 		ResponseCookie responseCookie = ResponseCookie.from("refresh-token", null)
 				.maxAge(0)
 				.path("/")
 				.build();
+
 		return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.SET_COOKIE, responseCookie.toString())
 				.build();
 	}

@@ -1,57 +1,57 @@
-"use client";
+"use client"; // 클라이언트 컴포넌트로 명시
 
-import { useState, useEffect } from "react";
-import { useRouter } from 'next/navigation'; // useRouter를 next/navigation에서 임포트
-import PostModal from '../../components/deskSetup/PostModal'; // 모달 컴포넌트 임포트
+import React, { useState } from "react";
+import { useRouter } from "next/navigation"; // next/navigation 모듈 사용
+import products from "../../components/threeD/ProductList";
 
-const CreatePage = () => {
-  const [image, setImage] = useState(null);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [styleInfo, setStyleInfo] = useState("");
-  const [colorInfo, setColorInfo] = useState("");
-  const [jobInfo, setJobInfo] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
+const CreateDeskSetupPage = () => {
+  const [image, setImage] = useState(null); // 이미지 파일 상태
+  const [title, setTitle] = useState(""); // 게시글 제목 상태
+  const [content, setContent] = useState(""); // 게시글 내용 상태
+  const [styleInfo, setStyleInfo] = useState(""); // 스타일 정보 상태
+  const [colorInfo, setColorInfo] = useState(""); // 색상 정보 상태
+  const [jobInfo, setJobInfo] = useState(""); // 직업 정보 상태
+  const [selectedProducts, setSelectedProducts] = useState([]); // 선택된 제품 상태
   const [isSubmitting, setIsSubmitting] = useState(false); // 제출 상태
-  const router = useRouter();
+  const router = useRouter(); // next/navigation의 useRouter 사용
 
-  useEffect(() => {
-    const storedThumbnail = localStorage.getItem('thumbnail');
-    if (storedThumbnail) {
-      setImage(storedThumbnail);
-    }
-  }, []);
-
+  // 이미지 파일 업로드 핸들러
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     setImage(URL.createObjectURL(file));
   };
 
+  // 상품 추가 핸들러
+  const handleProductSelect = (e, category) => {
+    const productId = parseInt(e.target.value);
+    const product = products[category].find((p) => p.id === productId);
+    setSelectedProducts([...selectedProducts, product]);
+  };
+
+  // 상품 제거 핸들러
+  const handleRemoveProduct = (productId) => {
+    const updatedProducts = selectedProducts.filter((item) => item.id !== productId);
+    setSelectedProducts(updatedProducts);
+  };
+
+  // 게시글 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // 로컬 스토리지에서 씬 상태 가져오기
-    const storedSceneState = localStorage.getItem('sceneState');
-    if (!storedSceneState) {
-      console.error("No scene state found in localStorage.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    // Presigned URL 생성 요청
     let presignedUrl;
     try {
+      // 이미지 업로드를 위한 presigned URL 요청
       const presignedResponse = await fetch("http://dekku.co.kr:8080/api/s3/presigned-url", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: "memberId", // 고유 식별자. 필요에 따라 변경하세요. 로그인 정보에서 유저아이디 가져와서 보내기
-          fileCount: 2,
-          directory: "post"
-        })
+          id: "memberId", // 실제 유저 아이디로 교체 필요
+          fileCount: 1,
+          directory: "post",
+        }),
       });
 
       if (!presignedResponse.ok) {
@@ -61,40 +61,17 @@ const CreatePage = () => {
       }
 
       const presignedData = await presignedResponse.json();
-      presignedUrl = presignedData.data.preSignedUrl;
+      presignedUrl = presignedData.data.preSignedUrl[0];
 
-      console.log("Presigned URLs:", presignedUrl);
-    } catch (error) {
-      console.error("Failed to fetch presigned URL:", error);
-      setIsSubmitting(false);
-      return;
-    }
+      // 이미지 파일을 S3에 업로드
+      const imageBlob = await fetch(image).then((res) => res.blob());
 
-    // S3에 파일 업로드
-    try {
-      const sceneStateBlob = new Blob([storedSceneState], { type: 'application/json' });
-      const imageBlob = await fetch(image).then(res => res.blob());
-
-      const uploadSceneResponse = await fetch(presignedUrl[0], {
+      const uploadImageResponse = await fetch(presignedUrl, {
         method: "PUT",
         headers: {
-          "Content-Type": 'application/json'
+          "Content-Type": imageBlob.type,
         },
-        body: sceneStateBlob
-      });
-
-      if (!uploadSceneResponse.ok) {
-        const errorMessage = await uploadSceneResponse.text();
-        console.error("Error uploading scene state:", errorMessage);
-        throw new Error(errorMessage);
-      }
-
-      const uploadImageResponse = await fetch(presignedUrl[1], {
-        method: "PUT",
-        headers: {
-          "Content-Type": imageBlob.type
-        },
-        body: imageBlob
+        body: imageBlob,
       });
 
       if (!uploadImageResponse.ok) {
@@ -103,12 +80,39 @@ const CreatePage = () => {
         throw new Error(errorMessage);
       }
 
-      console.log("Uploaded file URLs:", presignedUrl.map(url => url.split("?")[0]));
+      const imageUrl = presignedUrl.split("?")[0]; // 업로드된 이미지의 URL
 
-      // 모달 띄우기
-      setIsModalOpen(true);
-    } catch (error) {
-      console.error("Failed to upload files:", error);
+      console.log("Uploaded image URL:", imageUrl);
+
+      // 선택된 상품 ID들을 추출
+      const productIds = selectedProducts.map((product) => product.id);
+
+      // 백엔드 서버로 게시글 생성 요청 보내기
+      const response = await fetch("http://localhost:8080/api/deskterior-post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          content,
+          style: styleInfo,
+          color: colorInfo,
+          job: jobInfo,
+          deskteriorPostImages: [imageUrl], // 이미지 URL 전달
+          productIds, // 선택된 상품 ID들 전달
+          OPENED: "PUBLIC", // 공개 상태 설정
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create post");
+      }
+
+      console.log("Post successfully created!");
+      router.push("/deskSetup/1"); // 게시글 디테일 페이지 경로로 변경
+    } catch (err) {
+      console.error("Failed to upload files:", err);
       setIsSubmitting(false);
       return;
     }
@@ -116,34 +120,18 @@ const CreatePage = () => {
     setIsSubmitting(false);
   };
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    router.push('/deskSetup/1'); // 게시글 디테일 페이지 경로로 변경
-  };
-
   return (
     <div className="max-w-6xl mx-auto flex justify-center items-center mt-20">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col w-3/4 space-y-5"
-      >
+      <form onSubmit={handleSubmit} className="flex flex-col w-3/4 space-y-5">
         <div className="flex flex-row w-full space-x-5">
           <div className="flex-1 flex justify-center items-center">
-            <label
-              htmlFor="imageUpload"
-              className="cursor-pointer flex flex-col items-center"
-            >
+            <label htmlFor="imageUpload" className="cursor-pointer flex flex-col items-center">
               {image ? (
                 <img src={image} alt="Uploaded" className="w-full h-auto rounded-lg" />
               ) : (
                 <div className="text-center">
-                  <p>이곳에 사진을 올려주세요</p>
-                  <div
-                    type="button"
-                    className="mt-2 bg-black text-white py-2 px-4 rounded"
-                  >
-                    PC에서 불러오기
-                  </div>
+                  <p>이곳을 클릭해 사진을 올려주세요</p>
+                  <div className="mt-2 bg-black text-white py-2 px-4 rounded">PC에서 불러오기</div>
                 </div>
               )}
               <input
@@ -179,15 +167,15 @@ const CreatePage = () => {
                 onChange={(e) => setStyleInfo(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option value="">스타일 정보 추가</option>
-                <option value="modern">모던</option>
-                <option value="minimal">미니멀</option>
-                <option value="retro">레트로</option>
-                <option value="lovely">러블리</option>
-                <option value="gamer">게이머</option>
-                <option value="study">서재</option>
-                <option value="natural">자연</option>
-                <option value="other">기타</option>
+                <option value="NON_SELECT">스타일 정보 추가</option>
+                <option value="MODERN">모던</option>
+                <option value="MINIMAL">미니멀</option>
+                <option value="RETRO">레트로</option>
+                <option value="LOVELY">러블리</option>
+                <option value="GAMER">게이머</option>
+                <option value="LIBRARY">서재</option>
+                <option value="NATURE">자연</option>
+                <option value="ETC">기타</option>
               </select>
             </div>
             <div className="w-full">
@@ -196,19 +184,19 @@ const CreatePage = () => {
                 onChange={(e) => setColorInfo(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option value="">컬러 정보 추가</option>
-                <option value="black_white">블랙&화이트</option>
-                <option value="black">블랙</option>
-                <option value="white">화이트</option>
-                <option value="gray">그레이</option>
-                <option value="mint">민트</option>
-                <option value="blue">블루</option>
-                <option value="pink">핑크</option>
-                <option value="green">그린</option>
-                <option value="red">레드</option>
-                <option value="yellow">옐로우</option>
-                <option value="brown">브라운</option>
-                <option value="other">기타</option>
+                <option value="NON_SELECT">컬러 정보 추가</option>
+                <option value="BLACK_AND_WHITE">블랙&화이트</option>
+                <option value="BLACK">블랙</option>
+                <option value="WHITE">화이트</option>
+                <option value="GRAY">그레이</option>
+                <option value="MINT">민트</option>
+                <option value="BLUE">블루</option>
+                <option value="PINK">핑크</option>
+                <option value="GREEN">그린</option>
+                <option value="RED">레드</option>
+                <option value="YELLOW">옐로우</option>
+                <option value="BROWN">브라운</option>
+                <option value="ETC">기타</option>
               </select>
             </div>
             <div className="w-full">
@@ -217,37 +205,77 @@ const CreatePage = () => {
                 onChange={(e) => setJobInfo(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option value="">직업 정보 추가</option>
-                <option value="office_worker">회사원</option>
-                <option value="developer">개발자</option>
-                <option value="architecture">건축</option>
-                <option value="designer">디자이너</option>
-                <option value="editor">편집자</option>
-                <option value="writer">작가</option>
-                <option value="freelancer">프리랜서</option>
-                <option value="homemaker">주부</option>
-                <option value="student">학생</option>
-                <option value="other">기타</option>
+                <option value="NON_SELECT">직업 정보 추가</option>
+                <option value="OFFICE_WORKER">회사원</option>
+                <option value="DEVELOPER">개발자</option>
+                <option value="ARCHITECT">건축</option>
+                <option value="DESIGNER">디자이너</option>
+                <option value="EDITOR">편집자</option>
+                <option value="WRITER">작가</option>
+                <option value="FREELANCER">프리랜서</option>
+                <option value="HOMEMAKER">주부</option>
+                <option value="STUDENT">학생</option>
+                <option value="ETC">기타</option>
               </select>
             </div>
           </div>
         </div>
+
+        {/* 카테고리별 상품 선택 */}
+        <div className="w-full">
+          <h3 className="font-bold text-xl">상품 선택</h3>
+          {Object.keys(products).map((category) => (
+            <div key={category} className="mb-4">
+              <label className="font-semibold">{category}</label>
+              <select
+                onChange={(e) => handleProductSelect(e, category)}
+                className="w-full p-2 border border-gray-300 rounded"
+                defaultValue="DEFAULT"
+              >
+                <option value="DEFAULT" disabled>제품을 선택하세요</option>
+                {products[category].map((product) => (
+                  <option key={product.id} value={product.id}>
+                    {product.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+
+        {/* 선택된 상품 표시 */}
+        <div className="w-full">
+          <h3 className="font-bold text-xl">선택된 상품</h3>
+          <div className="space-y-4">
+            {selectedProducts.map((product, index) => (
+              <div
+                key={`${product.id}-${index}`}
+                className="border p-2 rounded relative hover:bg-gray-200 flex justify-between items-center"
+              >
+                <p>{product.name}</p>
+                <button
+                  className="bg-red-500 text-white rounded-full p-1 text-xs"
+                  onClick={() => handleRemoveProduct(product.id)}
+                >
+                  X
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="flex justify-end">
           <button
             type="submit"
-            className={`bg-black text-white py-2 px-4 rounded ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`bg-black text-white py-2 px-4 rounded ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
             disabled={isSubmitting}
           >
-            {isSubmitting ? '제출 중...' : '제출'}
+            {isSubmitting ? "제출 중..." : "제출"}
           </button>
         </div>
       </form>
-      <PostModal 
-        isOpen={isModalOpen} 
-        onClose={handleModalClose} 
-      />
     </div>
   );
-}
+};
 
-export default CreatePage;
+export default CreateDeskSetupPage;

@@ -10,14 +10,9 @@ import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteri
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.UpdateDeskteriorPostRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPostImage;
-import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.Color;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
-import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.Job;
-import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.Style;
-import dekku.spring_dekku.domain.deskterior_post.model.entity.code.OpenStatus;
-import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostImageRepository;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostRepository;
-import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
+import dekku.spring_dekku.domain.member.exception.NotExistsUserException;
 import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
@@ -25,10 +20,10 @@ import dekku.spring_dekku.domain.product.exception.NotExistsProductException;
 import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
 import dekku.spring_dekku.domain.product.model.entity.Product;
 import dekku.spring_dekku.domain.product.repository.ProductRepository;
+import dekku.spring_dekku.global.aop.DistributeLock;
 import dekku.spring_dekku.global.exception.AccessTokenException;
 import dekku.spring_dekku.global.status.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,26 +38,26 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
 
     private final DeskteriorPostRepository deskteriorPostRepository;
 
-    private final DeskteriorPostImageRepository deskteriorPostImageRepository;
+//    private final DeskteriorPostImageRepository deskteriorPostImageRepository;
 
     private final ProductRepository productRepository;
 
-    private final ModelMapper modelMapper;
+//    private final ModelMapper modelMapper;
 
     private final CommentService commentService;
 
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
+    @Transactional
     public CreateDeskteriorPostResponseDto addDeskteriorPost(String token, CreateDeskteriorPostRequestDto request) {
         if (token == null || token.isEmpty()) {
-            throw new AccessTokenException("액세스 토큰이 없습니다.");
+            throw new AccessTokenException(ErrorCode.INVALID_TOKEN);
         }
+
         String username = jwtTokenProvider.getUsername(token);
-        Member member = memberRepository.findByUsername(username);
-        if (member == null) {
-            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
-        }
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
         // Embeddable 생성
         DeskteriorAttributes deskteriorAttributes = CreateDeskteriorPostRequestDto.createDeskteriorAttributes(
@@ -107,13 +102,14 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
         DeskteriorPost savedDeskteriorPost = deskteriorPostRepository.save(newDeskteriorPost);
 
 //        CreateDeskteriorPostResponseDto response = modelMapper.map(deskteriorPost, CreateDeskteriorPostResponseDto.class);
-        CreateDeskteriorPostResponseDto response = new CreateDeskteriorPostResponseDto(savedDeskteriorPost.getTitle(), savedDeskteriorPost.getContent());
+        CreateDeskteriorPostResponseDto response = new CreateDeskteriorPostResponseDto(savedDeskteriorPost.getTitle(), savedDeskteriorPost.getContent(),
+                                                        savedDeskteriorPost.getId());
 
         return response;
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<FindDeskteriorPostResponseDto> findAll() {
         List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findAll();
         if (deskteriorPosts.isEmpty()) {
@@ -148,13 +144,30 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     }
 
 
+    @DistributeLock(key = "#id")
     public FindByIdDeskteriorPostResponseDto findById(Long id) {
         DeskteriorPost foundDeskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
 
+        foundDeskteriorPost.increase(1);
+        deskteriorPostRepository.saveAndFlush(foundDeskteriorPost);
+
         List<CommentResponseDto> commentResponseDtos = commentService.getCommentsByPostId(id);
 
         return new FindByIdDeskteriorPostResponseDto(foundDeskteriorPost, commentResponseDtos);
+    }
+
+    @DistributeLock(key = "#postId")
+    public void redissonLookup(Long postId, int quantity) {
+        DeskteriorPost post = deskteriorPostRepository.findById(postId).orElseThrow();
+        post.increase(quantity);
+        deskteriorPostRepository.saveAndFlush(post);
+    }
+
+    public void lookup(Long postId, int quantity) {
+        DeskteriorPost post = deskteriorPostRepository.findById(postId).orElseThrow();
+        post.increase(quantity);
+        deskteriorPostRepository.saveAndFlush(post);
     }
 
 
@@ -162,15 +175,14 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     @Transactional
     public DeskteriorPost updateDeskteriorPost(Long id, String token, UpdateDeskteriorPostRequestDto request) {
         String username = extractUsernameFromToken(token);
-        Member member = memberRepository.findByUsername(username);
-        if (member == null) {
-            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
-        }
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
+
         DeskteriorPost existingDeskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
 
         if (!existingDeskteriorPost.getMember().getId().equals(member.getId())) {
-            throw new AccessTokenException("게시글을 수정할 권한이 없습니다.");
+            throw new AccessTokenException(ErrorCode.INVALID_TOKEN);
         }
 
         if (request.title() != null) {
@@ -224,15 +236,14 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     @Override
     public void deleteDeskteriorPost(Long id, String token) {
         String username = extractUsernameFromToken(token);
-        Member member = memberRepository.findByUsername(username);
-        if (member == null) {
-            throw new MemberNotFoundException("사용자를 찾을 수 없습니다.");
-        }
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
+
         DeskteriorPost existingDeskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
 
         if (!existingDeskteriorPost.getMember().getId().equals(member.getId())) {
-            throw new AccessTokenException("게시글을 삭제할 권한이 없습니다.");
+            throw new AccessTokenException(ErrorCode.INVALID_TOKEN);
         }
 
         deskteriorPostRepository.delete(existingDeskteriorPost);

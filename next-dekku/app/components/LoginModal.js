@@ -1,7 +1,8 @@
 "use client";
 
-export default function LoginModal({ showModal, setShowModal }) {
+import Link from "next/link";
 
+export default function LoginModal({ showModal, setShowModal }) {
   return (
     showModal && (
       <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -48,7 +49,7 @@ export default function LoginModal({ showModal, setShowModal }) {
                     </div>
                     <div className="w-full">
                       <a
-                        href="http://dekku.co.kr:8080/oauth2/authorization/naver"
+                        href="http://dekku.co.kr/oauth2/authorization/naver"
                         className="shadow w-full inline-flex justify-center items-center px-4 py-4 border border-transparent font-medium rounded-md text-white bg-[#03C75A] hover:bg-[#04A94D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                       >
                         <img

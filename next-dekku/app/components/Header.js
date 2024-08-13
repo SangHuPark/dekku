@@ -7,20 +7,77 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 const Header = () => {
-  const { isLoggedIn } = useLogin();
+  const { isLoggedIn, setIsLoggedIn } = useLogin(); // setIsLoggedIn 추가
   const [showModal, setShowModal] = useState(false);
   const pathname = usePathname();
+  const [headerClasses, setHeaderClasses] = useState(
+    "flex justify-between px-4 py-6 max-w-6xl mx-auto"
+  );
 
-  const [headerClasses, setHeaderClasses] = useState('flex justify-between px-4 pt-6 max-w-6xl mx-auto');
+  const [memberId, setMemberId] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+
+  // 쿠키 삭제 함수
+  const deleteCookie = (name) => {
+    document.cookie = name + "=; Max-Age=0; path=/";
+  };
 
   useEffect(() => {
     // 경로에 따라 클래스를 설정합니다.
-    if (pathname === '/threeD') {
-      setHeaderClasses('flex justify-between px-4 pt-6');
+    if (pathname === "/threeD") {
+      setHeaderClasses("flex justify-between px-4 py-6");
     } else {
-      setHeaderClasses('flex justify-between px-4 pt-6 max-w-6xl mx-auto');
+      setHeaderClasses("flex justify-between px-4 py-6 max-w-6xl mx-auto");
     }
-  }, [pathname]); // pathname이 변경될 때마다 useEffect가 호출됩니다.
+  }, [pathname]);
+
+  useEffect(() => {
+    const GetUserInfo = async () => {
+      try {
+        const accessToken = window.localStorage.getItem("access");
+
+        if (!accessToken) {
+          console.log("No access token found");
+          return;
+        }
+
+        const response = await fetch("https://dekku.co.kr/api/users/info", {
+          method: "GET",
+          headers: {
+            access: accessToken,
+          },
+        });
+
+        if (response.status === 401) {
+          // 401 에러 처리
+          setIsLoggedIn(false);
+          window.localStorage.removeItem("access");
+          deleteCookie("refresh");
+          window.location.reload();
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user info");
+        }
+
+        const data = await response.json();
+        console.log(data);
+
+        const id = data.id;
+        const imageUrl = data.imageUrl;
+        console.log(id);
+        console.log(imageUrl);
+
+        setMemberId(id);
+        setImageUrl(imageUrl);
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
+
+    GetUserInfo();
+  }, [setIsLoggedIn]);
 
   return (
     <header className="fixed top-0 w-full z-50 bg-white">
@@ -40,9 +97,23 @@ const Header = () => {
               <Link href="/deskSetup">데스크 셋업</Link>
             </li>
             {isLoggedIn && (
-              <li>
-                <Link href="/social">프로필</Link>
-              </li>
+              <>
+                <li>
+                  <Link href="/logout">로그아웃</Link>
+                </li>
+                <li>
+                  <Link href={`/users/${memberId}`}>
+                    <img
+                      src={
+                        imageUrl ||
+                        "https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/profile/profile.svg"
+                      }
+                      alt="Profile"
+                      className="w-10 h-10 rounded-full object-cover cursor-pointer"
+                    />
+                  </Link>
+                </li>
+              </>
             )}
             {!isLoggedIn && (
               <li>
@@ -50,15 +121,10 @@ const Header = () => {
                 <LoginModal showModal={showModal} setShowModal={setShowModal} />
               </li>
             )}
-            {isLoggedIn && (
-              <li>
-                <Link href="/logout">로그아웃</Link>
-              </li>
-            )}
           </ul>
         </nav>
       </div>
-      <hr className="mt-6"/>
+      <hr />
     </header>
   );
 };

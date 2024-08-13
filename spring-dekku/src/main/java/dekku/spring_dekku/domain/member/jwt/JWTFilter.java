@@ -10,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ import java.io.IOException;
  * 내부에서 사용할 authentication 정보를 set
  */
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
@@ -35,35 +37,35 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // access token null
         if (access == null) {
-            logger.error("Token is empty");
+            log.error("Token is empty");
             filterChain.doFilter(request, response);
             return;
         }
 
         //token validate
         try {
-            logger.error("Token is not vaild");
             if (!jwtTokenProvider.validateToken(access)) {
+                log.error("Token is not vaild");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
         } catch (ExpiredJwtException e) {
-            System.out.println("만료");
+            log.error("만료");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         } catch (MalformedJwtException e) {
-            System.out.println("변조");
+            log.error("변조");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         } catch (SignatureException e) {
-            System.out.println("signature");
+            log.error("signature");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         String category = jwtTokenProvider.getCategory(access);
 
-        logger.error("category: " + category);
+        log.info("category: {}", category);
 
         // not access token
         if(!category.equals("access")){

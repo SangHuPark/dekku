@@ -4,6 +4,7 @@ import dekku.spring_dekku.domain.member.jwt.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,11 +12,12 @@ import org.springframework.stereotype.Service;
  * -> 프론트에서 바로 재요청하면 해당 access 토큰 헤더에 싣고, 쿠키는 만료시킴
  */
 @Service
+@Slf4j
 public class OAuth2JwtHeaderService {
     public String oauth2JwtHeaderSet(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
 
-        System.out.println("OAuth2JwtHeaderService.java -> " + cookies);
+        log.info("OAuth2JwtHeaderService.java -> " + cookies);
 
         String access = null;
 

@@ -1,19 +1,22 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useLogin } from "../components/AuthContext";
-import { useEffect, Suspense } from "react";
+import { useEffect } from "react";
 
 const OAuth2Redirect = () => {
   const router = useRouter();
   const { setIsLoggedIn, setLoginUser } = useLogin();
-  const queryParams = useSearchParams();
 
   useEffect(() => {
+    if (typeof window === "undefined") return; // Ensure this runs only on the client
+
     const OAuth2JwtHeaderFetch = async () => {
       try {
-        const response = await fetch("http://dekku.co.kr:8080/api/oauth2-jwt-header", {
+
+        const response = await fetch("https://dekku.co.kr/api/oauth2-jwt-header", {
           method: "POST",
+          
           credentials: "include",
         });
 
@@ -23,8 +26,9 @@ const OAuth2Redirect = () => {
           // local storage access token set
           window.localStorage.setItem("access", response.headers.get("access"));
 
-          // local storage name set
-          const name = queryParams.get("name");
+          // URLSearchParams를 사용하여 쿼리 파라미터에 접근
+          const params = new URLSearchParams(window.location.search);
+          const name = params.get("name");
           window.localStorage.setItem("name", name);
 
           setIsLoggedIn(true);
@@ -39,17 +43,10 @@ const OAuth2Redirect = () => {
     };
 
     OAuth2JwtHeaderFetch();
-  }, [queryParams, router, setIsLoggedIn, setLoginUser]);
+  }, [router, setIsLoggedIn, setLoginUser]);
 
   return null; // 이 컴포넌트는 화면에 아무 것도 렌더링하지 않으므로 `null` 반환
 };
 
-const OAuth2RedirectWithSuspense = () => {
-  return (
-    <Suspense>
-      <OAuth2Redirect />
-    </Suspense>
-  );
-};
 
-export default OAuth2RedirectWithSuspense;
+export default OAuth2Redirect;

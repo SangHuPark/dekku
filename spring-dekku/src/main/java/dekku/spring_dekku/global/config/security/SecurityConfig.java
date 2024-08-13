@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -80,8 +81,8 @@ public class SecurityConfig {
         httpSecurity
                 .cors((cors) -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000/"));
-                    configuration.setAllowedMethods(Collections.singletonList("*"));
+                    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://dekku.co.kr"));
+                    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     configuration.setAllowCredentials(true);
                     configuration.setAllowedHeaders(Collections.singletonList("*"));
                     configuration.setMaxAge(3600L);
@@ -117,7 +118,6 @@ public class SecurityConfig {
                         "/auth/**", "/sign-up/**", "/verification/**",
                         "/users/find-password", "/users/update-password", "/s3/**", "/test");
     }
-
 
     @Bean
     public AuthenticationManager authenticationManagerBean() {

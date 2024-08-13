@@ -1,10 +1,7 @@
 package dekku.spring_dekku.domain.like.controller;
 
-import dekku.spring_dekku.domain.like.exception.LikeException;
 import dekku.spring_dekku.domain.like.model.dto.LikeDto;
 import dekku.spring_dekku.domain.like.service.LikeService;
-import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
-import dekku.spring_dekku.global.exception.AccessTokenException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -47,15 +44,8 @@ public class LikeController {
     @PostMapping("/{post_id}")
     public ResponseEntity likePost(@RequestHeader(name = "access") String token, @PathVariable(name = "post_id") Long postId) {
         LikeDto likeDto = null;
-        try {
-            likeDto = likeService.likePost(postId, token);
-        } catch (AccessTokenException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        } catch (MemberNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (LikeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+        likeDto = likeService.likePost(postId, token);
+
         return ResponseEntity.status(HttpStatus.OK).body(likeDto);
     }
 
@@ -82,15 +72,8 @@ public class LikeController {
     @DeleteMapping("/{post_id}")
     public ResponseEntity unlikePost(@RequestHeader(name = "access") String token, @PathVariable(name = "post_id") Long postId) {
         LikeDto likeDto = null;
-        try {
-            likeDto = likeService.unlikePost(postId, token);
-        } catch (AccessTokenException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        } catch (MemberNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (LikeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+        likeDto = likeService.unlikePost(postId, token);
+
         return ResponseEntity.status(HttpStatus.OK).body(likeDto);
     }
 

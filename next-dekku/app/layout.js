@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
         className={`${pretendard.variable} min-h-screen flex flex-col font-pretendard`}
       >
         <AuthProvider>
-          <Header />
+          <Header className="" />
           <main className="mt-20 flex-grow bg-gradient-to-b from-white to-[#F1EFEB]">
             {children}
           </main>

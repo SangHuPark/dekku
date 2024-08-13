@@ -8,34 +8,23 @@ const Logout = () => {
   const router = useRouter();
   const { setIsLoggedIn, setLoginUser } = useLogin();
 
+  const deleteCookie = (name) => {
+    document.cookie = name + "=; Max-Age=0; path=/";
+  };
+
   useEffect(() => {
-    const fetchLogout = async () => {
-      try {
-        const response = await fetch("http://dekku.co.kr:8080/logout", {
-          method: "POST",
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          alert("성공적으로 로그아웃 되었습니다.");
-          window.localStorage.removeItem("access");
-          window.localStorage.removeItem("name");
-
-          setIsLoggedIn(false);
-          setLoginUser(null);
-          router.push("/", { replace: true });
-        } else {
-          alert("로그아웃에 실패하였습니다.");
-        }
-      } catch (error) {
-        console.log("error: ", error);
-      }
+    const fetchLogout = () => {
+      setIsLoggedIn(false);
+      setLoginUser(null);
+      window.localStorage.removeItem("access");
+      window.localStorage.removeItem("name");
+      deleteCookie("refresh");
+      router.push("/");
+      return;
     };
 
     fetchLogout();
-  }, []); // 빈 배열로 설정하여, 컴포넌트가 마운트될 때만 실행
-
-  return null;
+  }, []);
 };
 
 export default Logout;

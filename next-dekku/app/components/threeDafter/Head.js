@@ -2,12 +2,12 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import products from '../threeD/ProductList'; // 각 모델의 스케일 값을 가져오기 위해 제품 리스트를 임포트
-import SaveModal from './SaveModal'; // 모달 컴포넌트 임포트
 import { useRouter } from 'next/navigation'; // useRouter를 import
 import { useUploadToS3 } from './ThreedUpload'; // 파일 업로드 훅을 import
-import '../../styles/ThreeDAfter.css'; // 글래스 모피즘 스타일
+// import '../../styles/ThreeDAfter.css'; // 글래스 모피즘 스타일
+import '../../styles/ThreeDafter.css'
 
-const Head = ({ onSave }) => {
+const Head = () => {
   const mountRef = useRef(null);
   const router = useRouter(); // useRouter 사용
   const { uploadToS3 } = useUploadToS3(); // S3 업로드 훅 사용
@@ -91,15 +91,6 @@ const Head = ({ onSave }) => {
     };
   }, []);
 
-  const getScaleForModel = (modelPath) => {
-    for (const category in products) {
-      const product = products[category].find(product => product.modelPath === modelPath);
-      if (product) {
-        return product.scale;
-      }
-    }
-    return [1, 1, 1];
-  };
 
   const loadModels = (sceneState, scene, desk) => {
     const loader = new GLTFLoader();
@@ -122,30 +113,9 @@ const Head = ({ onSave }) => {
     });
   };
 
-  const handleSave = async () => {
-    // 로컬 스토리지에서 씬 상태와 썸네일 가져오기
-    const storedSceneState = localStorage.getItem('sceneState');
-    const storedThumbnail = localStorage.getItem('thumbnail');
-
-    if (!storedSceneState || !storedThumbnail) {
-      console.error("No scene state or thumbnail found in localStorage.");
-      return;
-    }
-
-    // 멤버 ID는 로그인 정보를 사용해 가져와야 합니다.
-    const memberId = "MemberId"; // 실제 구현 시 수정
-
-    try {
-      const thumbnailUrl = await uploadToS3(storedSceneState, storedThumbnail, memberId);
-      setImageUrl(thumbnailUrl);
-      setIsModalOpen(true); // 모달 열기
-    } catch (err) {
-      console.error("Error during upload:", err);
-    }
-  };
-
+  
   const handleShare = () => {
-    router.push('/deskSetup/create');
+    router.push('/deskSetup/create-afterthreed');
   };
   
 
@@ -155,23 +125,12 @@ const Head = ({ onSave }) => {
         <div className="flex flex-col justify-center items-start">
           <p className="text-xl font-bold mb-2 ml-4">Good! 훌륭한 재능입니다!</p>
           <div className="flex items-center space-x-4 mt-6">
-            <button onClick={handleSave} className="ml-10  text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-base px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">저장</button>
-            <button onClick={handleShare} className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-base px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">공유</button>
+          <button onClick={handleShare} className="ml-6  text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-base px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">게시글 작성하러 가기</button>
           </div>
         </div>
         <img src="/손박수.png" alt="손박수" style={{ width: '270px', height: '270px' }} />
       </div>
       <div ref={mountRef} className="glass-container w-full" style={{ height: '100%', overflow: 'hidden' }}></div>
-
-      <SaveModal 
-        isOpen={isModalOpen} 
-        onClose={() => {
-          setIsModalOpen(false);
-          if (onSave) {
-            onSave();
-          }
-        }} 
-      />
     </div>
   );
 };

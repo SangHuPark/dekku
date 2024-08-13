@@ -1,10 +1,8 @@
 package dekku.spring_dekku.domain.follow.controller;
 
-import dekku.spring_dekku.domain.follow.exception.FollowException;
 import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowingListResponseDto;
 import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowerListResponseDto;
 import dekku.spring_dekku.domain.follow.service.FollowService;
-import dekku.spring_dekku.domain.member.exception.MemberNotFoundException;
 import dekku.spring_dekku.global.model.dto.Success;
 import dekku.spring_dekku.global.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,17 +44,13 @@ public class FollowController {
                     description = "조회하려는 계정이 없는 경우"
             )
     })
-    @GetMapping("/followers")
-    public ResponseEntity<List<CreateFollowerListResponseDto>> getFollowerList(@RequestHeader("Access") String token) {
-        List<CreateFollowerListResponseDto> allFollowers = null;
-        try {
-            allFollowers = followService.getFollowerList(token);
-        } catch (MemberNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    @GetMapping("/followers/{memberId}")
+    public ResponseEntity<List<CreateFollowerListResponseDto>> getFollowerList(@PathVariable Long memberId) {
+        List<CreateFollowerListResponseDto> allFollowers = followService.getFollowerList(memberId);
         if (allFollowers.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
+
         return ResponseEntity.status(HttpStatus.OK).body(allFollowers);
     }
 
@@ -76,19 +70,16 @@ public class FollowController {
                     description = "조회하려는 계정이 없는 경우"
             )
     })
-    @GetMapping("/following")
-    public ResponseEntity<List<CreateFollowingListResponseDto>> getFollowingList(@RequestHeader("Access") String token) {
-        List<CreateFollowingListResponseDto> allFollowings = null;
-        try {
-            allFollowings = followService.getFollowingList(token);
-        } catch (MemberNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    @GetMapping("/following/{memberId}")
+    public ResponseEntity<List<CreateFollowingListResponseDto>> getFollowingList(@PathVariable Long memberId) {
+        List<CreateFollowingListResponseDto> allFollowings = followService.getFollowingList(memberId);
         if (allFollowings.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
+
         return ResponseEntity.status(HttpStatus.OK).body(allFollowings);
     }
+
 
     @Operation(summary = "팔로우")
     @ApiResponses({
@@ -107,13 +98,8 @@ public class FollowController {
     })
     @PostMapping("/follow")
     public ResponseEntity<?> follow(@RequestHeader("Access") String token, @RequestParam Long toMemberId) {
-        try {
-            followService.follow(token, toMemberId);
-        } catch (MemberNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (FollowException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+        followService.follow(token, toMemberId);
+
         return ResponseUtil.ok(Success.builder().build());
     }
 
@@ -135,11 +121,28 @@ public class FollowController {
     })
     @PostMapping("/unfollow")
     public ResponseEntity<?> unfollow(@RequestHeader("Access") String token, @RequestParam Long toMemberId) {
-        try {
-            followService.unfollow(token, toMemberId);
-        } catch (MemberNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        followService.unfollow(token, toMemberId);
+
         return ResponseUtil.ok(Success.builder().build());
     }
+
+    @Operation(summary = "특정 유저를 팔로우 했는지 확인")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "팔로우 여부 확인 완료",
+                    content = @Content(schema = @Schema(implementation = Boolean.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "조회하려는 유저 또는 팔로우할 유저가 존재하지 않는 경우"
+            )
+    })
+    @GetMapping("/is-following")
+    public ResponseEntity<Boolean> isFollowingUser(@RequestHeader("Access") String token,
+                                                   @RequestParam Long memberId) {
+        boolean isFollowing = followService.isFollowingUser(token, memberId);
+        return ResponseEntity.status(HttpStatus.OK).body(isFollowing);
+    }
+
 }
