@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addMapping("/api/**")
 			.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 //			.allowedOrigins("http://localhost:3000")
-				.allowedOrigins("https://dekku.co.kr") // "https://dekku.co.kr"
+				.allowedOrigins("https://dekku.co.kr", "http://localhost:3000") // "https://dekku.co.kr"
 			.allowedHeaders("*")
 			.allowCredentials(true);
 	}
