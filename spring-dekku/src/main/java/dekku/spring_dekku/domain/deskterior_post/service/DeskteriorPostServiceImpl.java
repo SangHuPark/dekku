@@ -3,6 +3,7 @@ package dekku.spring_dekku.domain.deskterior_post.service;
 import dekku.spring_dekku.domain.comment.event.CommentCreatedEvent;
 import dekku.spring_dekku.domain.comment.event.CommentDeletedEvent;
 import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
+import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.comment.service.CommentService;
 import dekku.spring_dekku.domain.deskterior_post.exception.NotExistsDeskteriorPostException;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.request.CreateDeskteriorPostRequestDto;
