@@ -36,7 +36,7 @@ const FollowButton = ({ toMemberId, setFollowChangeTrigger }) => {
       }
     };
     GetUserInfo();
-  }, [isFollowing]);
+  }, [isFollowing, toMemberId]);
 
   const handleFollow = async () => {
     try {
