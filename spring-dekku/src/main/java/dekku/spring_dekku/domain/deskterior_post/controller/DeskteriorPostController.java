@@ -16,16 +16,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @Tag(name = "데스크테리어 게시판 관련 API")
 @RestController
 @RequestMapping("/api/deskterior-post")
 @RequiredArgsConstructor
+@Slf4j
 public class DeskteriorPostController {
 
     private final DeskteriorPostService deskteriorPostService;
@@ -130,8 +133,10 @@ public class DeskteriorPostController {
             )
     })
     @GetMapping("/{postId}")
-    public ResponseEntity findDeskteriorPost(@PathVariable Long postId) {
+    public ResponseEntity findDeskteriorPost(@PathVariable("postId") Long postId) {
         FindByIdDeskteriorPostResponseDto response = deskteriorPostService.findById(postId);
+
+        log.info("response : {}", response);
 
         return ResponseUtil.ok(
                 Success.builder()
