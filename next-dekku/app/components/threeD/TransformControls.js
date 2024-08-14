@@ -26,7 +26,7 @@ const TransformControls = ({ activeModel, onRotateChange, onHeightChange }) => {
       <label>높이: </label>
       <input
         type="range"
-        min="2.1"
+        min="2.18"
         max="4"
         step="0.01"
         value={activeModel ? activeModel.position.y : 0}

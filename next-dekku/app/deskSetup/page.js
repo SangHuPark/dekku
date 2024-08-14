@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useState, useRef, Suspense } from "react";
-import DeskSetupCard from "./DeskSetupCard";
+import DeskSetupCard from "../components/deskSetup/DeskSetupCard";
 import Link from "next/link";
-import SortDropdown from "./SortDropdown";
-import StyleFilter from "./StyleFilter";
-import ColorFilter from "./ColorFilter";
-import JobFilter from "./JobFilter";
+import SortDropdown from "../components/deskSetup/SortDropdown";
+import StyleFilter from "../components/deskSetup/StyleFilter";
+import ColorFilter from "../components/deskSetup/ColorFilter";
+import JobFilter from "../components/deskSetup/JobFilter";
 import { useRecentTopPosts } from "../components/useRecentTopPosts";
-import { fetchPosts } from "./dataFetching"; // Model import
-import { filterAndSortPosts } from "./DeskSetupController"; // Controller import
+import { fetchPosts } from "../components/deskSetup/dataFetching"; // Model import
+import { filterAndSortPosts } from "../components/deskSetup/DeskSetupController"; // Controller import
 
 export default function DeskSetupPage() {
   const recentTopPosts = useRecentTopPosts();
@@ -28,6 +28,7 @@ export default function DeskSetupPage() {
     // 데이터 가져오기
     const fetchData = async () => {
       const data = await fetchPosts();
+      console.log(data);
       setAllPosts(data); // API로 받은 데이터를 allPosts에 저장
       setFilteredData(data); // 필터링을 위해 초기 상태를 설정
     };
@@ -148,9 +149,7 @@ export default function DeskSetupPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {filteredData.slice(0, displayedCount).map((data) => (
-            <div key={data.id}>
-              <DeskSetupCard data={data} />
-            </div>
+            <DeskSetupCard key={data.id} data={data} />
           ))}
         </div>
 

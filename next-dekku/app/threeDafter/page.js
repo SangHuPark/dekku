@@ -17,8 +17,8 @@ const ThreeDAfter = () => {
     const accessToken = localStorage.getItem('access');
     if (!accessToken) {
       // 로그인이 되어 있지 않다면 로그인 페이지로 리다이렉트
-      alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
-      router.push('/login');
+      alert('로그인 후 이용할 수 있습니다.');
+      
     } else {
       setIsLoggedIn(true);
     }
