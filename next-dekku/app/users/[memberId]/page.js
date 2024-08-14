@@ -35,7 +35,9 @@ const Profile = (id) => {
           const data = await response.json();
           setUserData(data);
           setAllPosts(data.deskteriorPosts);
+          console.log(followerCount);
           setFollowerCount(data.data.followerCount);  // 초기 팔로워 수 설정
+          console.log(followerCount);
           setFollowingCount(data.data.followingCount);  // 초기 팔로잉 수 설정
         } else {
           alert("접근할 수 없는 페이지입니다.");
@@ -46,7 +48,7 @@ const Profile = (id) => {
     };
 
     fetchUserData();
-  }, [id.params.memberId, followerCount, followingCount]);
+  }, [id.params.memberId, followChangeTrigger]);
 
   useEffect(() => {
     const GetUserInfo = async () => {
@@ -126,7 +128,7 @@ const Profile = (id) => {
                   showFollowerModal={showFollowerModal}
                   setShowFollowerModal={setShowFollowerModal}
                   memberId={id.params.memberId}
-                  setFollowerCount={setFollowerCount}
+                  followerCount={followerCount}
                 />
               </div>
               <div className="text-gray-400">|</div>

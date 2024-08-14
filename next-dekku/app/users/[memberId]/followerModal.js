@@ -8,6 +8,7 @@ export default function FollowerModal({
   showFollowerModal,
   setShowFollowerModal,
   memberId,
+  followerCount,
 }) {
   const [allFollowers, setAllFollowers] = useState();
   const [myId, setMyId] = useState();
@@ -37,7 +38,7 @@ export default function FollowerModal({
       }
     };
     GetFollowers();
-  }, []);
+  }, [followerCount]);
 
   useEffect(() => {
     const GetUserInfo = async () => {
