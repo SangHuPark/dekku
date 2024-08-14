@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import FollowButton from "../../components/FollowButton";
 
 export default function FollowerModal({
   showFollowerModal,
@@ -78,7 +79,7 @@ export default function FollowerModal({
                               alt="Follower Profile"
                             />
                             <div>{data.nickname}</div>
-                            <button>팔로우</button>
+                            <FollowButton toMemberId={data.id}/>
                           </div>
                         ))
                       ) : (

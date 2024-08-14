@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import FollowButton from "../../components/FollowButton";
 
 export default function FollowingModal({ showFollowingModal, setShowFollowingModal, memberId }) {
   const [allFollowings, setAllFollowings] = useState();
+  const [myId, setMyId] = useState();
 
   useEffect(() => {
     const GetFollowings = async () => {
@@ -30,6 +32,37 @@ export default function FollowingModal({ showFollowingModal, setShowFollowingMod
       }
     };
     GetFollowings();
+  }, []);
+
+  useEffect(() => {
+    const GetUserInfo = async () => {
+      try {
+        const accessToken = window.localStorage.getItem("access");
+        if (!accessToken) {
+          console.log("No access token found");
+          return;
+        }
+        const response = await fetch("https://dekku.co.kr/api/users/info", {
+          method: "GET",
+          headers: {
+            access: accessToken,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch user info");
+        }
+        const data = await response.json();
+        console.log(data);
+
+        const id = data.id;
+        console.log(id);
+
+        setMyId(id);
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
+    GetUserInfo();
   }, []);
 
   return (
@@ -74,7 +107,7 @@ export default function FollowingModal({ showFollowingModal, setShowFollowingMod
                               alt="Follower Profile"
                             />
                             <div>{data.nickname}</div>
-                            <button>팔로우</button>
+                            <FollowButton toMemberId={data.id}/>
                           </div>
                         ))
                       ) : (
