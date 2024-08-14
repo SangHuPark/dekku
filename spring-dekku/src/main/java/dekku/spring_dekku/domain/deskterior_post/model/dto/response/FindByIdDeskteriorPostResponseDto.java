@@ -68,6 +68,7 @@ public record FindByIdDeskteriorPostResponseDto(
             Product product = productInfo.getProduct();
 
             CreateProductResponseDto productDto = new CreateProductResponseDto(
+                    product.getId(),
                     product.getName(),
                     product.getPrice(),
                     product.getImageUrl(),

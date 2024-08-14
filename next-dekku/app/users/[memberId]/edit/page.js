@@ -2,12 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useLogin } from "../../../components/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function ProfileEdit(id) {
+  const router = useRouter();
+  const [memberId, setMemberId] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [nickname, setNickname] = useState("");
   const [introduction, setIntroduction] = useState("");
-  const { isLoggedIn } = useLogin();
+  const {isLoggedIn} = useLogin();
+  const [profileImageUrl, setProfileImageUrl] = useState("");
 
   useEffect(() => {
     const GetUserInfo = async () => {
@@ -29,10 +33,12 @@ export default function ProfileEdit(id) {
         const data = await response.json();
         console.log(data);
 
+        const memberId = data.id;
         const profileImage = data.imageUrl;
         const nickname = data.nickname;
-        const introduction = data.introduction;
+        const introduction = data.Introduction;
 
+        setMemberId(memberId);
         setProfileImage(profileImage);
         setNickname(nickname);
         setIntroduction(introduction);
@@ -50,24 +56,74 @@ export default function ProfileEdit(id) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("profileImage", profileImage);
-    formData.append("nickname", nickname);
-    formData.append("introduction", introduction);
+    let imageUrl = profileImageUrl; // To store the URL obtained after upload
 
     try {
+      // Step 1: Get presigned URL for image upload
+      const response = await fetch("https://dekku.co.kr/api/s3/presigned-url", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: memberId,
+          fileCount: 1,
+          directory: "profile",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch presigned URL");
+      }
+
+      const presignedData = await response.json();
+      const presignedUrls = presignedData.data.preSignedUrl;
+
+      // Step 2: Upload the image to the presigned URL
+      const imageBlob = await fetch(profileImage).then((res) => res.blob());
+      const uploadImageResponse = await fetch(presignedUrls[0], {
+        method: "PUT",
+        headers: {
+          "Content-Type": imageBlob.type,
+        },
+        body: imageBlob,
+      });
+
+      if (!uploadImageResponse.ok) {
+        throw new Error("Failed to upload image file");
+      }
+
+      // Extract the image URL
+      imageUrl = presignedUrls[0].split("?")[0]; // Assuming URL without query parameters
+      console.log("Image URL:", imageUrl);
+    } catch (error) {
+      console.error("Error during image upload:", error);
+      return; // Exit the function if image upload fails
+    }
+
+    // Step 3: Update user profile with the new image URL
+    try {
+      const accessToken = window.localStorage.getItem("access");
       const response = await fetch("https://dekku.co.kr/api/users/update", {
         method: "PUT",
         headers: {
           access: accessToken,
+          "Content-Type": "application/json", // Ensure this is set for JSON payload
         },
-        body: formData,
+        body: JSON.stringify({
+          nickname: nickname,
+          ageRange: 20, // Replace with actual data if available
+          introduction: introduction,
+          gender: "", // Replace with actual data if available
+          imageUrl: imageUrl,
+        }),
       });
-
       if (response.ok) {
         console.log("Profile updated successfully");
+        console.log(id.params.memberId);
+        router.push(`/users/${id.params.memberId}`, { replace: true });
       } else {
-        console.error("Failed to update profile");
+        console.error("Failed to update profile", response.statusText);
       }
     } catch (error) {
       console.error("An error occurred while updating profile:", error);
