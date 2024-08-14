@@ -10,11 +10,13 @@ import dekku.spring_dekku.domain.member.service.RedisService;
 import dekku.spring_dekku.global.exception.AccessTokenException;
 import dekku.spring_dekku.global.status.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -28,6 +30,7 @@ public class MemberService {
         }
 
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
+        log.info("MemberService/updateMember() => username : {}", username);
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 

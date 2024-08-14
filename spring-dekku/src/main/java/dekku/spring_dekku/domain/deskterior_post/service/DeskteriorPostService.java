@@ -22,4 +22,6 @@ public interface DeskteriorPostService {
     void deleteDeskteriorPost(Long id, String token);
 
     List<FindDeskteriorPostResponseDto> findTopThreePosts();
-}
+
+    boolean isPostLikedByUser(String token, Long postId);
+    }
