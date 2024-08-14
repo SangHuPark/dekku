@@ -96,7 +96,7 @@ const CreateAfterThreedPage = () => {
           job: jobInfo,
           deskteriorPostImages: [imageUrl, jsonUrl], // 이미지, 모델json URL 전달
           productId: productIds,                    // 관련된 제품 ID가 있다면 추가
-          OPENED: isPublic ? 'PUBLIC':'CLOSED',   // 공개 상태 반영
+          openStatus: isPublic ? "OPENED":'CLOSED',   // 공개 상태 반영
         }),
       });
 

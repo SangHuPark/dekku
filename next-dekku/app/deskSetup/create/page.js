@@ -120,7 +120,7 @@ useEffect(()=>{
           job: jobInfo,
           deskteriorPostImages: [imageUrl], // 이미지 URL 전달
           productIds, // 선택된 상품 ID들 전달
-          OPENED: isPublic ? "PUBLIC":'CLOSED',  // 공개 상태 설정
+          openStatus: isPublic ? "OPENED":'CLOSED',  // 공개 상태 설정
         }),
       });
 
