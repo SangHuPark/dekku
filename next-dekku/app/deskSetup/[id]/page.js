@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -19,21 +19,24 @@ export default function Details({ params }) {
   const router = useRouter();
 
   useEffect(() => {
+    console.log(params.id);
     const fetchPostDetails = async () => {
       try {
-        const response = await fetch(`https://dekku.co.kr/api/deskterior-post/${postId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'access': localStorage.getItem('access'), // 로컬스토리지에서 access 토큰 가져오기
+        const response = await fetch(
+          `https://dekku.co.kr/api/deskterior-post/${params.id}`,
+          {
+            method: "GET",
           }
-        });
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch post details");
         }
 
+        console.log(response);
         const postData = await response.json();
+        console.log(postData);
+
         setData(postData);
         setEditedData(postData); // 수정 모드가 활성화되었을 때 편집할 수 있도록 초기 데이터 설정
 
@@ -49,13 +52,17 @@ export default function Details({ params }) {
 
         // 이전 및 다음 게시물 데이터를 가져오기 위한 추가 요청
         if (postId > 1) {
-          const prevResponse = await fetch(`https://dekku.co.kr/api/deskterior-post/${postId - 1}`);
+          const prevResponse = await fetch(
+            `https://dekku.co.kr/api/deskterior-post/${postId - 1}`
+          );
           if (prevResponse.ok) {
             setPrevPostData(await prevResponse.json());
           }
         }
 
-        const nextResponse = await fetch(`https://dekku.co.kr/api/deskterior-post/${postId + 1}`);
+        const nextResponse = await fetch(
+          `https://dekku.co.kr/api/deskterior-post/${postId + 1}`
+        );
         if (nextResponse.ok) {
           setNextPostData(await nextResponse.json());
         }
@@ -69,11 +76,11 @@ export default function Details({ params }) {
 
   const fetchUserId = async () => {
     // access 토큰을 사용하여 서버에서 userId를 가져오는 로직
-    const response = await fetch('https://dekku.co.kr/api/user-info', {
-      method: 'GET',
+    const accessToken = window.localStorage.getItem("access");
+    const response = await fetch("https://dekku.co.kr/api/user/info", {
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
-        'access': localStorage.getItem('access'), // 로컬스토리지에서 access 토큰 가져오기
+        access: accessToken, // 로컬스토리지에서 access 토큰 가져오기
       },
     });
 
@@ -81,7 +88,7 @@ export default function Details({ params }) {
       const data = await response.json();
       return data.userId; // 서버에서 반환된 사용자 ID
     } else {
-      throw new Error('Failed to fetch user info');
+      throw new Error("Failed to fetch user info");
     }
   };
 
@@ -99,14 +106,17 @@ export default function Details({ params }) {
 
   const handleSaveClick = async () => {
     try {
-      const response = await fetch(`https://dekku.co.kr/api/deskterior-post/${postId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'access': localStorage.getItem('access'), // 로컬스토리지에서 access 토큰 가져오기
-        },
-        body: JSON.stringify(editedData), // 수정된 데이터를 PUT 요청으로 전송
-      });
+      const response = await fetch(
+        `https://dekku.co.kr/api/deskterior-post/${postId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            access: localStorage.getItem("access"), // 로컬스토리지에서 access 토큰 가져오기
+          },
+          body: JSON.stringify(editedData), // 수정된 데이터를 PUT 요청으로 전송
+        }
+      );
 
       if (response.ok) {
         const updatedData = await response.json();
@@ -174,17 +184,63 @@ export default function Details({ params }) {
 
         <h2 className="text-xl font-bold mb-4">제품 내용</h2>
         <div className="grid grid-cols-2 gap-4 mb-6">
-          {data.deskteriorPostProductInfos.map((product, index) => (
-            <div key={index} className="bg-gray-200 h-32 rounded-md flex items-center justify-center">
+          {(data?.deskteriorPostProductInfos ?? []).map((product, index) => (
+            <div
+              key={index}
+              className="bg-gray-200 h-32 rounded-md flex items-center justify-center"
+            >
               {product.name}
             </div>
           ))}
         </div>
 
+        {/* 2번 코드에서 추가된 부분: 조회수 및 좋아요 표시 */}
+        <div className="flex justify-end mb-6 text-gray-600 space-x-4">
+          <div className="flex items-center space-x-2">
+            <img src="/view_icon.png" alt="views" className="w-5 h-5" />
+            <span>{data.views}</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            {/* <img src="/like_icon.png" alt="likes" className="w-5 h-5" /> */}
+            <LikeButton/>
+            <span>{data.likes}</span>
+          </div>
+        </div>
+
+        <hr className="border-t-2 border-gray-300 mb-4" />
+
+        <div className="mb-4">댓글 : {data?.comments?.length ?? 0}개</div>
+
+        <div className="bg-gray-100 p-4 rounded-md mb-4">
+          댓글이 들어갈 공간
+        </div>
+
+        {/* 2번 코드에서 추가된 부분: 작성자 프로필 정보 및 팔로우 버튼 */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex ">
+            <img
+              src={data.profileImg}
+              alt={data.username}
+              className="w-12 h-12 rounded-full mr-4"
+            />
+            <div>
+              <div className="font-semibold text-lg">{data.username}</div>
+              <div className="text-gray-500">{data.introduce}</div>
+            </div>
+          </div>
+          <div className="ml-4">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
+              팔로우
+            </button>
+          </div>
+        </div>
+
+        <hr className="border-t-2 border-gray-300 mb-4" />
+
         {isAuthor && (
           <div className="flex justify-end space-x-4 mb-6">
             {isEditMode ? (
-              <button 
+              <button
                 className="bg-green-500 text-white px-4 py-2 rounded-md"
                 onClick={handleSaveClick}
               >
@@ -192,13 +248,13 @@ export default function Details({ params }) {
               </button>
             ) : (
               <>
-                <button 
+                <button
                   className="bg-blue-500 text-white px-4 py-2 rounded-md"
                   onClick={handleEditClick}
                 >
                   수정하기
                 </button>
-                <button 
+                <button
                   className="bg-yellow-500 text-white px-4 py-2 rounded-md"
                   onClick={handleLoadModelClick}
                 >
@@ -220,25 +276,22 @@ export default function Details({ params }) {
           </div>
         )}
 
-        <hr className="border-t-2 border-gray-300 mb-4" />
-
-        <div className="mb-4">댓글 : {data.comments.length}개</div>
-        <div className="bg-gray-100 p-4 rounded-md mb-4">
-          댓글이 들어갈 공간
-        </div>
-
         <h2 className="text-xl font-bold mb-4">다른 게시물</h2>
         <div className="flex justify-evenly">
           {prevPostData && (
             <div className="">
               <DeskSetupCard key={prevPostData.id} data={prevPostData} />
-              <p className="text-center mt-2 font-bold text-gray-600">이전 게시물</p>
+              <p className="text-center mt-2 font-bold text-gray-600">
+                이전 게시물
+              </p>
             </div>
           )}
           {nextPostData && (
             <div className="">
               <DeskSetupCard key={nextPostData.id} data={nextPostData} />
-              <p className="text-center mt-2 font-bold text-gray-600">다음 게시물</p>
+              <p className="text-center mt-2 font-bold text-gray-600">
+                다음 게시물
+              </p>
             </div>
           )}
         </div>
