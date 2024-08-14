@@ -1,7 +1,7 @@
 "use client";
 
-const { useEffect } = require("react");
-const { useLogin } = require("./AuthContext");
+import { useEffect, useState } from "react";
+import { useLogin } from "./AuthContext"
 
 const LikeButton = (toPostId) => {
   const { isLoggedIn } = useLogin();

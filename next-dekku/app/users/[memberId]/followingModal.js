@@ -1,9 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import FollowButton from "../../components/FollowButton";
+import Link from "next/link";
 
-export default function FollowingModal({ showFollowingModal, setShowFollowingModal, memberId }) {
+export default function FollowingModal({
+  showFollowingModal,
+  setShowFollowingModal,
+  memberId,
+}) {
   const [allFollowings, setAllFollowings] = useState();
+  const [myId, setMyId] = useState();
 
   useEffect(() => {
     const GetFollowings = async () => {
@@ -32,6 +39,37 @@ export default function FollowingModal({ showFollowingModal, setShowFollowingMod
     GetFollowings();
   }, []);
 
+  useEffect(() => {
+    const GetUserInfo = async () => {
+      try {
+        const accessToken = window.localStorage.getItem("access");
+        if (!accessToken) {
+          console.log("No access token found");
+          return;
+        }
+        const response = await fetch("https://dekku.co.kr/api/users/info", {
+          method: "GET",
+          headers: {
+            access: accessToken,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch user info");
+        }
+        const data = await response.json();
+        console.log(data);
+
+        const id = data.id;
+        console.log(id);
+
+        setMyId(id);
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
+    GetUserInfo();
+  }, []);
+
   return (
     showFollowingModal && (
       <div className="fixed z-50 inset-0 overflow-y-auto">
@@ -54,21 +92,41 @@ export default function FollowingModal({ showFollowingModal, setShowFollowingMod
             >
               &#x2715;
             </button>
-            <div className="flex justify-center items-center text-2xl font-bold ">
+            <div className="flex justify-center items-center text-2xl font-bold mb-4">
               팔로워
             </div>
             <div className="sm:flex sm:items-start">
               <div className="text-center sm:mt-0 sm:text-left w-full">
                 <div className="w-full">
                   <div className="flex flex-col items-center space-y-2 w-full">
-                    <div className="w-full">
-                      {allFollowings.map((data) => (
-                        <div key={data.nickname} className="flex justify-between items-end space-y-4">
-                          <img src={data.imageUrl} className="w-6 h-6" />
-                          <div className="">{data.nickname}</div>
-                          <button className="">팔로우</button>
-                        </div>
-                      ))}
+                    <div className="w-full space-y-4">
+                      {!!allFollowings ? (
+                        allFollowings.map((data) => (
+                          <div
+                            key={data.nickname}
+                            className="flex justify-center items-center relative"
+                          >
+                            <Link href={`https://dekku.co.kr/users/${data.id}`}
+                            className="flex items-center">
+                              <img
+                                src={data.imageUrl}
+                                className="w-8 h-8 rounded-full absolute left-0"
+                                alt="Follower Profile"
+                              />
+                            </Link>
+                            <Link href={`https://dekku.co.kr/users/${data.id}`}>
+                              {data.nickname}
+                            </Link>
+                            {myId !== data.id && (
+                              <div className="absolute right-0">
+                                <FollowButton toMemberId={data.id} />
+                              </div>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <div>팔로워가 없습니다</div>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -51,8 +51,6 @@ public class DeskteriorPostController {
 
         System.out.println("post");
 
-
-
         CreateDeskteriorPostResponseDto response = null;
         response = deskteriorPostService.addDeskteriorPost(token, request);
 

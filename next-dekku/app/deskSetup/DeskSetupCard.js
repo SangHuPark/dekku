@@ -26,7 +26,7 @@ export default function DeskSetupCard({ data, isNoProfilePost = false }) {
                 {data.username}
               </div>
             </div>
-            <button className="font-pretendard rounded px-3 p-1 h-8 bg-[#77C3EB] text-white flex-shrink-0 hover:bg-[#09addb]">
+            <button className="rounded px-3 p-1 h-8 bg-[#77C3EB] text-white flex-shrink-0 hover:bg-[#09addb]">
               팔로우
             </button>
           </div>

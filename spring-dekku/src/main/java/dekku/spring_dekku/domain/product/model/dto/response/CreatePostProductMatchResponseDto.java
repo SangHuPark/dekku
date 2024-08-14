@@ -11,7 +11,7 @@ public record CreatePostProductMatchResponseDto (
         String memberImage, // 회원 이미지
         String title, // 게시물 제목
         String content, // 게시물 내용
-        String thumnail, // 썸네일 이미지
+        String thumbnail, // 썸네일 이미지
         int viewCount, // 조회수
         int likeCount, // 좋아요 수
         DeskteriorAttributes deskteriorAttributes // 게시물 속성 (색상, 스타일 등)
