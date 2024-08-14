@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete, jsonUrl }) => {
   const mountRef = useRef(null);
   const controlsRef = useRef(null);
-  const router = useRouter(); // useRouter hook for navigation
+  const router = useRouter();
   const [deskHeight, setDeskHeight] = useState(0);
   const [deskSize, setDeskSize] = useState({ x: 0, z: 0 });
   const [models, setModels] = useState([]);
@@ -105,7 +105,7 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete, js
     const ambientLight = new THREE.AmbientLight(0x404040, 10);
     scene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
-    directionalLight.position.set(0, 30, 0);
+    directionalLight.position.set(0, 30, -1.5);
     scene.add(directionalLight);
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -126,18 +126,51 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete, js
       scene.add(desk);
       console.log("Desk model loaded and added to scene.");
 
-      // 로그인 후 복원 시 사용될 로컬스토리지의 sceneState 데이터 로드
-      const savedSceneState = localStorage.getItem('sceneState');
-      if (savedSceneState) {
-        const savedData = JSON.parse(savedSceneState);
-        loadModelsFromData(savedData, scene, loader, setSelectedProducts);
-      } else if (jsonUrl) {
-        fetchModelData(jsonUrl).then(data => {
-          if (data) {
-            loadModelsFromData(data, scene, loader, setSelectedProducts);
-          }
-        });
-      }
+      // Load the room model and position it below the desk
+      loader.load('/threedmodels/ssafyroom.glb', (roomGltf) => {
+        const room = roomGltf.scene;
+        room.scale.set(3, 3, 3);
+
+        // Adjust room position so it appears below the desk
+        room.position.set(0, 0, -1.5);
+        scene.add(room);
+        console.log("Room model loaded and added below the desk.");
+
+        // 로그인 후 복원 시 사용될 로컬스토리지의 sceneState 데이터 로드
+        const savedSceneState = localStorage.getItem('sceneState');
+
+        // Ambient Light: 장면 전체를 부드럽게 밝히는 기본 조명
+        const ambientLight = new THREE.AmbientLight(0x404040, 3);
+        scene.add(ambientLight);
+
+        // Directional Light: 책상과 방 전체를 비추는 방향성 있는 빛
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(-30, 0, 0);  // 오른쪽 벽을 비추도록 위치 조정
+        directionalLight.target.position.set(0, 0, -1.5); // 책상 중심을 향하게 설정
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
+        scene.add(directionalLight.target);
+
+        // 추가 조명: 오른쪽 벽을 더 밝게 하기 위한 SpotLight
+        const rightWallLight = new THREE.SpotLight(0xffffff, 10);
+        rightWallLight.position.set(30, 30, 0); // 오른쪽에서 벽을 비추는 위치에 조명 추가
+        rightWallLight.angle = Math.PI / 6;
+        rightWallLight.target.position.set(15, 10, -10); // 벽의 중심을 향하도록 설정
+        rightWallLight.castShadow = true;
+        scene.add(rightWallLight);
+        scene.add(rightWallLight.target);
+
+        if (savedSceneState) {
+          const savedData = JSON.parse(savedSceneState);
+          loadModelsFromData(savedData, scene, loader, setSelectedProducts);
+        } else if (jsonUrl) {
+          fetchModelData(jsonUrl).then(data => {
+            if (data) {
+              loadModelsFromData(data, scene, loader, setSelectedProducts);
+            }
+          });
+        }
+      });
     });
 
     const animate = () => {
