@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ToggleBtn from '../../components/deskSetup/ToggleBtn';
+import PostModal from '../../components/deskSetup/PostModal';
 
 const CreateDeskSetupPage = () => {
   const [image, setImage] = useState(null);
@@ -12,8 +13,9 @@ const CreateDeskSetupPage = () => {
   const [colorInfo, setColorInfo] = useState("");
   const [jobInfo, setJobInfo] = useState("");
   const [isPublic, setIsPublic] = useState(true);
-  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -22,25 +24,34 @@ const CreateDeskSetupPage = () => {
   const [searchResults, setSearchResults] = useState([]); // 검색 결과
   const [showDropdown, setShowDropdown] = useState(false); // 드롭다운 표시 여부
 
-  useEffect(()=>{
+  useEffect(() => {
     const accessToken = localStorage.getItem('access');
     if (accessToken) {
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
     }
-  },[]);
+  }, []);
+
+  // 키워드 변경 시 자동으로 검색 실행
+  useEffect(() => {
+    if (keyword !== "") {
+      handleSearch();
+    } else {
+      setShowDropdown(false);
+    }
+  }, [keyword]);
 
   // 이미지 파일 업로드 핸들러
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    setImage(URL.createObjectURL(file));
+    setImage(file);
   };
 
   // 키워드로 검색하기 위한 함수
   const handleSearch = async () => {
     try {
-      const response = await fetch(`https://dekku.co.kr/api/products/search/names?keyword=${keyword}`);
+      const response = await fetch(`http://dekku.co.kr:8080/api/products/search/names?keyword=${keyword}`);
       const data = await response.json();
 
       // API 응답이 배열일 경우 처리
@@ -60,23 +71,17 @@ const CreateDeskSetupPage = () => {
 
   // 상품을 선택된 상품 리스트에 추가하는 함수
   const handleProductClick = (product) => {
-    setSelectedProducts([...selectedProducts, product]);
+    if (!selectedProductIds.includes(product.productId)) {
+      setSelectedProductIds([...selectedProductIds, product.productId]);
+    }
     setShowDropdown(false); // 드롭다운 숨김
     setKeyword(""); // 검색어 초기화
   };
 
   // 상품 제거 함수
-  const handleRemoveProduct = (product) => {
-    const updatedProducts = selectedProducts.filter((item) => item !== product);
-    setSelectedProducts(updatedProducts);
-  };
-
-  // 키 입력 핸들러
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();  // 제출 방지
-      handleSearch();  // 검색 실행
-    }
+  const handleRemoveProduct = (productId) => {
+    const updatedProductIds = selectedProductIds.filter((id) => id !== productId);
+    setSelectedProductIds(updatedProductIds);
   };
 
   const handleSubmit = async (e) => {
@@ -87,9 +92,11 @@ const CreateDeskSetupPage = () => {
     const color = colorInfo || "NON_SELECT";
     const job = jobInfo || "NON_SELECT";
 
+    const accessToken = localStorage.getItem('access');
+
     try {
-      let presignedUrl;
-      const presignedResponse = await fetch("https://dekku.co.kr/api/s3/presigned-url", {
+      // Presigned URL 요청
+      const presignedResponse = await fetch("http://dekku.co.kr:8080/api/s3/presigned-url", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -108,10 +115,11 @@ const CreateDeskSetupPage = () => {
       }
 
       const presignedData = await presignedResponse.json();
-      presignedUrl = presignedData.data.preSignedUrl[0];
+      const presignedUrl = presignedData.data.preSignedUrl[0];
+      const imageUrl = presignedUrl.split("?")[0]; // 업로드된 이미지의 URL
 
-      const imageBlob = await fetch(image).then((res) => res.blob());
-
+      // S3에 이미지 업로드
+      const imageBlob = await fetch(URL.createObjectURL(image)).then((res) => res.blob());
       const uploadImageResponse = await fetch(presignedUrl, {
         method: "PUT",
         headers: {
@@ -126,25 +134,22 @@ const CreateDeskSetupPage = () => {
         throw new Error(errorMessage);
       }
 
-      const imageUrl = presignedUrl.split("?")[0]; // 업로드된 이미지의 URL
-
-      const productIds = selectedProducts.map((product) => product.id);
-
-      const response = await fetch("https://dekku.co.kr/api/deskterior-post", {
+      // 서버에 최종 데이터 전송
+      const response = await fetch("http://dekku.co.kr:8080/api/deskterior-post", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "access": localStorage.getItem('access'),
+          "access": accessToken,
         },
         body: JSON.stringify({
           title,
           content,
-          style: styleInfo,
-          color: colorInfo,
-          job: jobInfo,
-          deskteriorPostImages: [imageUrl],
-          productIds,
-          openStatus: isPublic ? "OPENED":'CLOSED',
+          style,
+          color,
+          job,
+          deskteriorPostImages: [imageUrl], // 이미지 URL 전달
+          productIds: selectedProductIds,
+          openStatus: isPublic ? "OPENED" : "CLOSED",  // 공개 상태 설정
         }),
       });
 
@@ -152,8 +157,23 @@ const CreateDeskSetupPage = () => {
         throw new Error("Failed to create post");
       }
 
+      const result = await response.json();
+      console.log(result)
+      const postId = result.data.postId;
+
+      if (!postId) {
+        console.error('Post id 응답에 없음');
+        throw new Error('Post id 응답에 없음');
+      }
+
       console.log("Post successfully created!");
-      router.push("/deskSetup/1");
+
+      // 제출이 성공적으로 완료되면 모달을 열기
+      setIsModalOpen(true);
+
+      // 생성된 게시글 ID 저장
+      localStorage.setItem('createdPostId', postId);
+
     } catch (err) {
       console.error("Failed to upload files:", err);
       setIsSubmitting(false);
@@ -163,6 +183,12 @@ const CreateDeskSetupPage = () => {
     setIsSubmitting(false);
   };
 
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    const postId = localStorage.getItem('createdPostId') // 생성된 게시글 ID 가져오기
+    router.push(`/deskSetup/${postId}`); // 게시글 디테일 페이지 경로로 이동
+  };
+
   return (
     <div className="max-w-6xl mx-auto flex flex-col justify-center items-center mt-20 space-y-8">
       <form onSubmit={handleSubmit} className="flex flex-col w-3/4 space-y-5">
@@ -170,7 +196,7 @@ const CreateDeskSetupPage = () => {
           <div className="flex-1 flex justify-center items-center">
             <label htmlFor="imageUpload" className="cursor-pointer flex flex-col items-center">
               {image ? (
-                <img src={image} alt="Uploaded" className="w-full h-auto rounded-lg" />
+                <img src={URL.createObjectURL(image)} alt="Uploaded" className="w-full h-auto rounded-lg" />
               ) : (
                 <div className="text-center">
                   <p>이곳을 클릭해 사진을 올려주세요</p>
@@ -277,7 +303,6 @@ const CreateDeskSetupPage = () => {
               placeholder="상품 검색" 
               value={keyword} 
               onChange={(e) => setKeyword(e.target.value)} 
-              onKeyPress={handleKeyPress} // Enter 키 입력 처리
               className="w-full p-3 border border-gray-300 rounded-full" // 둥근 검색창
             />
             <button type="button" onClick={handleSearch} className="bg-black text-white py-2 px-4 rounded-full">
@@ -296,7 +321,7 @@ const CreateDeskSetupPage = () => {
                       className="p-2 cursor-pointer hover:bg-gray-100 text-black" // 글씨 색상을 명시적으로 설정
                       onClick={() => handleProductClick(product)}
                     >
-                      {product}
+                      {product.productName}
                     </li>
                   ))
                 ) : (
@@ -312,25 +337,26 @@ const CreateDeskSetupPage = () => {
         {/* 선택된 상품 표시 */}
         <div className="w-full mt-10 flex flex-wrap gap-4">
           <h3 className="font-bold text-xl w-full">선택된 상품</h3>
-          {selectedProducts.map((product, index) => (
-            <div
-              key={`${product}-${index}`}
-              className="relative inline-block border border-gray-300 rounded-full shadow-sm bg-white"
-              style={{ padding: '12px 20px', maxWidth: 'fit-content', wordBreak: 'break-word' }} // 알약 모양 및 상자 크기 조정
-            >
-              <p className="text-lg font-semibold">{product}</p>
-              <button
-                className="absolute top-1 right-1 bg-red-500 text-white rounded-full"
-                style={{ width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} // 동그란 버튼 설정
-                onClick={() => handleRemoveProduct(product)}
+          {selectedProductIds.map((productId, index) => {
+            const product = searchResults.find(p => p.productId === productId);
+            return (
+              <div
+                key={`${productId}-${index}`}
+                className="relative inline-block border border-gray-300 rounded-full shadow-sm bg-white"
+                style={{ padding: '12px 20px', maxWidth: 'fit-content', wordBreak: 'break-word' }} // 알약 모양 및 상자 크기 조정
               >
-                X
-              </button>
-            </div>
-          ))}
+                <p className="text-lg font-semibold">{product ? product.productName : ""}</p>
+                <button
+                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full"
+                  style={{ width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} // 동그란 버튼 설정
+                  onClick={() => handleRemoveProduct(productId)}
+                >
+                  X
+                </button>
+              </div>
+            );
+          })}
         </div>
-
-
 
         <div className="flex justify-end mt-8">
           <button
@@ -342,6 +368,7 @@ const CreateDeskSetupPage = () => {
           </button>
         </div>
       </form>
+      <PostModal isOpen={isModalOpen} onClose={handleModalClose} />
     </div>
   );
 };
