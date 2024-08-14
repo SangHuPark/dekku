@@ -1,6 +1,6 @@
 export const fetchRecommendedPosts = async (productIds) => {
     try {
-      const response = await fetch(`https://dekku.co.kr/api/products/deskterior-posts-by-products?productIds=${productIds.join(',')}`, {
+      const response = await fetch(`https://dekku.co.kr/api/products/deskterior-posts-by-products`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

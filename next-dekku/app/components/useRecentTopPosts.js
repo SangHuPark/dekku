@@ -13,7 +13,7 @@ const getOneWeekAgoDate = () => {
 
 export const useRecentTopPosts = () => {
   const [recentTopPosts, setRecentTopPosts] = useState([]);
-  const datas = null
+  const datas = [];
   useEffect(() => {
     if (datas && Array.isArray(datas)) { // datas가 존재하고 배열인지 확인
       const oneWeekAgo = getOneWeekAgoDate();

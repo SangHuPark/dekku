@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer"; // ThreeJSRenderer 임포트
-import DeskSetupCard from "../DeskSetupCard";
+import DeskSetupCard from "../../components/deskSetup/DeskSetupCard";
 import { useRouter } from 'next/navigation';
 
 export default function Details({ params }) {
@@ -38,13 +38,13 @@ export default function Details({ params }) {
         setEditedData(postData); // 수정 모드가 활성화되었을 때 편집할 수 있도록 초기 데이터 설정
 
         if (postData.jsonUrl) {
-          setJsonUrl(postData.jsonUrl);
+          setJsonUrl(postData.jsonUrl); // jsonUrl 설정
         }
 
         // 현재 사용자와 게시글 작성자를 비교하여 isAuthor 상태 설정
         const userId = await fetchUserId(); // 사용자의 userId를 가져오는 함수
         if (userId === postData.memberId) {
-          setIsAuthor(true);
+          setIsAuthor(true); // 사용자가 작성자일 경우 isAuthor를 true로 설정
         }
 
         // 이전 및 다음 게시물 데이터를 가져오기 위한 추가 요청
@@ -87,7 +87,7 @@ export default function Details({ params }) {
 
   const handleLoadModelClick = () => {
     if (jsonUrl) {
-      setShowThreeJSRenderer(true);
+      router.push(`/threeD?jsonUrl=${encodeURIComponent(jsonUrl)}`);
     } else {
       console.error("No JSON URL found for this post.");
     }
@@ -209,13 +209,15 @@ export default function Details({ params }) {
           </div>
         )}
 
-        {jsonUrl && showThreeJSRenderer && (
-          <ThreeJSRenderer
-            selectedProducts={[]} 
-            setSelectedProducts={() => {}} 
-            onComplete={() => {}} 
-            jsonUrl={jsonUrl}
-          />
+        {jsonUrl && !isAuthor && (
+          <div className="text-center mb-6">
+            <button
+              onClick={handleLoadModelClick}
+              className="bg-green-500 text-white px-6 py-2 rounded-md"
+            >
+              불러오기
+            </button>
+          </div>
         )}
 
         <hr className="border-t-2 border-gray-300 mb-4" />

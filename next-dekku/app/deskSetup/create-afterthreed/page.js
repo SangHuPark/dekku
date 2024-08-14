@@ -15,8 +15,8 @@ const CreateAfterThreedPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
   const [isSubmitting, setIsSubmitting] = useState(false); // 제출 상태
   const router = useRouter();
-
   const { uploadToS3, uploading, error } = useUploadToS3(); // S3 업로드 훅 사용
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const storedThumbnail = localStorage.getItem('thumbnail');
@@ -24,6 +24,16 @@ const CreateAfterThreedPage = () => {
       setImage(storedThumbnail);
     }
   }, []);
+
+ useEffect(()=>{
+   // localStorage에서 access 토큰 확인
+   const accessToken = localStorage.getItem('access');
+   if (accessToken) {
+     setIsLoggedIn(true);
+   } else {
+     setIsLoggedIn(false);
+   }
+ },[])
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];

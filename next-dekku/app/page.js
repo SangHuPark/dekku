@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import DeskSetupCard from "./deskSetup/DeskSetupCard";
+import DeskSetupCard from "./components/deskSetup/DeskSetupCard";
 import { useRecentTopDeveloperPosts } from "./components/useRecentTopDeveloperPosts";
 import { useRecentProducts } from "./components/useRecentProducts"
 import Slider from "react-slick";

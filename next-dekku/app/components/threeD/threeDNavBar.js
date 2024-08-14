@@ -21,7 +21,6 @@ const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searc
   const categoryImages = {
     '모니터': '/category/monitor.png',
     '노트북': '/category/laptop.png',
-    '데스크': '/category/desk.png',
     '마우스': '/category/computer-mouse.png',
     '키보드': '/category/keyboard.png',
     '기타': '/category/menu-dots-square.png',
