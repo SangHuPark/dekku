@@ -4,13 +4,16 @@ spring:
       host: dekku.co.kr
       port: 27017
       database: dekkudb
+      username: root
+      authentication-database: admin
+      password: Dekku1234
     redis:
       host: dekku.co.kr
       port: 6379
   datasource:
     url: jdbc:mysql://dekku.co.kr:3306/dekkudb?serverTimezone=Asia/Seoul
     username: root
-    password: 12345678
+    password: Dekku1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -80,3 +83,5 @@ cloud:
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace # 쿼리 에서 value 에 ? ? 였던 부분을 뽑아 아래서 값만 따로 로그 출력
+  org.springframework.security: debug
+  org.springframework.web: debug
