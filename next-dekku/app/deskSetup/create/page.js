@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // next/navigation 모듈 사용
 import products from "../../components/threeD/ProductList";
+import ToggleBtn from '../../components/deskSetup/ToggleBtn';
 
 const CreateDeskSetupPage = () => {
   const [image, setImage] = useState(null); // 이미지 파일 상태
@@ -11,6 +12,7 @@ const CreateDeskSetupPage = () => {
   const [styleInfo, setStyleInfo] = useState(""); // 스타일 정보 상태
   const [colorInfo, setColorInfo] = useState(""); // 색상 정보 상태
   const [jobInfo, setJobInfo] = useState(""); // 직업 정보 상태
+  const [isPublic, setIsPublic] = useState(true); // 공개 상태
   const [selectedProducts, setSelectedProducts] = useState([]); // 선택된 제품 상태
   const [isSubmitting, setIsSubmitting] = useState(false); // 제출 상태
   const router = useRouter(); // next/navigation의 useRouter 사용
@@ -118,7 +120,7 @@ useEffect(()=>{
           job: jobInfo,
           deskteriorPostImages: [imageUrl], // 이미지 URL 전달
           productIds, // 선택된 상품 ID들 전달
-          OPENED: "PUBLIC", // 공개 상태 설정
+          OPENED: isPublic ? "PUBLIC":'CLOSED',  // 공개 상태 설정
         }),
       });
 
@@ -234,6 +236,10 @@ useEffect(()=>{
                 <option value="STUDENT">학생</option>
                 <option value="ETC">기타</option>
               </select>
+            </div>
+            <div className="w-full flex items-center justify-between mt-4">
+              <span>게시글 공개 여부</span>
+              <ToggleBtn isEnabled={isPublic} setIsEnabled={setIsPublic} />
             </div>
           </div>
         </div>
