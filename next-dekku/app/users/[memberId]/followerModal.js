@@ -9,6 +9,7 @@ export default function FollowerModal({
   memberId,
 }) {
   const [allFollowers, setAllFollowers] = useState();
+  const [myId, setMyId] = useState();
 
   useEffect(() => {
     const GetFollowers = async () => {
@@ -37,6 +38,37 @@ export default function FollowerModal({
     GetFollowers();
   }, []);
 
+  useEffect(() => {
+    const GetUserInfo = async () => {
+      try {
+        const accessToken = window.localStorage.getItem("access");
+        if (!accessToken) {
+          console.log("No access token found");
+          return;
+        }
+        const response = await fetch("https://dekku.co.kr/api/users/info", {
+          method: "GET",
+          headers: {
+            access: accessToken,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch user info");
+        }
+        const data = await response.json();
+        console.log(data);
+
+        const id = data.id;
+        console.log(id);
+
+        setMyId(id);
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
+    GetUserInfo();
+  }, []);
+
   return (
     showFollowerModal && (
       <div className="fixed z-50 inset-0 overflow-y-auto">
@@ -59,27 +91,33 @@ export default function FollowerModal({
             >
               &#x2715;
             </button>
-            <div className="flex justify-center items-center text-2xl font-bold ">
+            <div className="flex justify-center items-center text-2xl font-bold mb-4">
               팔로워
             </div>
             <div className="sm:flex sm:items-start">
               <div className="text-center sm:mt-0 sm:text-left w-full">
                 <div className="w-full">
                   <div className="flex flex-col items-center space-y-2 w-full">
-                    <div className="w-full">
+                    <div className="w-full space-y-4">
                       {!!allFollowers ? (
                         allFollowers.map((data) => (
                           <div
                             key={data.nickname}
-                            className="flex justify-between items-end space-y-4"
+                            className="flex justify-center items-center relative"
                           >
                             <img
                               src={data.imageUrl}
-                              className="w-6 h-6"
+                              className="w-8 h-8 rounded-full absolute left-0"
                               alt="Follower Profile"
                             />
                             <div>{data.nickname}</div>
-                            <FollowButton toMemberId={data.id}/>
+                            {myId !== data.id && (
+                              <div className="absolute right-0">
+                                <FollowButton
+                                  toMemberId={data.id}
+                                />
+                              </div>
+                            )}
                           </div>
                         ))
                       ) : (
