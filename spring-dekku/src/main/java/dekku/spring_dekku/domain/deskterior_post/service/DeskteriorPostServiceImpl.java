@@ -1,6 +1,9 @@
 package dekku.spring_dekku.domain.deskterior_post.service;
 
+import dekku.spring_dekku.domain.comment.event.CommentCreatedEvent;
+import dekku.spring_dekku.domain.comment.event.CommentDeletedEvent;
 import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
+import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.comment.service.CommentService;
 import dekku.spring_dekku.domain.deskterior_post.exception.NotExistsDeskteriorPostException;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.request.CreateDeskteriorPostRequestDto;
@@ -25,6 +28,7 @@ import dekku.spring_dekku.global.aop.DistributeLock;
 import dekku.spring_dekku.global.exception.AccessTokenException;
 import dekku.spring_dekku.global.status.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -268,6 +272,26 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
         return false;
     }
 
+
+    @EventListener
+    @Transactional
+    public void handleCommentCreatedEvent(CommentCreatedEvent event) {
+        DeskteriorPost post = deskteriorPostRepository.findById(event.getPostId())
+                .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
+
+        post.increaseCommentCount();
+        deskteriorPostRepository.save(post);
+    }
+
+    @EventListener
+    @Transactional
+    public void handleCommentDeletedEvent(CommentDeletedEvent event) {
+        DeskteriorPost post = deskteriorPostRepository.findById(event.getPostId())
+                .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
+
+        post.decreaseCommentCount();
+        deskteriorPostRepository.save(post);
+    }
 
     private String extractUsernameFromToken(String token) {
         return jwtTokenProvider.getUsername(token);
