@@ -46,6 +46,7 @@ public class ProductService {
         ExistStatus existStatus = determineExistStatus(savedProduct.getFilePath().getPath());
 
         return new CreateProductResponseDto(
+                savedProduct.getId(),
                 savedProduct.getName(),
                 savedProduct.getPrice(),
                 savedProduct.getImageUrl(),
@@ -64,6 +65,7 @@ public class ProductService {
             ExistStatus existStatus = determineExistStatus(product.getFilePath().getPath());
 
             CreateProductResponseDto dto = new CreateProductResponseDto(
+                    product.getId(),
                     product.getName(),
                     product.getPrice(),
                     product.getImageUrl(),
@@ -86,6 +88,7 @@ public class ProductService {
             ExistStatus existStatus = determineExistStatus(product.getFilePath().getPath());
 
             CreateProductResponseDto dto = new CreateProductResponseDto(
+                    product.getId(),
                     product.getName(),
                     product.getPrice(),
                     product.getImageUrl(),
