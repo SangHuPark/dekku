@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import FollowButton from "../../components/FollowButton";
+import Link from "next/link";
 
 export default function FollowingModal({
   showFollowingModal,
@@ -98,24 +99,27 @@ export default function FollowingModal({
               <div className="text-center sm:mt-0 sm:text-left w-full">
                 <div className="w-full">
                   <div className="flex flex-col items-center space-y-2 w-full">
-                  <div className="w-full space-y-4">
+                    <div className="w-full space-y-4">
                       {!!allFollowings ? (
                         allFollowings.map((data) => (
                           <div
                             key={data.nickname}
                             className="flex justify-center items-center relative"
                           >
-                            <img
-                              src={data.imageUrl}
-                              className="w-8 h-8 rounded-full absolute left-0"
-                              alt="Follower Profile"
-                            />
-                            <div>{data.nickname}</div>
+                            <Link href={`https://dekku.co.kr/users/${data.id}`}
+                            className="flex items-center">
+                              <img
+                                src={data.imageUrl}
+                                className="w-8 h-8 rounded-full absolute left-0"
+                                alt="Follower Profile"
+                              />
+                            </Link>
+                            <Link href={`https://dekku.co.kr/users/${data.id}`}>
+                              {data.nickname}
+                            </Link>
                             {myId !== data.id && (
                               <div className="absolute right-0">
-                                <FollowButton
-                                  toMemberId={data.id}
-                                />
+                                <FollowButton toMemberId={data.id} />
                               </div>
                             )}
                           </div>
