@@ -12,6 +12,7 @@ export default function DeskSetupCard({ data, isNoProfilePost = false }) {
           />
           <div className="absolute bottom-1.5 right-1.5 text-white bg-black bg-opacity-50 rounded px-2 py-1">
             조회수 {data.viewCount}
+            조회수 {data.viewCount}
           </div>
         </div>
         {!isNoProfilePost && (
@@ -19,10 +20,12 @@ export default function DeskSetupCard({ data, isNoProfilePost = false }) {
             <div className="flex items-center space-x-2">
               <img
                 src={data.memberImage}
+                src={data.memberImage}
                 alt="profile"
                 className="w-12 h-12 object-cover rounded-full"
               />
               <div className="text-lg font-bold truncate">
+                {data.memberNickName}
                 {data.memberNickName}
               </div>
             </div>
