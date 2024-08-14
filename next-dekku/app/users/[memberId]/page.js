@@ -36,9 +36,9 @@ const Profile = (id) => {
           setUserData(data);
           setAllPosts(data.deskteriorPosts);
           console.log(followerCount);
-          setFollowerCount(data.data.followerCount);  // 초기 팔로워 수 설정
+          setFollowerCount(data.data.followerCount); // 초기 팔로워 수 설정
           console.log(followerCount);
-          setFollowingCount(data.data.followingCount);  // 초기 팔로잉 수 설정
+          setFollowingCount(data.data.followingCount); // 초기 팔로잉 수 설정
         } else {
           alert("접근할 수 없는 페이지입니다.");
         }
@@ -112,7 +112,10 @@ const Profile = (id) => {
                   프로필 수정
                 </Link>
               ) : (
-                <FollowButton toMemberId={id.params.memberId} setFollowChangeTrigger={setFollowChangeTrigger} />
+                <FollowButton
+                  toMemberId={id.params.memberId}
+                  setFollowChangeTrigger={setFollowChangeTrigger}
+                />
               )}
             </div>
             <div className="flex flex-row space-x-2 mb-4">

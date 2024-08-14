@@ -6,7 +6,6 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginUser, setLoginUser] = useState(null);
-
   useEffect(() => {
     // 클라이언트 사이드에서만 실행됨
     const accessToken = window.localStorage.getItem("access");

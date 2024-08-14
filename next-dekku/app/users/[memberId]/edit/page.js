@@ -2,14 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useLogin } from "../../../components/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function ProfileEdit(id) {
+  const router = useRouter();
   const [memberId, setMemberId] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [nickname, setNickname] = useState("");
   const [introduction, setIntroduction] = useState("");
-  const { isLoggedIn } = useLogin();
-  const [profileImageUrl, setProfileImageUrl]=useState("");
+  const {isLoggedIn} = useLogin();
+  const [profileImageUrl, setProfileImageUrl] = useState("");
 
   useEffect(() => {
     const GetUserInfo = async () => {
@@ -53,9 +55,9 @@ export default function ProfileEdit(id) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     let imageUrl = profileImageUrl; // To store the URL obtained after upload
-  
+
     try {
       // Step 1: Get presigned URL for image upload
       const response = await fetch("https://dekku.co.kr/api/s3/presigned-url", {
@@ -69,14 +71,14 @@ export default function ProfileEdit(id) {
           directory: "profile",
         }),
       });
-      
+
       if (!response.ok) {
         throw new Error("Failed to fetch presigned URL");
       }
-      
+
       const presignedData = await response.json();
       const presignedUrls = presignedData.data.preSignedUrl;
-      
+
       // Step 2: Upload the image to the presigned URL
       const imageBlob = await fetch(profileImage).then((res) => res.blob());
       const uploadImageResponse = await fetch(presignedUrls[0], {
@@ -86,11 +88,11 @@ export default function ProfileEdit(id) {
         },
         body: imageBlob,
       });
-      
+
       if (!uploadImageResponse.ok) {
         throw new Error("Failed to upload image file");
       }
-      
+
       // Extract the image URL
       imageUrl = presignedUrls[0].split("?")[0]; // Assuming URL without query parameters
       console.log("Image URL:", imageUrl);
@@ -98,7 +100,7 @@ export default function ProfileEdit(id) {
       console.error("Error during image upload:", error);
       return; // Exit the function if image upload fails
     }
-  
+
     // Step 3: Update user profile with the new image URL
     try {
       const accessToken = window.localStorage.getItem("access");
@@ -116,9 +118,10 @@ export default function ProfileEdit(id) {
           imageUrl: imageUrl,
         }),
       });
-  
       if (response.ok) {
         console.log("Profile updated successfully");
+        console.log(id.params.memberId);
+        router.push(`/users/${id.params.memberId}`, { replace: true });
       } else {
         console.error("Failed to update profile", response.statusText);
       }
@@ -126,7 +129,6 @@ export default function ProfileEdit(id) {
       console.error("An error occurred while updating profile:", error);
     }
   };
-  
 
   if (!isLoggedIn) {
     return <div>권한이 없습니다.</div>;
