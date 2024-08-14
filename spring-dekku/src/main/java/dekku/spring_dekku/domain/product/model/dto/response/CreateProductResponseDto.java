@@ -4,6 +4,7 @@ import dekku.spring_dekku.domain.product.model.entity.code.Category;
 import dekku.spring_dekku.domain.product.model.entity.code.ExistStatus;
 
 public record CreateProductResponseDto (
+        Long id, // 제품 아이디
         String name, // 제품명
         String price, // 제품 가격
         String imageUrl, // 이미지 url

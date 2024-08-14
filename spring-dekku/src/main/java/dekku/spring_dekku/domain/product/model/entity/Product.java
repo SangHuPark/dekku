@@ -45,7 +45,8 @@ public class Product extends BaseEntity {
     private FilePath filePath; // 내부 3D 파일 경로
 
     @Builder
-    public Product(String name, String price, String imageUrl, String salesLink, ExistStatus existStatus, Category category, FilePath filePath) {
+    public Product(Long id, String name, String price, String imageUrl, String salesLink, ExistStatus existStatus, Category category, FilePath filePath) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
