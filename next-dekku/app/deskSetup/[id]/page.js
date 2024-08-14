@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer"; // ThreeJSRenderer 임포트
-import DeskSetupCard from "../DeskSetupCard";
+import DeskSetupCard from "../../components/deskSetup/DeskSetupCard";
 import { useRouter } from 'next/navigation';
 
 export default function Details({ params }) {

@@ -1,6 +1,7 @@
 // app/components/ProductList.js
 // 상품들의 정보들을 넣은 리스트
 // 목업 구현을 위해 더미 리스트 생성
+
 const products = {
   '모니터': [
     { id: 1, name: '삼성 SyncMaster SA300', description: 'LCD 모니터', image: '/products_image/syncmaster_sa300.png', modelPath: 'threedmodels/sa300_1.glb', scale: [3, 3, 3], update: '2024-08-01' },

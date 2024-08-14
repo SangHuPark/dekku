@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import DeskSetupCard from "../../deskSetup/DeskSetupCard";
-import { datas } from "../../deskSetup/dataFetching.js";
+import DeskSetupCard from "../../components/deskSetup/DeskSetupCard";
+import { datas } from "../../components/deskSetup/dataFetching.js";
 import FollowerModal from "./followerModal";
 import { useLogin } from "../../components/AuthContext";
 import Link from "next/link";

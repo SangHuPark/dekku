@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useState, useRef, Suspense } from "react";
-import DeskSetupCard from "./DeskSetupCard";
+import DeskSetupCard from "../components/deskSetup/DeskSetupCard";
 import Link from "next/link";
-import SortDropdown from "./SortDropdown";
-import StyleFilter from "./StyleFilter";
-import ColorFilter from "./ColorFilter";
-import JobFilter from "./JobFilter";
+import SortDropdown from "../components/deskSetup/SortDropdown";
+import StyleFilter from "../components/deskSetup/StyleFilter";
+import ColorFilter from "../components/deskSetup/ColorFilter";
+import JobFilter from "../components/deskSetup/JobFilter";
 import { useRecentTopPosts } from "../components/useRecentTopPosts";
-import { fetchPosts } from "./dataFetching"; // Model import
-import { filterAndSortPosts } from "./DeskSetupController"; // Controller import
+import { fetchPosts } from "../components/deskSetup/dataFetching"; // Model import
+import { filterAndSortPosts } from "../components/deskSetup/DeskSetupController"; // Controller import
 
 export default function DeskSetupPage() {
   const recentTopPosts = useRecentTopPosts();
