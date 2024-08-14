@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LikeButton from "../components/LikeButton";
 
 export default function DeskSetupCard({ data, isNoProfilePost = false }) {
   return (
@@ -36,7 +37,8 @@ export default function DeskSetupCard({ data, isNoProfilePost = false }) {
         </div>
         <ul className="flex space-x-4 font-bold text-[#777777] px-1">
           <li className="flex items-center space-x-1">
-            <img src="/like_icon.png" alt="like" className="w-5 h-5" />
+            {/* <img src="/like_icon.png" alt="like" className="w-5 h-5" /> */}
+            <LikeButton toPostId={data.id}/>
             <span className="font-light">{data.likes}</span>
           </li>
           <li className="flex items-center space-x-1">
