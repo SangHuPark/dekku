@@ -126,7 +126,7 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
 
         for (DeskteriorPost deskteriorPost : deskteriorPosts) {
 
-            if (Objects.isNull(deskteriorPost.getThumbnailUrl())) {
+            if (Objects.isNull(deskteriorPost.getThumbnailUrl()) && !deskteriorPost.getDeskteriorPostImages().isEmpty()) {
                 deskteriorPost.insertThumbnailUrl(deskteriorPost.getDeskteriorPostImages().get(0).getImageUrl());
             }
 
