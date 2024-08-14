@@ -29,7 +29,7 @@ public class DeskteriorPost extends BaseEntity {
     @JsonManagedReference
     private Member member;
 
-    private String thumnailUrl;
+    private String thumbnailUrl;
 
     @OneToMany(mappedBy = "deskteriorPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DeskteriorPostImage> deskteriorPostImages = new ArrayList<>();
@@ -93,4 +93,8 @@ public class DeskteriorPost extends BaseEntity {
     public void increaseCommentCount() { this.commentCount++; }
 
     public void decreaseCommentCount() {if (this.commentCount > 0) { this.commentCount--; }}
+
+    public void insertThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
 }

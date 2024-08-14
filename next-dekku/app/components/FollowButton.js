@@ -1,15 +1,11 @@
-// API 변경되면 그 때 마저 하겠습니다!!!!!!!
+"use client";
 
-"use client"
-
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLogin } from "./AuthContext";
 
-const FollowButton = (toMemberId) => {
+const FollowButton = ({ toMemberId, setFollowChangeTrigger }) => {
   const { isLoggedIn } = useLogin();
-  const [memberId, setMemberId] = useState(null);
-  const [allFollowers, setAllFollowers] = useState(null);
-  const [isFollower, setIsFollower] = useState(false);
+  const [isFollowing, setIsFollowing] = useState();
 
   useEffect(() => {
     const GetUserInfo = async () => {
@@ -19,55 +15,95 @@ const FollowButton = (toMemberId) => {
           console.log("No access token found");
           return;
         }
-        const response = await fetch("https://dekku.co.kr/api/users/info", {
-          method: "GET",
-          headers: {
-            access: accessToken,
-          },
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch user info");
-        }
-        const data = await response.json();
-        console.log(data);
-
-        const id = data.id;
-        console.log(id);
-
-        setMemberId(id);
-      } catch (error) {
-        console.log("error: ", error);
-      }
-    };
-    GetUserInfo();
-  }, [toMemberId]);
-
-  useEffect(() => {
-    const GetFollowings = async () => {
-      try {
         const response = await fetch(
-          `https://dekku.co.kr/api/following/${toMemberId.params.memberId}`,
+          `https://dekku.co.kr/api/follows/is-following/${toMemberId}`,
           {
             method: "GET",
+            headers: {
+              access: accessToken,
+            },
           }
         );
         if (!response.ok) {
           throw new Error("Failed to fetch user info");
         }
         const data = await response.json();
-        setAllFollowers(data);
+        console.log(response);
+        console.log(data);
+        setIsFollowing(data);
       } catch (error) {
         console.log("error: ", error);
       }
     };
-    GetFollowings();
-  }, [toMemberId]);
+    GetUserInfo();
+  }, [isFollowing]);
 
-  if (!isLoggedIn) {
-    alert("로그인되어 있지 않습니다.");
-    return null;
-  }
-  return <>hi</>;
+  const handleFollow = async () => {
+    try {
+      const accessToken = window.localStorage.getItem("access");
+      if (!accessToken) {
+        console.log("No access token found");
+        return;
+      }
+      const response = await fetch(
+        `https://dekku.co.kr/api/follows/follow/${toMemberId}`,
+        {
+          method: "POST",
+          headers: {
+            access: accessToken,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to follow user");
+      }
+      const data = await response.json();
+      console.log(response);
+      console.log(data);
+      setIsFollowing(true);
+      setFollowChangeTrigger(prev => !prev);
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
+
+  const handleUnfollow = async () => {
+    try {
+      const accessToken = window.localStorage.getItem("access");
+      if (!accessToken) {
+        console.log("No access token found");
+        return;
+      }
+      const response = await fetch(
+        `https://dekku.co.kr/api/follows/unfollow/${toMemberId}`,
+        {
+          method: "POST",
+          headers: {
+            access: accessToken,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to unfollow user");
+      }
+      const data = await response.json();
+      console.log(response);
+      console.log(data);
+      setIsFollowing(false);
+      setFollowChangeTrigger(prev => !prev);
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
+
+  return (
+    <button
+      className="rounded px-3 p-1 h-8 bg-[#77C3EB] text-white flex-shrink-0 hover:bg-[#09addb]"
+      onClick={isFollowing ? handleUnfollow : handleFollow}
+    >
+      {isFollowing ? "언팔로우" : "팔로우"}
+    </button>
+  );
 };
 
 export default FollowButton;

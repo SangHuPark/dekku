@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -124,7 +125,13 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
         List<FindDeskteriorPostResponseDto> response = new ArrayList<>();
 
         for (DeskteriorPost deskteriorPost : deskteriorPosts) {
+
+            if (Objects.isNull(deskteriorPost.getThumbnailUrl())) {
+                deskteriorPost.insertThumbnailUrl(deskteriorPost.getDeskteriorPostImages().get(0).getImageUrl());
+            }
+
             FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost);
+
             response.add(findDeskteriorPostResponseDto);
         }
 
