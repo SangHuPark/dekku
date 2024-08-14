@@ -190,4 +190,22 @@ public class DeskteriorPostController {
                         .build()
         );
     }
+
+    @Operation(summary = "사용자가 게시물을 좋아요 눌렀는지 확인")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Check completed",
+                    content = @Content(schema = @Schema(implementation = Boolean.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "User or post not found"
+            )
+    })
+    @GetMapping("/liked/{postId}")
+    public ResponseEntity<Boolean> isPostLikedByUser(@RequestHeader(name = "access") String token, @PathVariable Long postId) {
+        boolean isLiked = deskteriorPostService.isPostLikedByUser(token, postId);
+        return ResponseEntity.ok(isLiked);
+    }
 }

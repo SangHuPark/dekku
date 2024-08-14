@@ -12,6 +12,7 @@ import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPostImage;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostRepository;
+import dekku.spring_dekku.domain.like.model.entity.Like;
 import dekku.spring_dekku.domain.member.exception.NotExistsUserException;
 import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.model.entity.Member;
@@ -248,6 +249,25 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
 
         deskteriorPostRepository.delete(existingDeskteriorPost);
     }
+
+    @Transactional(readOnly = true)
+    public boolean isPostLikedByUser(String token, Long postId) {
+        String username = jwtTokenProvider.getUsername(token);
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
+
+        DeskteriorPost post = deskteriorPostRepository.findById(postId)
+                .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
+
+        for (Like like : post.getLikes()) {
+            if (like.getMember().equals(member)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     private String extractUsernameFromToken(String token) {
         return jwtTokenProvider.getUsername(token);
