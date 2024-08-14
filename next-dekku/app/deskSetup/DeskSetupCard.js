@@ -1,5 +1,4 @@
 import Link from "next/link";
-import LikeButton from "../components/LikeButton";
 
 export default function DeskSetupCard({ data, isNoProfilePost = false }) {
   return (
