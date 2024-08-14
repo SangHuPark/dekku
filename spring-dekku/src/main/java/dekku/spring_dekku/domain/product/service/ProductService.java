@@ -144,7 +144,7 @@ public class ProductService {
                     relatedPost.getMember().getImageUrl(),
                     relatedPost.getTitle(),
                     relatedPost.getContent(),
-                    relatedPost.getThumnailUrl(), // 썸네일 URL 추가
+                    relatedPost.getThumbnailUrl(), // 썸네일 URL 추가
                     relatedPost.getViewCount(),
                     relatedPost.getLikeCount(),
                     relatedPost.getDeskteriorAttributes()
