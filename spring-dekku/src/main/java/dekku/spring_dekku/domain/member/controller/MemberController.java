@@ -54,9 +54,9 @@ public class MemberController {
 			)
 	})
 	@GetMapping("/info")
-	public ResponseEntity<?> getMemberInfo(@RequestHeader(value = "access") String token) {
+	public ResponseEntity<?> getMemberInfo(@RequestHeader(name = "access") String token) {
 		MemberDto member = memberService.findByToken(token);
-		log.info("Memnber: " + member.toString());
+		log.info("Memnber/getMemberInfo() : " + member.toString());
 		return ResponseEntity.status(HttpStatus.OK).body(member);
 	}
 

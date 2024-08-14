@@ -24,6 +24,7 @@ public record FindByIdDeskteriorPostResponseDto(
         List<CommentResponseDto> comments,
         int viewCount,
         int likeCount,
+        int commentCount,
         OpenStatus openStatus,
         DeskteriorAttributes deskteriorAttributes
 ) {
@@ -39,6 +40,7 @@ public record FindByIdDeskteriorPostResponseDto(
                 comments,
                 deskteriorPost.getViewCount(),
                 deskteriorPost.getLikeCount(),
+                deskteriorPost.getCommentCount(),
                 deskteriorPost.getOpenStatus(),
                 deskteriorPost.getDeskteriorAttributes()
         );
