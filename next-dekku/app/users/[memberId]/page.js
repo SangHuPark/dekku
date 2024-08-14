@@ -105,7 +105,7 @@ const Profile = (id) => {
               {memberIdAsString === id.params.memberId ? (
                 <Link
                   href={`/users/${memberId}/edit`}
-                  className="bg-black text-white border-none py-2 px-3 rounded-lg cursor-pointer text-sm font-bold"
+                  className="bg-[#77C3EB] text-white hover:bg-[#09addb] border-none py-2 px-3 rounded-lg cursor-pointer text-sm font-bold"
                 >
                   프로필 수정
                 </Link>
