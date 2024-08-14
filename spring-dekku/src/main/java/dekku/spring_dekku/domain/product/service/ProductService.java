@@ -6,6 +6,7 @@ import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostReposi
 import dekku.spring_dekku.domain.product.model.dto.request.CreateProductRequestDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreatePostProductMatchResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreateProductResponseDto;
+import dekku.spring_dekku.domain.product.model.dto.response.FindProductResponseDto;
 import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
 import dekku.spring_dekku.domain.product.model.entity.FilePath;
 import dekku.spring_dekku.domain.product.model.entity.Product;
@@ -170,12 +171,12 @@ public class ProductService {
     }
 
     // 키워드를 포함하는 제품 이름 목록 조회
-    public List<String> searchProductNamesByKeyword(String keyword) {
+    public List<FindProductResponseDto> searchProductNamesByKeyword(String keyword) {
         List<Product> products = productRepository.findByNameContaining(keyword);
-        List<String> productNames = new ArrayList<>();
+        List<FindProductResponseDto> productNames = new ArrayList<>();
 
         for (Product product : products) {
-            productNames.add(product.getName());
+            productNames.add(new FindProductResponseDto(product.getId(), product.getName()));
         }
 
         return productNames;
