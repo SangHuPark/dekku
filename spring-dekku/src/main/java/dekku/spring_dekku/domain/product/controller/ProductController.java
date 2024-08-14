@@ -4,6 +4,7 @@ import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteri
 import dekku.spring_dekku.domain.product.model.dto.request.CreateProductRequestDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreatePostProductMatchResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreateProductResponseDto;
+import dekku.spring_dekku.domain.product.model.dto.response.FindProductResponseDto;
 import dekku.spring_dekku.domain.product.model.entity.code.Category;
 import dekku.spring_dekku.domain.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -87,11 +88,13 @@ public class ProductController {
             @ApiResponse(responseCode = "204", description = "해당 키워드를 포함한 제품이 없습니다.")
     })
     @GetMapping("/search/names")
-    public ResponseEntity<List<String>> searchProductNames(@RequestParam String keyword) {
-        List<String> productNames = productService.searchProductNamesByKeyword(keyword);
+    public ResponseEntity<List<FindProductResponseDto>> searchProductNames(@RequestParam("keyword") String keyword) {
+        List<FindProductResponseDto> productNames = productService.searchProductNamesByKeyword(keyword);
+
         if (productNames.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
+
         return ResponseEntity.ok(productNames);
     }
 
