@@ -39,7 +39,7 @@ const products = {
   ],
   'room': [
     { id: 19, name: 'room', description: 'ssafy classroom', image: '/products_image/ssafyroom.png', modelPath: 'threedmodels/ssafyroom.glb', scale: [2.8, 2.8, 2.8], update: '2024-08-12' },
-    { id: 22, name: 'room', description: 'ssafy classroom', image: '/products_image/gamingroom.png', modelPath: 'threedmodels/gamingroom.glb', scale: [2.1, 2.1, 2.1], update: '2024-08-13' },
+    { id: 22, name: 'room', description: 'gaming classroom', image: '/products_image/gamingroom.png', modelPath: 'threedmodels/gamingroom.glb', scale: [2.1, 2.1, 2.1], update: '2024-08-13' },
   ]
 };
 
