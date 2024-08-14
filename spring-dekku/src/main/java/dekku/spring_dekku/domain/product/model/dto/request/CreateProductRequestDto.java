@@ -20,6 +20,9 @@ public record CreateProductRequestDto (
         @NotNull(message = "파트너스 링크는 NULL일 수 없습니다.") // 파트너스 링크
         String salesLink,
 
+        @NotNull(message = "제품 설명은 NULL일 수 없습니다.") // 제품 설명
+        String description,
+
 //        @NotNull(message = "모델 존재 여부를 선택해주세요.") // 모델 존재 여부
 //        ExistStatus existStatus,
 

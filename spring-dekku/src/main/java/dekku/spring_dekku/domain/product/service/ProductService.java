@@ -37,6 +37,7 @@ public class ProductService {
                 .price(requestDto.price())
                 .imageUrl(requestDto.imageUrl())
                 .salesLink(requestDto.salesLink())
+                .description(requestDto.description())
                 .category(requestDto.category())
                 .filePath(filePath)
                 .build();
@@ -51,6 +52,7 @@ public class ProductService {
                 savedProduct.getPrice(),
                 savedProduct.getImageUrl(),
                 savedProduct.getSalesLink(),
+                savedProduct.getDescription(),
                 existStatus,
                 savedProduct.getCategory(),
                 savedProduct.getFilePath().getPath()
@@ -70,6 +72,7 @@ public class ProductService {
                     product.getPrice(),
                     product.getImageUrl(),
                     product.getSalesLink(),
+                    product.getDescription(),
                     existStatus,
                     product.getCategory(),
                     product.getFilePath().getPath()
@@ -93,6 +96,7 @@ public class ProductService {
                     product.getPrice(),
                     product.getImageUrl(),
                     product.getSalesLink(),
+                    product.getDescription(),
                     existStatus,
                     product.getCategory(),
                     product.getFilePath().getPath()

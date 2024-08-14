@@ -31,6 +31,8 @@ public class Product extends BaseEntity {
 
     private String imageUrl; // 이미지 url
 
+    private String description; // 제품 설명
+
     private String salesLink; // 파트너스 링크
 
     @Enumerated(EnumType.STRING)
@@ -45,12 +47,13 @@ public class Product extends BaseEntity {
     private FilePath filePath; // 내부 3D 파일 경로
 
     @Builder
-    public Product(Long id, String name, String price, String imageUrl, String salesLink, ExistStatus existStatus, Category category, FilePath filePath) {
+    public Product(Long id, String name, String price, String imageUrl, String salesLink, String description, ExistStatus existStatus, Category category, FilePath filePath) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
         this.salesLink = salesLink;
+        this.description = description;
         this.existStatus = existStatus;
         this.category = category;
         this.filePath = filePath;
