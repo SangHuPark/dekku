@@ -28,12 +28,13 @@ export default function DeskSetupPage() {
     // 데이터 가져오기
     const fetchData = async () => {
       const data = await fetchPosts();
+      console.log(data);
       setAllPosts(data); // API로 받은 데이터를 allPosts에 저장
       setFilteredData(data); // 필터링을 위해 초기 상태를 설정
     };
     fetchData();
   }, []);
-
+  
   useEffect(() => {
     // 필터 및 정렬 적용
     const filteredAndSortedData = filterAndSortPosts(
@@ -87,6 +88,8 @@ export default function DeskSetupPage() {
     );
   };
 
+  console.log(filteredData);
+
   return (
     <div>
       <div className="bg-[#F6F7FB] py-6 px-4">
@@ -98,7 +101,11 @@ export default function DeskSetupPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
             <Suspense>
               {recentTopPosts.map((data) => (
-                <DeskSetupCard key={data.id} data={data} isNoProfilePost={true} />
+                <DeskSetupCard
+                  key={data.id}
+                  data={data}
+                  isNoProfilePost={true}
+                />
               ))}
             </Suspense>
           </div>
@@ -148,16 +155,13 @@ export default function DeskSetupPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {filteredData.slice(0, displayedCount).map((data) => (
-            <div key={data.id}>
+            <div key={data.postId}>
               <DeskSetupCard data={data} />
             </div>
           ))}
         </div>
 
-        <button
-          ref={loadMoreRef}
-          className="text-blue-500 mt-3"
-        >
+        <button ref={loadMoreRef} className="text-blue-500 mt-3">
           Load More
         </button>
       </div>

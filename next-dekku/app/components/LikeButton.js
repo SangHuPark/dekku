@@ -15,8 +15,10 @@ const LikeButton = (toPostId) => {
           console.log("No access token found");
           return;
         }
+        console.log(toPostId);
+        console.log(toPostId.toPostId);
         const response = await fetch(
-          `https://dekku.co.kr/api/deskterior-post/liked/${toPostId}`,
+          `https://dekku.co.kr/api/deskterior-post/liked/${toPostId.toPostId}`,
           {
             method: "GET",
             headers: {
@@ -88,14 +90,10 @@ const LikeButton = (toPostId) => {
     }
   };
 
-  if (!isLoggedIn) {
-    alert("로그인되어 있지 않습니다.");
-    return null;
-  }
   return (
     <button onClick={isLikedPost ? handelUnlike : handleLike}>
-      {isLikedPost && <image src="/heart_fill"/>}
-      {!isLikedPost && <image src="/heart_empty"/>}
+      {isLikedPost && <img className="w-6 h-6" src="/profile_icon1.png"/>}
+      {!isLikedPost && <img className="w-6 h-6" src="/profile_icon2.png"/>}
     </button>
   );
 };
