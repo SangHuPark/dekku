@@ -13,7 +13,8 @@ const MouseControls = ({ camera, models, setActiveModel, controls, scene, deskSi
 
   const createCustomGrid = (sizeX, sizeZ, divisionsX, divisionsZ) => {
     const grid = new THREE.Group();
-    const material = new THREE.LineBasicMaterial({ color: 0x000000 });
+    const material = new THREE.LineBasicMaterial({ color: 0xff0000, linewidth: 3 }); // 두꺼운 빨간색 선
+
     const stepX = sizeX / divisionsX;
     const stepZ = sizeZ / divisionsZ;
 
@@ -82,10 +83,12 @@ const MouseControls = ({ camera, models, setActiveModel, controls, scene, deskSi
         if (gridHelper.current) scene.remove(gridHelper.current);
         if (axesHelper.current) scene.remove(axesHelper.current);
 
-        gridHelper.current = createCustomGrid(deskSize.x, deskSize.z, 10, 10); // 책상 크기로 CustomGrid 생성
+        // 정사각형 배열의 그리드 생성
+        gridHelper.current = createCustomGrid(deskSize.x, deskSize.z, 10, 10); // 정사각형 배열로 그리드 생성
         axesHelper.current = new THREE.AxesHelper(5);
 
-        gridHelper.current.position.set(0, deskHeight + 0.03, -1.5); // 책상 높이보다 0.01 높게 설정
+        // 책상 위에 그리드 위치 조정
+        gridHelper.current.position.set(0, deskHeight + 0.1, -1.5); // 책상 높이보다 조금 더 높게 설정
         axesHelper.current.position.copy(object.position);
 
         scene.add(gridHelper.current);
