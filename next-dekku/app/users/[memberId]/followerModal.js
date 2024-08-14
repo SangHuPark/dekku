@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-export default function FollowerModal({ showFollowerModal, setShowFollowerModal, memberId }) {
+export default function FollowerModal({
+  showFollowerModal,
+  setShowFollowerModal,
+  memberId,
+}) {
   const [allFollowers, setAllFollowers] = useState();
 
   useEffect(() => {
@@ -62,13 +66,24 @@ export default function FollowerModal({ showFollowerModal, setShowFollowerModal,
                 <div className="w-full">
                   <div className="flex flex-col items-center space-y-2 w-full">
                     <div className="w-full">
-                      {allFollowers.map((data) => (
-                        <div key={data.nickname} className="flex justify-between items-end space-y-4">
-                          <img src={data.imageUrl} className="w-6 h-6" />
-                          <div className="">{data.nickname}</div>
-                          <button className="">팔로우</button>
-                        </div>
-                      ))}
+                      {!!allFollowers ? (
+                        allFollowers.map((data) => (
+                          <div
+                            key={data.nickname}
+                            className="flex justify-between items-end space-y-4"
+                          >
+                            <img
+                              src={data.imageUrl}
+                              className="w-6 h-6"
+                              alt="Follower Profile"
+                            />
+                            <div>{data.nickname}</div>
+                            <button>팔로우</button>
+                          </div>
+                        ))
+                      ) : (
+                        <div>팔로워가 없습니다</div>
+                      )}
                     </div>
                   </div>
                 </div>

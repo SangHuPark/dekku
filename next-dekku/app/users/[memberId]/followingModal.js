@@ -61,14 +61,25 @@ export default function FollowingModal({ showFollowingModal, setShowFollowingMod
               <div className="text-center sm:mt-0 sm:text-left w-full">
                 <div className="w-full">
                   <div className="flex flex-col items-center space-y-2 w-full">
-                    <div className="w-full">
-                      {allFollowings.map((data) => (
-                        <div key={data.nickname} className="flex justify-between items-end space-y-4">
-                          <img src={data.imageUrl} className="w-6 h-6" />
-                          <div className="">{data.nickname}</div>
-                          <button className="">팔로우</button>
-                        </div>
-                      ))}
+                  <div className="w-full">
+                      {!!allFollowings ? (
+                        allFollowings.map((data) => (
+                          <div
+                            key={data.nickname}
+                            className="flex justify-between items-end space-y-4"
+                          >
+                            <img
+                              src={data.imageUrl}
+                              className="w-6 h-6"
+                              alt="Follower Profile"
+                            />
+                            <div>{data.nickname}</div>
+                            <button>팔로우</button>
+                          </div>
+                        ))
+                      ) : (
+                        <div>팔로잉이 없습니다</div>
+                      )}
                     </div>
                   </div>
                 </div>
