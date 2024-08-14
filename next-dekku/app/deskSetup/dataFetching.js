@@ -10,7 +10,8 @@ export const fetchPosts = async () => {
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-      return await response.json();
+      const data = await  response.json();
+      return data;
     } catch (error) {
       console.error("Error fetching data:", error);
       return [];

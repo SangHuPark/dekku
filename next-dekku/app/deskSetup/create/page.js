@@ -1,6 +1,6 @@
 "use client"; // 클라이언트 컴포넌트로 명시
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // next/navigation 모듈 사용
 import products from "../../components/threeD/ProductList";
 
@@ -14,12 +14,23 @@ const CreateDeskSetupPage = () => {
   const [selectedProducts, setSelectedProducts] = useState([]); // 선택된 제품 상태
   const [isSubmitting, setIsSubmitting] = useState(false); // 제출 상태
   const router = useRouter(); // next/navigation의 useRouter 사용
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // 이미지 파일 업로드 핸들러
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     setImage(URL.createObjectURL(file));
   };
+
+useEffect(()=>{
+    // localStorage에서 access 토큰 확인
+    const accessToken = localStorage.getItem('access');
+    if (accessToken) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+},[])
 
   // 상품 추가 핸들러
   const handleProductSelect = (e, category) => {
@@ -39,10 +50,15 @@ const CreateDeskSetupPage = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // 선택되지 않은 경우 기본값 "NON_SELECT" 설정
+    const style = styleInfo || "NON_SELECT";
+    const color = colorInfo || "NON_SELECT";
+    const job = jobInfo || "NON_SELECT";
+
     let presignedUrl;
     try {
       // 이미지 업로드를 위한 presigned URL 요청
-      const presignedResponse = await fetch("http://dekku.co.kr:8080/api/s3/presigned-url", {
+      const presignedResponse = await fetch("https://dekku.co.kr/api/s3/presigned-url", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -92,6 +108,7 @@ const CreateDeskSetupPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "access": accessToken,
         },
         body: JSON.stringify({
           title,

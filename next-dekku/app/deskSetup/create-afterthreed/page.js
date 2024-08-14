@@ -15,8 +15,8 @@ const CreateAfterThreedPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
   const [isSubmitting, setIsSubmitting] = useState(false); // 제출 상태
   const router = useRouter();
-
   const { uploadToS3, uploading, error } = useUploadToS3(); // S3 업로드 훅 사용
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const storedThumbnail = localStorage.getItem('thumbnail');
@@ -24,6 +24,16 @@ const CreateAfterThreedPage = () => {
       setImage(storedThumbnail);
     }
   }, []);
+
+ useEffect(()=>{
+   // localStorage에서 access 토큰 확인
+   const accessToken = localStorage.getItem('access');
+   if (accessToken) {
+     setIsLoggedIn(true);
+   } else {
+     setIsLoggedIn(false);
+   }
+ },[])
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -69,12 +79,12 @@ const CreateAfterThreedPage = () => {
       console.log("Uploaded file URLs:", { jsonUrl, imageUrl });
 
       // 업로드된 URL을 백엔드 서버에 전달
-      const response = await fetch('http://dekku.co.kr:8080/api/deskterior-post', {
+      const response = await fetch('https://dekku.co.kr/api/deskterior-post', {
         method: 'POST',
         credentials: "include",
         headers: {
           'Content-Type': 'application/json',
-          'access': 'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJuYW1lIjoia2FrYW8gMzY1NTg0NDIwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjM0MjY3OTUsImV4cCI6MTcyMzQzMDM5NX0.UMm6_pJ_C-n-3HoJQNya5YKMFdhfsNNa6o8NRvSbkTQ',
+          'access': accessToken,
         },
         body: JSON.stringify({
           title,

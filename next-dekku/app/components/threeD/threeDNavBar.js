@@ -25,6 +25,7 @@ const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searc
     '마우스': '/category/computer-mouse.png',
     '키보드': '/category/keyboard.png',
     '기타': '/category/menu-dots-square.png',
+    'room': '/category/home.png'
   };
 
   // 카테고리 클릭 핸들러
