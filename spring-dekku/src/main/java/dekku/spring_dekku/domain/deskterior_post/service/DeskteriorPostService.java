@@ -1,5 +1,8 @@
 package dekku.spring_dekku.domain.deskterior_post.service;
 
+import dekku.spring_dekku.domain.comment.event.CommentCreatedEvent;
+import dekku.spring_dekku.domain.comment.event.CommentDeletedEvent;
+import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.request.CreateDeskteriorPostRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.CreateDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindByIdDeskteriorPostResponseDto;
@@ -22,4 +25,6 @@ public interface DeskteriorPostService {
     void deleteDeskteriorPost(Long id, String token);
 
     List<FindDeskteriorPostResponseDto> findTopThreePosts();
+
+    boolean isPostLikedByUser(String token, Long postId);
 }

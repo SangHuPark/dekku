@@ -48,6 +48,8 @@ public class DeskteriorPost extends BaseEntity {
 
     private int likeCount;
 
+    private int commentCount;
+
     @Enumerated(EnumType.STRING)
     public OpenStatus openStatus;
 
@@ -65,6 +67,7 @@ public class DeskteriorPost extends BaseEntity {
 
         this.viewCount = viewCount;
         this.likeCount = 0;
+        this.commentCount = 0; // 댓글 개수를 초기화
     }
 
     public void insertDeskteriorPostImages(DeskteriorPostImage deskteriorPostImage) {
@@ -86,4 +89,8 @@ public class DeskteriorPost extends BaseEntity {
     public void increase(int viewCount) {
         this.viewCount += viewCount;
     }
+
+    public void increaseCommentCount() { this.commentCount++; }
+
+    public void decreaseCommentCount() {if (this.commentCount > 0) { this.commentCount--; }}
 }

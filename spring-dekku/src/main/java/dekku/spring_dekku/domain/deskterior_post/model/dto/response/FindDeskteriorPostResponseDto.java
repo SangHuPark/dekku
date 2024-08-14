@@ -27,6 +27,7 @@ public record FindDeskteriorPostResponseDto(
         String thumnail,
         int viewCount,
         int likeCount,
+        int commentCount,
         OpenStatus openStatus,
         DeskteriorAttributes deskteriorAttributes,
         List<String> deskteriorPostImageList
@@ -43,6 +44,7 @@ public record FindDeskteriorPostResponseDto(
                         deskteriorPost.getThumnailUrl(),
                         deskteriorPost.getViewCount(),
                         deskteriorPost.getLikeCount(),
+                        deskteriorPost.getCommentCount(),
                         deskteriorPost.getOpenStatus(),
                         deskteriorPost.getDeskteriorAttributes(),
                         getPostImagesPath(deskteriorPost.getDeskteriorPostImages())

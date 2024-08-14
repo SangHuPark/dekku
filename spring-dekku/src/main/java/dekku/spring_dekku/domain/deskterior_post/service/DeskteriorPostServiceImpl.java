@@ -1,6 +1,9 @@
 package dekku.spring_dekku.domain.deskterior_post.service;
 
+import dekku.spring_dekku.domain.comment.event.CommentCreatedEvent;
+import dekku.spring_dekku.domain.comment.event.CommentDeletedEvent;
 import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
+import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.comment.service.CommentService;
 import dekku.spring_dekku.domain.deskterior_post.exception.NotExistsDeskteriorPostException;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.request.CreateDeskteriorPostRequestDto;
@@ -12,6 +15,7 @@ import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPostImage;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostRepository;
+import dekku.spring_dekku.domain.like.model.entity.Like;
 import dekku.spring_dekku.domain.member.exception.NotExistsUserException;
 import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.model.entity.Member;
@@ -24,6 +28,7 @@ import dekku.spring_dekku.global.aop.DistributeLock;
 import dekku.spring_dekku.global.exception.AccessTokenException;
 import dekku.spring_dekku.global.status.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -247,6 +252,45 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
         }
 
         deskteriorPostRepository.delete(existingDeskteriorPost);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isPostLikedByUser(String token, Long postId) {
+        String username = jwtTokenProvider.getUsername(token);
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
+
+        DeskteriorPost post = deskteriorPostRepository.findById(postId)
+                .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
+
+        for (Like like : post.getLikes()) {
+            if (like.getMember().equals(member)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    @EventListener
+    @Transactional
+    public void handleCommentCreatedEvent(CommentCreatedEvent event) {
+        DeskteriorPost post = deskteriorPostRepository.findById(event.getPostId())
+                .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
+
+        post.increaseCommentCount();
+        deskteriorPostRepository.save(post);
+    }
+
+    @EventListener
+    @Transactional
+    public void handleCommentDeletedEvent(CommentDeletedEvent event) {
+        DeskteriorPost post = deskteriorPostRepository.findById(event.getPostId())
+                .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
+
+        post.decreaseCommentCount();
+        deskteriorPostRepository.save(post);
     }
 
     private String extractUsernameFromToken(String token) {

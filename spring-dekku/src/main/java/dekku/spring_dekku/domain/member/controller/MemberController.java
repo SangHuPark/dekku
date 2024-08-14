@@ -54,9 +54,9 @@ public class MemberController {
 			)
 	})
 	@GetMapping("/info")
-	public ResponseEntity<?> getMemberInfo(@RequestHeader(value = "access") String token) {
+	public ResponseEntity<?> getMemberInfo(@RequestHeader(name = "access") String token) {
 		MemberDto member = memberService.findByToken(token);
-		log.info("Memnber: " + member.toString());
+		log.info("Memnber/getMemberInfo() : " + member.toString());
 		return ResponseEntity.status(HttpStatus.OK).body(member);
 	}
 
@@ -76,7 +76,7 @@ public class MemberController {
 			)
 	})
 	@PutMapping("/update")
-	public ResponseEntity<Void> update(@RequestHeader(value="Access") String token, @RequestBody MemberUpdateDto requestDto) throws Exception {
+	public ResponseEntity<Void> update(@RequestHeader(name="access") String token, @RequestBody MemberUpdateDto requestDto) throws Exception {
 		memberService.updateMember(requestDto, token);
 
         return ResponseEntity.status(HttpStatus.OK).build();
