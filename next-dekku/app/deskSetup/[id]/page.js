@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import ThreeJSRenderer from "../../components/deskSetup/threeD/ThreeJSRenderer"; // ThreeJSRenderer 임포트
+import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer"; // ThreeJSRenderer 임포트
 import DeskSetupCard from "../DeskSetupCard";
 import { useRouter } from 'next/navigation';
 

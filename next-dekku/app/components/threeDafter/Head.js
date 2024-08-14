@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import products from '../deskSetup/threeD/ProductList'; // 각 모델의 스케일 값을 가져오기 위해 제품 리스트를 임포트
+import products from '../threeD/ProductList'; // 각 모델의 스케일 값을 가져오기 위해 제품 리스트를 임포트
 import { useRouter } from 'next/navigation'; // useRouter를 import
 import { useUploadToS3 } from './ThreedUpload'; // 파일 업로드 훅을 import
 // import '../../styles/ThreeDAfter.css'; // 글래스 모피즘 스타일

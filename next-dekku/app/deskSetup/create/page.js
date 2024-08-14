@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // next/navigation 모듈 사용
-import products from "../../components/deskSetup/threeD/ProductList";
+import products from "../../components/threeD/ProductList";
 
 const CreateDeskSetupPage = () => {
   const [image, setImage] = useState(null); // 이미지 파일 상태

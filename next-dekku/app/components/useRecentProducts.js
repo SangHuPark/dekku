@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import products from "./deskSetup/threeD/ProductList"; // 경로를 실제 파일 위치에 맞게 조정하세요
+import products from "./threeD/ProductList"; // 경로를 실제 파일 위치에 맞게 조정하세요
 
 // 최근 일주일을 계산하는 함수
 const getOneWeekAgoDate = () => {

@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // next/navigation 모듈 사용
-import ThreeDNavBar from '../components/deskSetup/threeD/threeDNavBar';
-import SelectedProducts from '../components/deskSetup/threeD/SelectedProducts';
-import ThreeJSRenderer from '../components/deskSetup/threeD/ThreeJSRenderer';
+import ThreeDNavBar from '../components/threeD/threeDNavBar';
+import SelectedProducts from '../components/threeD/SelectedProducts';
+import ThreeJSRenderer from '../components/threeD/ThreeJSRenderer';
 
 const ThreeDPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('모니터'); // 선택된 카테고리 상태
