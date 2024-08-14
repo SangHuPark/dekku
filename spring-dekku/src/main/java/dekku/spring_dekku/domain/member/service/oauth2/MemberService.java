@@ -77,7 +77,8 @@ public class MemberService {
 
     public MemberDto findByToken(String token) {
         String username = jwtTokenProvider.getKeyFromClaims(token, "username");
-        Member member = memberRepository.findByUsername(username).orElseThrow();
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
         return MemberDto.builder()
                 .nickname(member.getNickname())
                 .email(member.getEmail())
