@@ -76,7 +76,7 @@ public class MemberController {
 			)
 	})
 	@PutMapping("/update")
-	public ResponseEntity<Void> update(@RequestHeader(value="Access") String token, @RequestBody MemberUpdateDto requestDto) throws Exception {
+	public ResponseEntity<Void> update(@RequestHeader(name="access") String token, @RequestBody MemberUpdateDto requestDto) throws Exception {
 		memberService.updateMember(requestDto, token);
 
         return ResponseEntity.status(HttpStatus.OK).build();
