@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation'; // useRouter를 next/navigation에서 임포트
 import PostModal from '../../components/deskSetup/PostModal'; // 모달 컴포넌트 임포트
 import { useUploadToS3 } from '../../components/threeDafter/ThreedUpload'; // ThreedUpload 훅을 임포트
+import ToggleBtn from '../../components/deskSetup/ToggleBtn';
 
 const CreateAfterThreedPage = () => {
   const [image, setImage] = useState(null);
@@ -14,6 +15,7 @@ const CreateAfterThreedPage = () => {
   const [jobInfo, setJobInfo] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
   const [isSubmitting, setIsSubmitting] = useState(false); // 제출 상태
+  const [isPublic, setIsPublic] = useState(true); // 공개 상태
   const router = useRouter();
   const { uploadToS3, uploading, error } = useUploadToS3(); // S3 업로드 훅 사용
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -93,8 +95,8 @@ const CreateAfterThreedPage = () => {
           color: colorInfo,
           job: jobInfo,
           deskteriorPostImages: [imageUrl, jsonUrl], // 이미지, 모델json URL 전달
-          productId: productIds, // 관련된 제품 ID가 있다면 추가
-          OPENED: 'PUBLIC', // 공개 상태 설정
+          productId: productIds,                    // 관련된 제품 ID가 있다면 추가
+          OPENED: isPublic ? 'PUBLIC':'CLOSED',   // 공개 상태 반영
         }),
       });
 
@@ -241,6 +243,10 @@ const CreateAfterThreedPage = () => {
                 <option value="STUDENT">학생</option>
                 <option value="ETC">기타</option>
               </select>
+            </div>
+            <div className="w-full flex items-center justify-between mt-4">
+              <span>게시글 공개 여부</span>
+              <ToggleBtn isEnabled={isPublic} setIsEnabled={setIsPublic} />
             </div>
           </div>
         </div>
