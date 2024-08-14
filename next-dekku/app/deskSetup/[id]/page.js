@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer"; // ThreeJSRenderer 임포트
 import DeskSetupCard from "../../components/deskSetup/DeskSetupCard";
 import { useRouter } from 'next/navigation';
+import LikeButton from "../../components/LikeButton";
 
 export default function Details({ params }) {
   const postId = parseInt(params.id, 10); // 문자열을 정수로 변환
