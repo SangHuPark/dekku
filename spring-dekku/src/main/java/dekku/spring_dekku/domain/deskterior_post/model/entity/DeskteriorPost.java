@@ -94,7 +94,7 @@ public class DeskteriorPost extends BaseEntity {
 
     public void decreaseCommentCount() {if (this.commentCount > 0) { this.commentCount--; }}
 
-    public void insertThumnailUrl(String thumbnailUrl) {
+    public void insertThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
     }
 }
