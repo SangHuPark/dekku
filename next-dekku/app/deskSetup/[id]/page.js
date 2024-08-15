@@ -167,7 +167,6 @@ export default function Details({ params }) {
         );
         if (nextResponse.ok) {
           const nextResponseData = await nextResponse.json();
-          console.log(nextResponseData);
           setNextPostData(nextResponseData);
         }
       } catch (error) {
