@@ -1,24 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import DeskSetupCard from "./components/deskSetup/DeskSetupCard";
 import { useRecentTopDeveloperPosts } from "./components/useRecentTopDeveloperPosts";
-import { useRecentProducts } from "./components/useRecentProducts"
+import { useRecentProducts } from "./components/useRecentProducts";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 export default function HomePage() {
   const [hoveredIndex, setHoveredIndex] = useState(0);
-  const recentTopDeveloperPosts = useRecentTopDeveloperPosts();
-  const recentProducts = useRecentProducts();
+  const [recentTopDeveloperPosts, setRecentTopDeveloperPosts] = useState([]);
+  const [recentProducts, setRecentProducts] = useState([]);
 
   const images = [
     { src: "/desk1.jpg", title: "3D Desk", link: "/threeD" },
     { src: "/desk2.jpg", title: "Desk Setup", link: "/deskSetup" },
     { src: "/desk3.jpg", title: "Share Your Desk", link: "/deskSetup/create" },
   ];
+
+  useEffect(() => {
+    const GetRTDP = async () => {
+      const response = await fetch(
+        "https://dekku.co.kr/api/deskterior-post/recommend-posts",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            job: "ARCHITECT",
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch RTDP");
+      }
+      const data = await response.json();
+      console.log(data);
+      setRecentTopDeveloperPosts(data);
+    };
+    GetRTDP();
+  }, []);
 
   // Slider settings
   const sliderSettings = {
@@ -93,17 +117,23 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      
+
       {/* 개발자 추천 데스크 */}
       <section className="px-4 flex justify-center bg-gray-100">
         <div className="max-w-6xl mx-auto my-20">
           <div>
-            <h2 className="text-4xl font-bold mb-8">개발자 추천 데스크</h2>
+            <h2 className="text-[2rem] font-semibold mb-8">
+              개발자 추천 데스크
+            </h2>
           </div>
           <Slider {...sliderSettings}>
             {recentTopDeveloperPosts.map((data) => (
               <div key={data.id} className="p-2">
-                <DeskSetupCard key={data.id} data={data} isNoProfilePost={true} />
+                <DeskSetupCard
+                  key={data.id}
+                  data={data}
+                  isNoProfilePost={true}
+                />
               </div>
             ))}
           </Slider>
