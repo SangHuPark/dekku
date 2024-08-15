@@ -7,6 +7,7 @@ import DeskSetupCard from "../../components/deskSetup/DeskSetupCard";
 import { useRouter } from "next/navigation";
 import LikeButton from "../../components/LikeButton";
 import FollowButton from "../../components/FollowButton";
+import Image from "next/image";
 
 export default function Details({ params }) {
   const postId = parseInt(params.id, 10); // 문자열을 정수로 변환
@@ -84,15 +85,17 @@ export default function Details({ params }) {
     // access 토큰을 사용하여 서버에서 userId를 가져오는 로직
     const accessToken = window.localStorage.getItem("access");
     if (!accessToken) return;
-    const response = await fetch("https://dekku.co.kr/api/user/info", {
+    const response = await fetch("https://dekku.co.kr/api/users/info", {
       method: "GET",
       headers: {
         access: accessToken, // 로컬스토리지에서 access 토큰 가져오기
       },
     });
+    console.log(response);
 
     if (response.ok) {
       const data = await response.json();
+      console.log(data);
       return data.userId; // 서버에서 반환된 사용자 ID
     } else {
       throw new Error("Failed to fetch user info");
@@ -203,28 +206,21 @@ export default function Details({ params }) {
         </div>
 
         {/* 2번 코드에서 추가된 부분: 조회수 및 좋아요 표시 */}
-        <div className="flex justify-end mb-6 text-gray-600 space-x-4">
+        <div className="flex justify-end mb-4 text-gray-600 space-x-4">
           <div className="flex items-center space-x-2">
             <img src="/view.svg" alt="views" className="w-5 h-5" />
             <span>{data.viewCount}</span>
           </div>
           <div className="flex items-center space-x-2">
             {/* <img src="/like_icon.png" alt="likes" className="w-5 h-5" /> */}
-            <LikeButton toPost={postId} />
+            <LikeButton toPostId={postId} />
             <span>{data.likeCount}</span>
           </div>
         </div>
 
         <hr className="border-t-2 border-gray-300 mb-4" />
-
-        <div className="mb-4">댓글 : {data.commentCount}개</div>
-
-        <div className="bg-gray-100 p-4 rounded-md mb-4">
-          댓글이 들어갈 공간
-        </div>
-
         {/* 2번 코드에서 추가된 부분: 작성자 프로필 정보 및 팔로우 버튼 */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex ">
             <img
               src={data.memberImage}
@@ -237,8 +233,22 @@ export default function Details({ params }) {
             </div>
           </div>
           <div className="ml-4">
-            <FollowButton />
+            <FollowButton toMemberId={data.memberId}/>
           </div>
+        </div>
+
+        <hr className="border-t-2 border-gray-300 mb-4" />
+
+        <div className="mb-4">댓글 : {data.commentCount}개</div>
+
+        <div className="bg-gray-100 p-4 rounded-md mb-4 space-y-2">
+          {data.comments.map((comment) => (
+            <div key={comment.id} className="flex">
+              <img src={comment.memberImageUrl} className="w-6 h-6 rounded-full mr-2"/>
+              <span className="w-12 truncate mr-2">{comment.memberNickname}</span>
+              <span className="w-[48rem]">{comment.content}</span>
+            </div>
+          ))}
         </div>
 
         <hr className="border-t-2 border-gray-300 mb-4" />
