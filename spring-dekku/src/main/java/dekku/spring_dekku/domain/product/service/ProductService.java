@@ -14,7 +14,7 @@ public interface ProductService {
 
     CreateProductResponseDto saveProduct(CreateProductRequestDto requestDto);
 
-    List<CreateProductResponseDto> findAllProductDtos();
+    List<CreateProductResponseDto> findAllProducts();
 
     List<CreateProductResponseDto> getProductsByCategory(Category category);
 
