@@ -92,8 +92,8 @@ const LikeButton = (toPostId) => {
 
   return (
     <button onClick={isLikedPost ? handelUnlike : handleLike}>
-      {isLikedPost && <img className="w-6 h-6" src="/profile_icon1.png"/>}
-      {!isLikedPost && <img className="w-6 h-6" src="/profile_icon2.png"/>}
+      {isLikedPost && <img className="w-6 h-6" src="/like_fill.svg"/>}
+      {!isLikedPost && <img className="w-6 h-6" src="/like_empty.svg"/>}
     </button>
   );
 };
