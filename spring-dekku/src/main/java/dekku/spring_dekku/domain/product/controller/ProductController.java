@@ -1,7 +1,6 @@
 package dekku.spring_dekku.domain.product.controller;
 
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
-import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
 import dekku.spring_dekku.domain.product.model.dto.request.CreateProductRequestDto;
 import dekku.spring_dekku.domain.product.model.dto.request.RecommendRequestDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreatePostProductMatchResponseDto;
@@ -28,9 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final ProductService productService;
-
-    private final DeskteriorPostService deskteriorPostService;
+    private final ProductServiceimpl productServiceimpl;
 
     @Operation(summary = "새로운 제품 저장")
     @ApiResponses({
@@ -50,7 +47,7 @@ public class ProductController {
     })
     @GetMapping
     public ResponseEntity<List<CreateProductResponseDto>> getAllProducts() {
-        List<CreateProductResponseDto> products = productService.findAllProductDtos();
+        List<CreateProductResponseDto> products = productServiceimpl.findAllProducts();
         if (products.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
