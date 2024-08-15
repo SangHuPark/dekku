@@ -3,10 +3,10 @@ package dekku.spring_dekku.domain.deskterior_post.service;
 import dekku.spring_dekku.domain.comment.event.CommentCreatedEvent;
 import dekku.spring_dekku.domain.comment.event.CommentDeletedEvent;
 import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
-import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.comment.service.CommentService;
 import dekku.spring_dekku.domain.deskterior_post.exception.NotExistsDeskteriorPostException;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.request.CreateDeskteriorPostRequestDto;
+import dekku.spring_dekku.domain.deskterior_post.model.dto.request.FindPostsByJobRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.CreateDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindByIdDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
@@ -21,8 +21,6 @@ import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
 import dekku.spring_dekku.domain.product.exception.NotExistsProductException;
-import dekku.spring_dekku.domain.product.model.dto.request.RecommendRequestDto;
-import dekku.spring_dekku.domain.product.model.dto.response.CreatePostProductMatchResponseDto;
 import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
 import dekku.spring_dekku.domain.product.model.entity.Product;
 import dekku.spring_dekku.domain.product.repository.ProductRepository;
@@ -143,6 +141,30 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     }
 
     @Override
+    public List<FindDeskteriorPostResponseDto> findJobPosts(FindPostsByJobRequestDto request) {
+
+        List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findDeskteriorPostsByJob(request.job());
+
+        if (deskteriorPosts.isEmpty()) {
+            throw new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST);
+        }
+
+        List<FindDeskteriorPostResponseDto> response = new ArrayList<>();
+
+        for (DeskteriorPost deskteriorPost : deskteriorPosts) {
+
+            if (Objects.isNull(deskteriorPost.getThumbnailUrl()) && !deskteriorPost.getDeskteriorPostImages().isEmpty()) {
+                deskteriorPost.insertThumbnailUrl(deskteriorPost.getDeskteriorPostImages().get(0).getImageUrl());
+            }
+
+            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost);
+            response.add(findDeskteriorPostResponseDto);
+        }
+
+        return response;
+    }
+
+    @Override
     @Transactional
     public List<FindDeskteriorPostResponseDto> findTopThreePosts() {
         LocalDateTime sevenDaysBefore = LocalDateTime.now().minusDays(7);
@@ -171,21 +193,6 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
 
         return response;
     }
-//    public List<FindDeskteriorPostResponseDto> findTopThreePosts() {
-//        List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findTopPosts();
-//        if (deskteriorPosts.isEmpty()) {
-//            throw new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST);
-//        }
-//
-//        List<FindDeskteriorPostResponseDto> response = new ArrayList<>();
-//        for (DeskteriorPost deskteriorPost : deskteriorPosts) {
-//            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost);
-//            response.add(findDeskteriorPostResponseDto);
-//        }
-//
-//        return response;
-//    }
-
 
     @DistributeLock(key = "#id")
     public FindByIdDeskteriorPostResponseDto findById(Long id) {

@@ -2,7 +2,7 @@ package dekku.spring_dekku.domain.product.service;
 
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.request.CreateProductRequestDto;
-import dekku.spring_dekku.domain.product.model.dto.request.RecommendRequestDto;
+import dekku.spring_dekku.domain.product.model.dto.request.RecommendByProductIdsRequestDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreatePostProductMatchResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreateProductResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.response.FindProductResponseDto;
@@ -18,7 +18,7 @@ public interface ProductService {
 
     List<CreateProductResponseDto> getProductsByCategory(Category category);
 
-    List<CreatePostProductMatchResponseDto> findDeskteriorPostsByProductIds(RecommendRequestDto requestDto);
+    List<CreatePostProductMatchResponseDto> findDeskteriorPostsByProductIds(RecommendByProductIdsRequestDto requestDto);
 
     List<CreatePostProductMatchResponseDto> findDeskteriorPostByDetails(Long postId);
 

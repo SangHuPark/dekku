@@ -9,7 +9,8 @@ import Link from "next/link";
 import FollowButton from "../../components/FollowButton";
 
 const Profile = (id) => {
-  const [allPosts, setAllPosts] = useState([]);
+  const [uploadPosts, setUploadPosts] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([]);
   const [activeTab, setActiveTab] = useState("uploads");
   const [showFollowerModal, setShowFollowerModal] = useState(false);
   const [showFollowingModal, setShowFollowingModal] = useState(false);
@@ -33,8 +34,11 @@ const Profile = (id) => {
 
         if (response.ok) {
           const data = await response.json();
+          console.log(data);
+          console.log(data.data.deskteriorPosts);
           setUserData(data);
-          setAllPosts(data.deskteriorPosts);
+          setUploadPosts(data.data.deskteriorPosts);
+          setLikedPosts(data.data.likedPosts);
           console.log(followerCount);
           setFollowerCount(data.data.followerCount); // 초기 팔로워 수 설정
           console.log(followerCount);
@@ -171,8 +175,8 @@ const Profile = (id) => {
             onClick={() => setActiveTab("uploads")}
           >
             업로드{" "}
-            {userData && userData.deskteriorPosts
-              ? userData.deskteriorPosts.length
+            {userData && userData.data.deskteriorPosts
+              ? userData.data.deskteriorPosts.length
               : 0}
           </button>
           <button
@@ -184,20 +188,33 @@ const Profile = (id) => {
             onClick={() => setActiveTab("likes")}
           >
             좋아요{" "}
-            {userData && userData.likedPosts ? userData.likedPosts.length : 0}
+            {userData && userData.data.likedPosts
+              ? userData.data.likedPosts.length
+              : 0}
           </button>
         </div>
         <hr className="border-b border-gray-100 mb-8"></hr>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {activeTab === "uploads" &&
-            allPosts &&
-            allPosts.length > 0 &&
-            allPosts.map((data) => (
-              <DeskSetupCard key={data.id} data={data} isNoProfilePost={true} />
+            uploadPosts &&
+            uploadPosts.length > 0 &&
+            uploadPosts.map((data) => (
+              <DeskSetupCard
+                key={data.postId}
+                data={data}
+                isNoProfilePost={true}
+              />
             ))}
-          {activeTab === "likes" && (
-            <div>{/* 좋아요 탭의 내용을 여기에 추가 */}</div>
-          )}
+          {activeTab === "likes" &&
+            likedPosts &&
+            likedPosts.length > 0 &&
+            likedPosts.map((data) => (
+              <DeskSetupCard
+                key={data.postId}
+                data={data}
+                isNoProfilePost={true}
+              />
+            ))}
         </div>
       </div>
     </main>

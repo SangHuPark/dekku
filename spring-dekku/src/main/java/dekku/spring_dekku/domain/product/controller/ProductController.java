@@ -2,13 +2,12 @@ package dekku.spring_dekku.domain.product.controller;
 
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.request.CreateProductRequestDto;
-import dekku.spring_dekku.domain.product.model.dto.request.RecommendRequestDto;
+import dekku.spring_dekku.domain.product.model.dto.request.RecommendByProductIdsRequestDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreatePostProductMatchResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreateProductResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.response.FindProductResponseDto;
 import dekku.spring_dekku.domain.product.model.entity.code.Category;
 import dekku.spring_dekku.domain.product.service.ProductService;
-import dekku.spring_dekku.domain.product.service.ProductServiceimpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -27,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final ProductServiceimpl productServiceimpl;
+    private final ProductService productService;
 
     @Operation(summary = "새로운 제품 저장")
     @ApiResponses({
@@ -47,7 +46,7 @@ public class ProductController {
     })
     @GetMapping
     public ResponseEntity<List<CreateProductResponseDto>> getAllProducts() {
-        List<CreateProductResponseDto> products = productServiceimpl.findAllProducts();
+        List<CreateProductResponseDto> products = productService.findAllProducts();
         if (products.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -89,7 +88,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "해당 게시물을 찾을 수 없습니다.")
     })
     @PostMapping("/related-posts")
-    public ResponseEntity<List<CreatePostProductMatchResponseDto>> recommendPosts(@RequestBody RecommendRequestDto requestDto) {
+    public ResponseEntity<List<CreatePostProductMatchResponseDto>> recommendPosts(@RequestBody RecommendByProductIdsRequestDto requestDto) {
         List<CreatePostProductMatchResponseDto> recommendedPosts = productService.findDeskteriorPostsByProductIds(requestDto);
 
         if (recommendedPosts.isEmpty()) {
