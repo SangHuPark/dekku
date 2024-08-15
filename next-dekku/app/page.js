@@ -156,7 +156,7 @@ export default function HomePage() {
             {recentProducts.slice(0, 6).map((data) => (
               <div
                 key={data.id}
-                className="p-4 m-4 flex flex-col justify-center items-center text-center rounded-lg shadow-lg transform transition-transform hover:scale-105 hover:shadow-2xl border border-gray-200"
+                className="p-4 flex flex-col justify-center items-center text-center transform transition-transform hover:scale-105 hover:shadow-2xl border border-gray-200"
               >
                 <div className="flex justify-center items-center h-64 w-full">
                   {" "}
