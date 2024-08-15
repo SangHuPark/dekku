@@ -212,13 +212,20 @@ const ThreeJSRenderer = ({ selectedProducts, setSelectedProducts, onComplete, js
           if (product.modelPath) {
             loader.load(product.modelPath, (gltf) => {
               const model = gltf.scene;
-              const scale = product.scale || [1, 1, 1];
-              model.userData = { id: product.id, uniqueId: product.uniqueId, product, isFetched: product.isFetched || false };
-      
+            
+              // scale 값이 배열 형태로 들어온 것을 확인하였으므로, 그대로 적용합니다.
+              model.scale.fromArray(product.scale || [1, 1, 1]); // scale 값 설정
+              model.userData = {
+                id: product.id,
+                uniqueId: product.uniqueId,
+                product,
+                isFetched: product.isFetched || false,
+              };
+              
               // 그림자 설정
               model.castShadow = true;
               model.receiveShadow = true;
-      
+            
               setModels(prevModels => [...prevModels, model]);
               scene.add(model);
               console.log("Selected product model loaded and added to scene:", product);
