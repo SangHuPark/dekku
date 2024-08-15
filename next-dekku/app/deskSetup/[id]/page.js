@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer"; // ThreeJSRenderer 임포트
 import DeskSetupCard from "../../components/deskSetup/DeskSetupCard";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import LikeButton from "../../components/LikeButton";
 
 export default function Details({ params }) {
@@ -34,8 +34,9 @@ export default function Details({ params }) {
           throw new Error("Failed to fetch post details");
         }
 
-        console.log(response);
-        const postData = await response.json();
+        const responseData = await response.json();
+        console.log(responseData);
+        const postData = responseData.data;
         console.log(postData);
 
         setData(postData);
@@ -78,6 +79,7 @@ export default function Details({ params }) {
   const fetchUserId = async () => {
     // access 토큰을 사용하여 서버에서 userId를 가져오는 로직
     const accessToken = window.localStorage.getItem("access");
+    if (!accessToken) return;
     const response = await fetch("https://dekku.co.kr/api/user/info", {
       method: "GET",
       headers: {
@@ -203,7 +205,7 @@ export default function Details({ params }) {
           </div>
           <div className="flex items-center space-x-2">
             {/* <img src="/like_icon.png" alt="likes" className="w-5 h-5" /> */}
-            <LikeButton/>
+            <LikeButton />
             <span>{data.likes}</span>
           </div>
         </div>
