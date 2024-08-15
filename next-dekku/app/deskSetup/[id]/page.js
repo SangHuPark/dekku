@@ -6,6 +6,7 @@ import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer"; // ThreeJ
 import DeskSetupCard from "../../components/deskSetup/DeskSetupCard";
 import { useRouter } from "next/navigation";
 import LikeButton from "../../components/LikeButton";
+import FollowButton from "../../components/FollowButton";
 
 export default function Details({ params }) {
   const postId = parseInt(params.id, 10); // 문자열을 정수로 변환
@@ -59,6 +60,7 @@ export default function Details({ params }) {
           );
           if (prevResponse.ok) {
             setPrevPostData(await prevResponse.json());
+            console.log(prevPostData);
           }
         }
 
@@ -66,7 +68,9 @@ export default function Details({ params }) {
           `https://dekku.co.kr/api/deskterior-post/${postId + 1}`
         );
         if (nextResponse.ok) {
-          setNextPostData(await nextResponse.json());
+          const nextResponseData = await nextResponse.json();
+          console.log(nextResponseData);
+          setNextPostData(nextResponseData);
         }
       } catch (error) {
         console.error("Error fetching post details:", error);
@@ -166,7 +170,7 @@ export default function Details({ params }) {
 
         <div className="flex justify-center mb-6">
           <img
-            src={data.imgSrc}
+            src={data.deskteriorPostImages[0]}
             alt={data.title}
             className="w-1/2 h-auto rounded-md object-cover"
           />
@@ -186,13 +190,14 @@ export default function Details({ params }) {
         </div>
 
         <h2 className="text-xl font-bold mb-4">제품 내용</h2>
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-3 gap-4 mb-6">
           {(data?.deskteriorPostProductInfos ?? []).map((product, index) => (
             <div
               key={index}
-              className="bg-gray-200 h-32 rounded-md flex items-center justify-center"
+              className="rounded-md flex flex-col items-center justify-center"
             >
-              {product.name}
+              <img src={product.imageUrl} className="w-auto" />
+              <div>{product.name}</div>
             </div>
           ))}
         </div>
@@ -200,19 +205,19 @@ export default function Details({ params }) {
         {/* 2번 코드에서 추가된 부분: 조회수 및 좋아요 표시 */}
         <div className="flex justify-end mb-6 text-gray-600 space-x-4">
           <div className="flex items-center space-x-2">
-            <img src="/view_icon.png" alt="views" className="w-5 h-5" />
-            <span>{data.views}</span>
+            <img src="/view.svg" alt="views" className="w-5 h-5" />
+            <span>{data.viewCount}</span>
           </div>
           <div className="flex items-center space-x-2">
             {/* <img src="/like_icon.png" alt="likes" className="w-5 h-5" /> */}
-            <LikeButton />
-            <span>{data.likes}</span>
+            <LikeButton toPost={postId} />
+            <span>{data.likeCount}</span>
           </div>
         </div>
 
         <hr className="border-t-2 border-gray-300 mb-4" />
 
-        <div className="mb-4">댓글 : {data?.comments?.length ?? 0}개</div>
+        <div className="mb-4">댓글 : {data.commentCount}개</div>
 
         <div className="bg-gray-100 p-4 rounded-md mb-4">
           댓글이 들어갈 공간
@@ -222,19 +227,17 @@ export default function Details({ params }) {
         <div className="flex items-center justify-between mb-6">
           <div className="flex ">
             <img
-              src={data.profileImg}
-              alt={data.username}
+              src={data.memberImage}
+              alt={data.memberNickName}
               className="w-12 h-12 rounded-full mr-4"
             />
-            <div>
-              <div className="font-semibold text-lg">{data.username}</div>
-              <div className="text-gray-500">{data.introduce}</div>
+            <div className="flex items-center">
+              <div className="font-semibold text-lg">{data.memberNickName}</div>
+              {/* <div className="text-gray-500">{data.introduce}</div> */}
             </div>
           </div>
           <div className="ml-4">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
-              팔로우
-            </button>
+            <FollowButton />
           </div>
         </div>
 
@@ -283,7 +286,10 @@ export default function Details({ params }) {
         <div className="flex justify-evenly">
           {prevPostData && (
             <div className="">
-              <DeskSetupCard key={prevPostData.id} data={prevPostData} />
+              <DeskSetupCard
+                key={prevPostData.data.id}
+                data={prevPostData.data}
+              />
               <p className="text-center mt-2 font-bold text-gray-600">
                 이전 게시물
               </p>
@@ -291,7 +297,10 @@ export default function Details({ params }) {
           )}
           {nextPostData && (
             <div className="">
-              <DeskSetupCard key={nextPostData.id} data={nextPostData} />
+              <DeskSetupCard
+                key={nextPostData.data.id}
+                data={nextPostData.data}
+              />
               <p className="text-center mt-2 font-bold text-gray-600">
                 다음 게시물
               </p>
