@@ -10,7 +10,7 @@ const useProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://dekku.co.kr:8080/api/products", {
+        const response = await fetch("https://dekku.co.kr/api/products", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

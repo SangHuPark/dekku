@@ -11,7 +11,6 @@ export default function Details({ params }) {
   const postId = parseInt(params.id, 10); // 문자열을 정수로 변환
   const [data, setData] = useState(null); // 게시글 데이터를 저장할 상태
   const [jsonUrl, setJsonUrl] = useState(null); // 모델 JSON URL 상태
-  const [showThreeJSRenderer, setShowThreeJSRenderer] = useState(false); // 3D 렌더러 표시 여부 상태
   const [prevPostData, setPrevPostData] = useState(null); // 이전 게시물 데이터 상태
   const [nextPostData, setNextPostData] = useState(null); // 다음 게시물 데이터 상태
   const [isAuthor, setIsAuthor] = useState(false); // 현재 사용자가 작성자인지 여부
