@@ -9,6 +9,8 @@ import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindByIdDesk
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.UpdateDeskteriorPostRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
+import dekku.spring_dekku.domain.product.model.dto.request.RecommendRequestDto;
+import dekku.spring_dekku.domain.product.model.dto.response.CreatePostProductMatchResponseDto;
 
 import java.util.List;
 

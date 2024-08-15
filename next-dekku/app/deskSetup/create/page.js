@@ -1,66 +1,102 @@
 "use client"; // 클라이언트 컴포넌트로 명시
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // next/navigation 모듈 사용
-import products from "../../components/threeD/ProductList";
+import { useRouter } from "next/navigation";
 import ToggleBtn from '../../components/deskSetup/ToggleBtn';
+import PostModal from '../../components/deskSetup/PostModal';
 
 const CreateDeskSetupPage = () => {
-  const [image, setImage] = useState(null); // 이미지 파일 상태
-  const [title, setTitle] = useState(""); // 게시글 제목 상태
-  const [content, setContent] = useState(""); // 게시글 내용 상태
-  const [styleInfo, setStyleInfo] = useState(""); // 스타일 정보 상태
-  const [colorInfo, setColorInfo] = useState(""); // 색상 정보 상태
-  const [jobInfo, setJobInfo] = useState(""); // 직업 정보 상태
-  const [isPublic, setIsPublic] = useState(true); // 공개 상태
-  const [selectedProducts, setSelectedProducts] = useState([]); // 선택된 제품 상태
-  const [isSubmitting, setIsSubmitting] = useState(false); // 제출 상태
-  const router = useRouter(); // next/navigation의 useRouter 사용
+  const [image, setImage] = useState(null);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [styleInfo, setStyleInfo] = useState("");
+  const [colorInfo, setColorInfo] = useState("");
+  const [jobInfo, setJobInfo] = useState("");
+  const [isPublic, setIsPublic] = useState(true);
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
+  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // 이미지 파일 업로드 핸들러
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    setImage(URL.createObjectURL(file));
-  };
+  // 키워드 검색과 관련된 상태
+  const [keyword, setKeyword] = useState(""); 
+  const [searchResults, setSearchResults] = useState([]); // 검색 결과
+  const [showDropdown, setShowDropdown] = useState(false); // 드롭다운 표시 여부
 
-useEffect(()=>{
-    // localStorage에서 access 토큰 확인
+  useEffect(() => {
     const accessToken = localStorage.getItem('access');
     if (accessToken) {
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
     }
-},[])
+  }, []);
 
-  // 상품 추가 핸들러
-  const handleProductSelect = (e, category) => {
-    const productId = parseInt(e.target.value);
-    const product = products[category].find((p) => p.id === productId);
-    setSelectedProducts([...selectedProducts, product]);
+  // 키워드 변경 시 자동으로 검색 실행
+  useEffect(() => {
+    if (keyword !== "") {
+      handleSearch();
+    } else {
+      setShowDropdown(false);
+    }
+  }, [keyword]);
+
+  // 이미지 파일 업로드 핸들러
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
   };
 
-  // 상품 제거 핸들러
+  // 키워드로 검색하기 위한 함수
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(`http://dekku.co.kr:8080/api/products/search/names?keyword=${keyword}`);
+      const data = await response.json();
+
+      // API 응답이 배열일 경우 처리
+      if (Array.isArray(data) && data.length > 0) {
+        setSearchResults(data);
+        setShowDropdown(true); // 드롭다운 표시
+      } else {
+        setSearchResults([]);
+        setShowDropdown(true); // 빈 드롭다운 표시 (메시지 표시)
+      }
+    } catch (error) {
+      console.error("Failed to search products:", error);
+      setSearchResults([]);
+      setShowDropdown(true); // 오류 시 빈 드롭다운 표시 (메시지 표시)
+    }
+  };
+
+  // 상품을 선택된 상품 리스트에 추가하는 함수
+  const handleProductClick = (product) => {
+    if (!selectedProductIds.includes(product.productId)) {
+      setSelectedProductIds([...selectedProductIds, product.productId]);
+    }
+    setShowDropdown(false); // 드롭다운 숨김
+    setKeyword(""); // 검색어 초기화
+  };
+
+  // 상품 제거 함수
   const handleRemoveProduct = (productId) => {
-    const updatedProducts = selectedProducts.filter((item) => item.id !== productId);
-    setSelectedProducts(updatedProducts);
+    const updatedProductIds = selectedProductIds.filter((id) => id !== productId);
+    setSelectedProductIds(updatedProductIds);
   };
 
-  // 게시글 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // 선택되지 않은 경우 기본값 "NON_SELECT" 설정
     const style = styleInfo || "NON_SELECT";
     const color = colorInfo || "NON_SELECT";
     const job = jobInfo || "NON_SELECT";
 
-    let presignedUrl;
+    const accessToken = localStorage.getItem('access');
+
     try {
-      // 이미지 업로드를 위한 presigned URL 요청
-      const presignedResponse = await fetch("https://dekku.co.kr/api/s3/presigned-url", {
+      // Presigned URL 요청
+      const presignedResponse = await fetch("http://dekku.co.kr:8080/api/s3/presigned-url", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -79,11 +115,11 @@ useEffect(()=>{
       }
 
       const presignedData = await presignedResponse.json();
-      presignedUrl = presignedData.data.preSignedUrl[0];
+      const presignedUrl = presignedData.data.preSignedUrl[0];
+      const imageUrl = presignedUrl.split("?")[0]; // 업로드된 이미지의 URL
 
-      // 이미지 파일을 S3에 업로드
-      const imageBlob = await fetch(image).then((res) => res.blob());
-
+      // S3에 이미지 업로드
+      const imageBlob = await fetch(URL.createObjectURL(image)).then((res) => res.blob());
       const uploadImageResponse = await fetch(presignedUrl, {
         method: "PUT",
         headers: {
@@ -98,15 +134,8 @@ useEffect(()=>{
         throw new Error(errorMessage);
       }
 
-      const imageUrl = presignedUrl.split("?")[0]; // 업로드된 이미지의 URL
-
-      console.log("Uploaded image URL:", imageUrl);
-
-      // 선택된 상품 ID들을 추출
-      const productIds = selectedProducts.map((product) => product.id);
-
-      // 백엔드 서버로 게시글 생성 요청 보내기
-      const response = await fetch("https://dekku.co.kr/api/deskterior-post", {
+      // 서버에 최종 데이터 전송
+      const response = await fetch("http://dekku.co.kr:8080/api/deskterior-post", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,12 +144,12 @@ useEffect(()=>{
         body: JSON.stringify({
           title,
           content,
-          style: styleInfo,
-          color: colorInfo,
-          job: jobInfo,
+          style,
+          color,
+          job,
           deskteriorPostImages: [imageUrl], // 이미지 URL 전달
-          productIds, // 선택된 상품 ID들 전달
-          OPENED: isPublic ? "PUBLIC":'CLOSED',  // 공개 상태 설정
+          productIds: selectedProductIds,
+          openStatus: isPublic ? "OPENED" : "CLOSED",  // 공개 상태 설정
         }),
       });
 
@@ -128,8 +157,23 @@ useEffect(()=>{
         throw new Error("Failed to create post");
       }
 
+      const result = await response.json();
+      console.log(result)
+      const postId = result.data.postId;
+
+      if (!postId) {
+        console.error('Post id 응답에 없음');
+        throw new Error('Post id 응답에 없음');
+      }
+
       console.log("Post successfully created!");
-      router.push("/deskSetup/1"); // 게시글 디테일 페이지 경로로 변경
+
+      // 제출이 성공적으로 완료되면 모달을 열기
+      setIsModalOpen(true);
+
+      // 생성된 게시글 ID 저장
+      localStorage.setItem('createdPostId', postId);
+
     } catch (err) {
       console.error("Failed to upload files:", err);
       setIsSubmitting(false);
@@ -139,14 +183,20 @@ useEffect(()=>{
     setIsSubmitting(false);
   };
 
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    const postId = localStorage.getItem('createdPostId') // 생성된 게시글 ID 가져오기
+    router.push(`/deskSetup/${postId}`); // 게시글 디테일 페이지 경로로 이동
+  };
+
   return (
-    <div className="max-w-6xl mx-auto flex justify-center items-center mt-20">
+    <div className="max-w-6xl mx-auto flex flex-col justify-center items-center mt-20 space-y-8">
       <form onSubmit={handleSubmit} className="flex flex-col w-3/4 space-y-5">
         <div className="flex flex-row w-full space-x-5">
           <div className="flex-1 flex justify-center items-center">
             <label htmlFor="imageUpload" className="cursor-pointer flex flex-col items-center">
               {image ? (
-                <img src={image} alt="Uploaded" className="w-full h-auto rounded-lg" />
+                <img src={URL.createObjectURL(image)} alt="Uploaded" className="w-full h-auto rounded-lg" />
               ) : (
                 <div className="text-center">
                   <p>이곳을 클릭해 사진을 올려주세요</p>
@@ -244,50 +294,71 @@ useEffect(()=>{
           </div>
         </div>
 
-        {/* 카테고리별 상품 선택 */}
-        <div className="w-full">
-          <h3 className="font-bold text-xl">상품 선택</h3>
-          {Object.keys(products).map((category) => (
-            <div key={category} className="mb-4">
-              <label className="font-semibold">{category}</label>
-              <select
-                onChange={(e) => handleProductSelect(e, category)}
-                className="w-full p-2 border border-gray-300 rounded"
-                defaultValue="DEFAULT"
-              >
-                <option value="DEFAULT" disabled>제품을 선택하세요</option>
-                {products[category].map((product) => (
-                  <option key={product.id} value={product.id}>
-                    {product.name}
-                  </option>
-                ))}
-              </select>
+        {/* 상품 검색 및 선택 */}
+        <div className="w-full relative flex flex-col mt-8">
+          <h3 className="font-bold text-xl">상품 검색 및 선택</h3>
+          <div className="flex space-x-3 mt-4">
+            <input 
+              type="text" 
+              placeholder="상품 검색" 
+              value={keyword} 
+              onChange={(e) => setKeyword(e.target.value)} 
+              className="w-full p-3 border border-gray-300 rounded-full" // 둥근 검색창
+            />
+            <button type="button" onClick={handleSearch} className="bg-black text-white py-2 px-4 rounded-full">
+              검색
+            </button>
+          </div>
+
+          {/* 검색 결과 드롭다운 */}
+          {showDropdown && (
+            <div className="relative mt-2">
+              <ul className="relative z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                {searchResults.length > 0 ? (
+                  searchResults.map((product, index) => (
+                    <li 
+                      key={index} 
+                      className="p-2 cursor-pointer hover:bg-gray-100 text-black" // 글씨 색상을 명시적으로 설정
+                      onClick={() => handleProductClick(product)}
+                    >
+                      {product.productName}
+                    </li>
+                  ))
+                ) : (
+                  <li className="p-2 text-center text-gray-500">
+                    해당 키워드에 맞는 상품이 없습니다 😢
+                  </li>
+                )}
+              </ul>
             </div>
-          ))}
+          )}
         </div>
 
         {/* 선택된 상품 표시 */}
-        <div className="w-full">
-          <h3 className="font-bold text-xl">선택된 상품</h3>
-          <div className="space-y-4">
-            {selectedProducts.map((product, index) => (
+        <div className="w-full mt-10 flex flex-wrap gap-4">
+          <h3 className="font-bold text-xl w-full">선택된 상품</h3>
+          {selectedProductIds.map((productId, index) => {
+            const product = searchResults.find(p => p.productId === productId);
+            return (
               <div
-                key={`${product.id}-${index}`}
-                className="border p-2 rounded relative hover:bg-gray-200 flex justify-between items-center"
+                key={`${productId}-${index}`}
+                className="relative inline-block border border-gray-300 rounded-full shadow-sm bg-white"
+                style={{ padding: '12px 20px', maxWidth: 'fit-content', wordBreak: 'break-word' }} // 알약 모양 및 상자 크기 조정
               >
-                <p>{product.name}</p>
+                <p className="text-lg font-semibold">{product ? product.productName : ""}</p>
                 <button
-                  className="bg-red-500 text-white rounded-full p-1 text-xs"
-                  onClick={() => handleRemoveProduct(product.id)}
+                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full"
+                  style={{ width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} // 동그란 버튼 설정
+                  onClick={() => handleRemoveProduct(productId)}
                 >
                   X
                 </button>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end mt-8">
           <button
             type="submit"
             className={`bg-black text-white py-2 px-4 rounded ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
@@ -297,6 +368,7 @@ useEffect(()=>{
           </button>
         </div>
       </form>
+      <PostModal isOpen={isModalOpen} onClose={handleModalClose} />
     </div>
   );
 };

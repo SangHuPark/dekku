@@ -2,6 +2,7 @@ package dekku.spring_dekku.domain.product.model.dto.response;
 
 import dekku.spring_dekku.domain.deskterior_post.model.entity.attribute.DeskteriorAttributes;
 
+import java.util.Collection;
 import java.util.List;
 
 public record CreatePostProductMatchResponseDto (
@@ -15,4 +16,4 @@ public record CreatePostProductMatchResponseDto (
         int viewCount, // 조회수
         int likeCount, // 좋아요 수
         DeskteriorAttributes deskteriorAttributes // 게시물 속성 (색상, 스타일 등)
-) {}
+) { }
