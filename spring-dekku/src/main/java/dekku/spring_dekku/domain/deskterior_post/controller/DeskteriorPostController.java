@@ -1,6 +1,7 @@
 package dekku.spring_dekku.domain.deskterior_post.controller;
 
 import dekku.spring_dekku.domain.deskterior_post.model.dto.request.CreateDeskteriorPostRequestDto;
+import dekku.spring_dekku.domain.deskterior_post.model.dto.request.FindPostsByJobRequestDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.CreateDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindByIdDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
@@ -113,6 +114,34 @@ public class DeskteriorPostController {
         if(response == null || response.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Operation(summary = "카테고리별 추천 게시글 조회")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청 완료",
+                    content = @Content(schema = @Schema(implementation = List.class))
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "게시글 없음",
+                    content = @Content(schema = @Schema(implementation = FindDeskteriorPostResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "추천 게시글 조회 요청 실패"
+            )
+    })
+    @GetMapping("/recommend-posts")
+    public ResponseEntity<List<FindDeskteriorPostResponseDto>> findPostsByJob(@RequestBody FindPostsByJobRequestDto request) {
+        List<FindDeskteriorPostResponseDto> response = deskteriorPostService.findJobPosts(request);
+
+        if(response == null || response.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

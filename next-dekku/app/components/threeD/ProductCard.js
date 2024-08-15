@@ -15,7 +15,7 @@ const ProductCard = ({ id, name, description, imageUrl, modelPath, scale, price,
       }`}
       onClick={handleClick} // 클릭 시 handleClick 함수 호출
     >
-      <div className={`flex items-center justify-center mb-1 ${small ? 'w-24 h-24' : 'w-30 h-30'}`}>
+      <div className={`flex items-center justify-center mb-1 ${small ? 'w-22 h-22' : 'w-28 h-28'}`}>
         {imageUrl ? (
           <img src={imageUrl} alt={name} className="object-fill w-full h-70rem" />
         ) : (

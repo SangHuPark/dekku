@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const TransformControls = ({ activeModel, onRotateChange, onHeightChange }) => {
   const handleRotateChange = (event) => {
@@ -12,7 +12,17 @@ const TransformControls = ({ activeModel, onRotateChange, onHeightChange }) => {
   };
 
   return (
-    <div style={{ position: 'absolute', top: '4px', right: '10px', backgroundColor: 'white', padding: '3px', borderRadius: '5px', zIndex: 10 }}>
+    <div
+      style={{
+        position: "absolute",
+        top: "4px",
+        right: "10px",
+        backgroundColor: "white",
+        padding: "3px",
+        borderRadius: "5px",
+        zIndex: 10,
+      }}
+    >
       <label>회전: </label>
       <input
         type="range"
@@ -21,7 +31,12 @@ const TransformControls = ({ activeModel, onRotateChange, onHeightChange }) => {
         value={activeModel ? activeModel.rotation.y * (180 / Math.PI) : 0}
         onChange={handleRotateChange}
       />
-      <span>{activeModel ? (activeModel.rotation.y * (180 / Math.PI)).toFixed(2) : 0}°</span>
+      <span>
+        {activeModel
+          ? (activeModel.rotation.y * (180 / Math.PI)).toFixed(2)
+          : 0}
+        °
+      </span>
       <br />
       <label>높이: </label>
       <input

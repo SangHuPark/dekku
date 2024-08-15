@@ -7,11 +7,12 @@ import { useRouter } from "next/navigation";
 export default function ProfileEdit(id) {
   const router = useRouter();
   const [memberId, setMemberId] = useState("");
-  const [profileImage, setProfileImage] = useState("");
+  const [profileImage, setProfileImage] = useState(""); // Blob URL or existing URL
+  const [profileImageFile, setProfileImageFile] = useState(null); // For storing the selected file
   const [nickname, setNickname] = useState("");
   const [introduction, setIntroduction] = useState("");
   const { isLoggedIn } = useLogin();
-  const [profileImageUrl, setProfileImageUrl] = useState("");
+  const [originalProfileImageUrl, setOriginalProfileImageUrl] = useState(""); // Store original image URL
 
   useEffect(() => {
     const GetUserInfo = async () => {
@@ -40,6 +41,7 @@ export default function ProfileEdit(id) {
 
         setMemberId(memberId);
         setProfileImage(profileImage);
+        setOriginalProfileImageUrl(profileImage); // Store original image URL
         setNickname(nickname);
         setIntroduction(introduction);
       } catch (error) {
@@ -50,64 +52,67 @@ export default function ProfileEdit(id) {
   }, [id]);
 
   const handleProfileImageChange = (e) => {
-    setProfileImage(URL.createObjectURL(e.target.files[0]));
+    const file = e.target.files[0];
+    setProfileImageFile(file);
+    setProfileImage(URL.createObjectURL(file)); // Temporary preview
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let imageUrl = profileImageUrl; // To store the URL obtained after upload
+    let imageUrl = originalProfileImageUrl; // Start with original image URL
 
     try {
-      // Step 1: Get presigned URL for image upload
-      const response = await fetch("https://dekku.co.kr/api/s3/presigned-url", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: memberId,
-          fileCount: 1,
-          directory: "profile",
-        }),
-      });
+      // Step 1: Upload only if the image was changed
+      if (profileImageFile) {
+        const response = await fetch("https://dekku.co.kr/api/s3/presigned-url", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: memberId,
+            fileCount: 1,
+            directory: "profile",
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch presigned URL");
+        if (!response.ok) {
+          throw new Error("Failed to fetch presigned URL");
+        }
+
+        const presignedData = await response.json();
+        const presignedUrls = presignedData.data.preSignedUrl;
+
+        // Step 2: Upload the image to the presigned URL
+        const imageBlob = await fetch(profileImageFile).then((res) => res.blob());
+        const uploadImageResponse = await fetch(presignedUrls[0], {
+          method: "PUT",
+          headers: {
+            "Content-Type": imageBlob.type,
+          },
+          body: imageBlob,
+        });
+
+        if (!uploadImageResponse.ok) {
+          throw new Error("Failed to upload image file");
+        }
+
+        imageUrl = presignedUrls[0].split("?")[0]; // Assuming URL without query parameters
+        console.log("Image URL:", imageUrl);
       }
-
-      const presignedData = await response.json();
-      const presignedUrls = presignedData.data.preSignedUrl;
-
-      // Step 2: Upload the image to the presigned URL
-      const imageBlob = await fetch(profileImage).then((res) => res.blob());
-      const uploadImageResponse = await fetch(presignedUrls[0], {
-        method: "PUT",
-        headers: {
-          "Content-Type": imageBlob.type,
-        },
-        body: imageBlob,
-      });
-
-      if (!uploadImageResponse.ok) {
-        throw new Error("Failed to upload image file");
-      }
-
-      // Extract the image URL
-      imageUrl = presignedUrls[0].split("?")[0]; // Assuming URL without query parameters
-      console.log("Image URL:", imageUrl);
     } catch (error) {
       console.error("Error during image upload:", error);
       return; // Exit the function if image upload fails
     }
 
-    // Step 3: Update user profile with the new image URL
+    // Step 3: Update user profile with the new image URL or existing one
     try {
-      if (nickname === 0 || nickname > 20) {
+      if (nickname.length === 0 || nickname.length > 20) {
         alert("닉네임은 1자 이상 20자 이하로 작성해 주세요.");
         return;
       }
-      if (introduction > 20) {
+      if (introduction.length > 20) {
         alert("소개글은 20자 이하로 작성해 주세요.");
         return;
       }
@@ -116,19 +121,18 @@ export default function ProfileEdit(id) {
         method: "PUT",
         headers: {
           access: accessToken,
-          "Content-Type": "application/json", // Ensure this is set for JSON payload
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           nickname: nickname,
           ageRange: 20, // Replace with actual data if available
           introduction: introduction,
           gender: "", // Replace with actual data if available
-          imageUrl: imageUrl,
+          imageUrl: imageUrl, // Use either uploaded URL or original URL
         }),
       });
       if (response.ok) {
         console.log("Profile updated successfully");
-        console.log(id.params.memberId);
         router.push(`/users/${id.params.memberId}`, { replace: true });
       } else {
         console.error("Failed to update profile", response.statusText);
@@ -151,9 +155,7 @@ export default function ProfileEdit(id) {
                   src={profileImage || "/profile_icon1.png"}
                   alt="Profile Preview"
                   className="w-32 h-32 object-cover rounded-full cursor-pointer"
-                  onClick={() =>
-                    document.getElementById("profileImage").click()
-                  }
+                  onClick={() => document.getElementById("profileImage").click()}
                 />
               </div>
               <input
