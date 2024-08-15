@@ -146,7 +146,7 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     @Transactional
     public List<FindDeskteriorPostResponseDto> findTopThreePosts() {
         LocalDateTime sevenDaysBefore = LocalDateTime.now().minusDays(7);
-        List<DeskteriorPost> recentPosts = deskteriorPostRepository.findByCreatedAfter(sevenDaysBefore);
+        List<DeskteriorPost> recentPosts = deskteriorPostRepository.findByCreatedAtAfter(sevenDaysBefore);
 
         if (recentPosts.isEmpty()) {
             throw new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST);
