@@ -61,7 +61,7 @@ public record FindByIdDeskteriorPostResponseDto(
     private static List<String> mapLikes(List<Like> likes) {
         List<String> likeList = new ArrayList<>();
         for (Like like : likes) {
-            likeList.add(like.getMember().getUsername());
+            likeList.add(like.getMember().getNickname());
         }
         return likeList;
     }
