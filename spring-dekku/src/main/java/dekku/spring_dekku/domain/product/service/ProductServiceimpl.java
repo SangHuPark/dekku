@@ -4,7 +4,7 @@ import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteri
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostRepository;
 import dekku.spring_dekku.domain.product.model.dto.request.CreateProductRequestDto;
-import dekku.spring_dekku.domain.product.model.dto.request.RecommendRequestDto;
+import dekku.spring_dekku.domain.product.model.dto.request.RecommendByProductIdsRequestDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreatePostProductMatchResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreateProductResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.response.FindProductResponseDto;
@@ -108,7 +108,7 @@ public class ProductServiceimpl implements ProductService {
         return productResponseDtos;
     }
 
-    public List<CreatePostProductMatchResponseDto> findDeskteriorPostsByProductIds(RecommendRequestDto requestDto) {
+    public List<CreatePostProductMatchResponseDto> findDeskteriorPostsByProductIds(RecommendByProductIdsRequestDto requestDto) {
         List<Long> productIds = requestDto.productIds();  // RecommendRequestDto로부터 productIds를 받아옴
 
         if (productIds == null || productIds.isEmpty()) {
