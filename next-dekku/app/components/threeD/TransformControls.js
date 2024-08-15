@@ -16,7 +16,7 @@ const TransformControls = ({ activeModel, onRotateChange, onHeightChange }) => {
       style={{
         position: "absolute",
         top: "4px",
-        right: "10px",
+        right: "20px",
         backgroundColor: "white",
         padding: "3px",
         borderRadius: "5px",
