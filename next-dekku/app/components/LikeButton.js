@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLogin } from "./AuthContext";
 
-const LikeButton = ({ toPostId, setFollowChangeTrigger }) => {
+const LikeButton = ({ toPostId, setLikeChangeTrigger }) => {
   const { isLoggedIn } = useLogin();
   const [isLikedPost, setIsLikedPost] = useState(false);
 
@@ -59,7 +59,7 @@ const LikeButton = ({ toPostId, setFollowChangeTrigger }) => {
       }
       const data = await response.json();
       setIsLikedPost(true);
-      setFollowChangeTrigger(prev => !prev);
+      setLikeChangeTrigger(prev => !prev);
     } catch (error) {
       console.log("error: ", error);
     }
@@ -86,7 +86,7 @@ const LikeButton = ({ toPostId, setFollowChangeTrigger }) => {
       }
       const data = await response.json();
       setIsLikedPost(false);
-      setFollowChangeTrigger(prev => !prev);
+      setLikeChangeTrigger(prev => !prev);
     } catch (error) {
       console.log("error: ", error);
     }

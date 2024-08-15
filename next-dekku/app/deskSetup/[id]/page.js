@@ -18,8 +18,10 @@ export default function Details({ params }) {
   const [editedData, setEditedData] = useState({}); // 수정된 데이터 상태
   const router = useRouter();
   const [comment, setComment] = useState("");
-  const [followChangeTrigger, setFollowChangeTrigger] = useState(false);
+  const [likeChangeTrigger, setLikeChangeTrigger] = useState(false);
   const [likeStatus, setLikeStatus] = useState(0);
+  const [commentChangeTrigger, setCommentChangeTrigger] = useState(false);
+  const [commentStatus, setCommentStatus] = useState(false);
 
   const handleCommentChange = (e) => {
     setComment(e.target.value);
@@ -88,7 +90,33 @@ export default function Details({ params }) {
       }
     };
     fetchLike();
-  }, [followChangeTrigger]);
+  }, [likeChangeTrigger]);
+
+  useEffect(() => {
+    const fetchComment = async () => {
+      try {
+        const response = await fetch(
+          `https://dekku.co.kr/api/deskterior-post/${params.id}`,
+          {
+            method: "GET",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch post details");
+        }
+
+        const responseData = await response.json();
+        console.log(responseData);
+        const postData = responseData.data;
+        console.log(postData);
+        setCommentStatus(postData);
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
+    fetchComment();
+  }, [commentChangeTrigger]);
 
   useEffect(() => {
     console.log(params.id);
@@ -284,7 +312,7 @@ export default function Details({ params }) {
             {/* <img src="/like_icon.png" alt="likes" className="w-5 h-5" /> */}
             <LikeButton
               toPostId={postId}
-              setFollowChangeTrigger={setFollowChangeTrigger}
+              setLikeChangeTrigger={setLikeChangeTrigger}
             />
             <span>{likeStatus.likeCount}</span>
           </div>
@@ -311,10 +339,10 @@ export default function Details({ params }) {
 
         <hr className="border-t-2 border-gray-300 mb-4" />
 
-        <div className="mb-4">댓글 : {data.commentCount}개</div>
+        <div className="mb-4">댓글 : {commentStatus.commentCount}개</div>
 
         <div className="bg-gray-100 p-4 rounded-md mb-4 space-y-2">
-          {data.comments.map((comment) => (
+          {commentStatus.comments.map((comment) => (
             <div key={comment.id} className="flex">
               <img
                 src={comment.memberImageUrl}
@@ -338,7 +366,11 @@ export default function Details({ params }) {
 
             <button
               className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-              onClick={handleCommentSubmit}
+              onClick={() => {
+                handleCommentSubmit();
+                setComment('');
+                setCommentChangeTrigger((prev) => !prev);
+              }}
             >
               댓글 작성
             </button>
