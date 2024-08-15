@@ -96,7 +96,10 @@ const Profile = (id) => {
         <div className="flex items-center space-x-12 my-4 h-40">
           <div>
             <img
-              src={userData.data.image_url || "/default_profile.png"}
+              src={
+                userData.data.imageUrl ||
+                "https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/profile/profile.svg"
+              }
               alt="Profile Picture"
               className="w-32 h-32 rounded-full object-cover"
             />

@@ -1,13 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer"; // ThreeJSRenderer 임포트
 import DeskSetupCard from "../../components/deskSetup/DeskSetupCard";
 import { useRouter } from "next/navigation";
 import LikeButton from "../../components/LikeButton";
 import FollowButton from "../../components/FollowButton";
-import Image from "next/image";
 
 export default function Details({ params }) {
   const postId = parseInt(params.id, 10); // 문자열을 정수로 변환
@@ -20,6 +18,8 @@ export default function Details({ params }) {
   const [editedData, setEditedData] = useState({}); // 수정된 데이터 상태
   const router = useRouter();
   const [comment, setComment] = useState("");
+  const [followChangeTrigger, setFollowChangeTrigger] = useState(false);
+  const [likeStatus, setLikeStatus] = useState(0);
 
   const handleCommentChange = (e) => {
     setComment(e.target.value);
@@ -63,6 +63,32 @@ export default function Details({ params }) {
       console.log("error: ", error);
     }
   };
+
+  useEffect(() => {
+    const fetchLike = async () => {
+      try {
+        const response = await fetch(
+          `https://dekku.co.kr/api/deskterior-post/${params.id}`,
+          {
+            method: "GET",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch post details");
+        }
+
+        const responseData = await response.json();
+        console.log(responseData);
+        const postData = responseData.data;
+        console.log(postData);
+        setLikeStatus(postData);
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
+    fetchLike();
+  }, [followChangeTrigger]);
 
   useEffect(() => {
     console.log(params.id);
@@ -256,8 +282,11 @@ export default function Details({ params }) {
           </div>
           <div className="flex items-center space-x-2">
             {/* <img src="/like_icon.png" alt="likes" className="w-5 h-5" /> */}
-            <LikeButton toPostId={postId} />
-            <span>{data.likeCount}</span>
+            <LikeButton
+              toPostId={postId}
+              setFollowChangeTrigger={setFollowChangeTrigger}
+            />
+            <span>{likeStatus.likeCount}</span>
           </div>
         </div>
 
