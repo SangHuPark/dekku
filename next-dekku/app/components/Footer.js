@@ -1,7 +1,7 @@
 // app/components/Footer.js
 const Footer = () => {
   return (
-    <footer className="h-40">
+    <footer className="h-36">
       <img src="/Footer.svg" />
     </footer>
   );
