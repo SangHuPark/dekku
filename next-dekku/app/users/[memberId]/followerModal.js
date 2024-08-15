@@ -16,11 +16,11 @@ export default function FollowerModal({
   useEffect(() => {
     const GetFollowers = async () => {
       try {
-        const accessToken = window.localStorage.getItem("access");
-        if (!accessToken) {
-          console.log("No access token found");
-          return;
-        }
+        // const accessToken = window.localStorage.getItem("access");
+        // if (!accessToken) {
+        //   console.log("No access token found");
+        //   return;
+        // }
         const response = await fetch(
           `https://dekku.co.kr/api/follows/followers/${memberId}`,
           {

@@ -81,7 +81,7 @@ public record FindByIdDeskteriorPostResponseDto(
                     product.getName(),
                     product.getPrice(),
                     product.getImageUrl(),
-                    product.getSalesLink(),
+                    product.getScale(),
                     product.getDescription(),
                     product.getExistStatus(),
                     product.getCategory(),

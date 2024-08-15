@@ -2,10 +2,12 @@ package dekku.spring_dekku.domain.product.controller;
 
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.request.CreateProductRequestDto;
+import dekku.spring_dekku.domain.product.model.dto.request.RecommendRequestDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreatePostProductMatchResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreateProductResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.response.FindProductResponseDto;
 import dekku.spring_dekku.domain.product.model.entity.code.Category;
+import dekku.spring_dekku.domain.product.service.ProductService;
 import dekku.spring_dekku.domain.product.service.ProductServiceimpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,7 +36,7 @@ public class ProductController {
     })
     @PostMapping("/save")
     public ResponseEntity<CreateProductResponseDto> saveProduct(@Valid @RequestBody CreateProductRequestDto requestDto) {
-        CreateProductResponseDto responseDto = productServiceimpl.saveProduct(requestDto);
+        CreateProductResponseDto responseDto = productService.saveProduct(requestDto);
         return ResponseEntity.status(201).body(responseDto);
     }
 
@@ -59,25 +61,41 @@ public class ProductController {
     })
     @GetMapping("/category")
     public ResponseEntity<List<CreateProductResponseDto>> getProductsByCategory(@RequestParam Category category) {
-        List<CreateProductResponseDto> products = productServiceimpl.getProductsByCategory(category);
+        List<CreateProductResponseDto> products = productService.getProductsByCategory(category);
         if (products.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(products);
     }
 
-    @Operation(summary = "게시물 내에서 제품들과 연관된 데스크테리어 게시물 조회")
+    // 게시글 상세 페이지에서 단일 게시글 response 의 productIds 를 받아 related-posts API 로 요청 보내는걸 고려중
+    @Operation(summary = "단일 게시글의 제품 리스트와 연관된 다른 데스크테리어 게시글 리스트 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "연관된 게시물 조회 성공"),
             @ApiResponse(responseCode = "404", description = "해당 게시물을 찾을 수 없습니다.")
     })
     @GetMapping("/deskterior-posts-by-details")
     public ResponseEntity<List<CreatePostProductMatchResponseDto>> getDeskteriorPostByDetails(@RequestParam Long postId) {
-        List<CreatePostProductMatchResponseDto> postProductMatches = productServiceimpl.findDeskteriorPostByDetails(postId);
+        List<CreatePostProductMatchResponseDto> postProductMatches = productService.findDeskteriorPostByDetails(postId);
         if (postProductMatches.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(postProductMatches);
+    }
+
+    @Operation(summary = "3D 완성 시 선택한 제품 리스트와 연관된 데스크테리어 게시글 리스트 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "연관된 게시물 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "해당 게시물을 찾을 수 없습니다.")
+    })
+    @PostMapping("/related-posts")
+    public ResponseEntity<List<CreatePostProductMatchResponseDto>> recommendPosts(@RequestBody RecommendRequestDto requestDto) {
+        List<CreatePostProductMatchResponseDto> recommendedPosts = productService.findDeskteriorPostsByProductIds(requestDto);
+
+        if (recommendedPosts.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(recommendedPosts);
     }
 
     @Operation(summary = "키워드로 제품 이름 검색")
@@ -87,7 +105,7 @@ public class ProductController {
     })
     @GetMapping("/search/names")
     public ResponseEntity<List<FindProductResponseDto>> searchProductNames(@RequestParam("keyword") String keyword) {
-        List<FindProductResponseDto> productNames = productServiceimpl.searchProductNamesByKeyword(keyword);
+        List<FindProductResponseDto> productNames = productService.searchProductNamesByKeyword(keyword);
 
         if (productNames.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -113,7 +131,7 @@ public class ProductController {
         List<FindDeskteriorPostResponseDto> posts;
         try {
             // 서비스 호출하여 게시물 목록 조회
-            posts = productServiceimpl.findPostsByProductName(productName);
+            posts = productService.findPostsByProductName(productName);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // 500 응답
         }

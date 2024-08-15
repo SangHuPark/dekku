@@ -82,7 +82,11 @@ const Profile = (id) => {
   }, []);
 
   if (!userData) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
   console.log(userData);
@@ -96,7 +100,10 @@ const Profile = (id) => {
         <div className="flex items-center space-x-12 my-4 h-40">
           <div>
             <img
-              src={userData.data.image_url || "/default_profile.png"}
+              src={
+                userData.data.imageUrl ||
+                "https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/profile/profile.svg"
+              }
               alt="Profile Picture"
               className="w-32 h-32 rounded-full object-cover"
             />
@@ -151,7 +158,7 @@ const Profile = (id) => {
                 />
               </div>
             </div>
-            <p>{userData.introduction || "소개글이 없습니다."}</p>
+            <p>{userData.data.introduction || "소개글이 없습니다."}</p>
           </div>
         </div>
         <div className="flex justify-start">

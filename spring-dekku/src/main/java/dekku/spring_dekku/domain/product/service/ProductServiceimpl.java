@@ -37,7 +37,7 @@ public class ProductServiceimpl implements ProductService {
                 .name(requestDto.name())
                 .price(requestDto.price())
                 .imageUrl(requestDto.imageUrl())
-                .salesLink(requestDto.salesLink())
+                .scale(requestDto.scale())
                 .description(requestDto.description())
                 .category(requestDto.category())
                 .filePath(filePath)
@@ -52,7 +52,7 @@ public class ProductServiceimpl implements ProductService {
                 savedProduct.getName(),
                 savedProduct.getPrice(),
                 savedProduct.getImageUrl(),
-                savedProduct.getSalesLink(),
+                savedProduct.getScale(),
                 savedProduct.getDescription(),
                 existStatus,
                 savedProduct.getCategory(),
@@ -72,7 +72,7 @@ public class ProductServiceimpl implements ProductService {
                     product.getName(),
                     product.getPrice(),
                     product.getImageUrl(),
-                    product.getSalesLink(),
+                    product.getScale(),
                     product.getDescription(),
                     existStatus,
                     product.getCategory(),
@@ -96,7 +96,7 @@ public class ProductServiceimpl implements ProductService {
                     product.getName(),
                     product.getPrice(),
                     product.getImageUrl(),
-                    product.getSalesLink(),
+                    product.getScale(),
                     product.getDescription(),
                     existStatus,
                     product.getCategory(),

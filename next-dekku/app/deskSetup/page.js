@@ -12,7 +12,7 @@ import { fetchPosts } from "../components/deskSetup/dataFetching"; // Model impo
 import { filterAndSortPosts } from "../components/deskSetup/DeskSetupController"; // Controller import
 
 export default function DeskSetupPage() {
-  const recentTopPosts = useRecentTopPosts();
+  // const recentTopPosts = useRecentTopPosts();
   const [allPosts, setAllPosts] = useState([]); // API로 불러올 데이터를 위한 상태
   const [filteredData, setFilteredData] = useState([]);
   const [sortOrder, setSortOrder] = useState("latest");
@@ -21,6 +21,7 @@ export default function DeskSetupPage() {
   const [jobFilter, setJobFilter] = useState("all");
   const [displayedCount, setDisplayedCount] = useState(9);
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
+  const [recentTopPosts, setRecentTopPosts] = useState([]);
 
   const loadMoreRef = useRef(null); // "Load More" 버튼의 ref
 
@@ -35,6 +36,19 @@ export default function DeskSetupPage() {
     };
     fetchData();
   }, []);
+
+  useEffect(()=>{
+    const fetchRTP = async () =>{
+      const response = await fetch("https://dekku.co.kr/api/deskterior-post/rank",{
+        method: "GET"
+      })
+      console.log(response);
+      const data = await response.json();
+      console.log(data);
+      setRecentTopPosts(data);
+    }
+    fetchRTP();
+  }, [])
   
   useEffect(() => {
     // 필터 및 정렬 적용
@@ -93,8 +107,8 @@ export default function DeskSetupPage() {
 
   return (
     <div>
-      <div className="bg-[#F6F7FB] py-6 px-4">
-        <div className="max-w-6xl mx-auto">
+      <div className="bg-[#F6F7FB] ">
+        <div className="max-w-6xl mx-auto py-6 px-4">
           <h1 className="font-bold text-3xl mt-3 mb-3">
             최근 데스크 셋업 인기 순위
           </h1>
@@ -103,7 +117,7 @@ export default function DeskSetupPage() {
             <Suspense>
               {recentTopPosts.map((data) => (
                 <DeskSetupCard
-                  key={data.id}
+                  key={data.postId}
                   data={data}
                   isNoProfilePost={true}
                 />
@@ -112,7 +126,7 @@ export default function DeskSetupPage() {
           </div>
         </div>
       </div>
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center mt-6 mb-6">
           <h1 className="font-bold text-3xl">게시된 데스크 셋업</h1>
           <div className="relative flex items-center">
@@ -156,7 +170,7 @@ export default function DeskSetupPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {filteredData.slice(0, displayedCount).map((data) => (
-            <DeskSetupCard key={data.id} data={data} />
+            <DeskSetupCard key={data.postId} data={data} />
           ))}
         </div>
 

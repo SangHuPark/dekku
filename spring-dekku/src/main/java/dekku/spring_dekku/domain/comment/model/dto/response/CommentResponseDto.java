@@ -4,5 +4,6 @@ public record CommentResponseDto(
         String id,
         String content,
         String memberNickname,
-        String memberImageUrl
+        String memberImageUrl,
+        Long memberId
 ) {}

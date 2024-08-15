@@ -51,7 +51,7 @@ const CreateDeskSetupPage = () => {
   // 키워드로 검색하기 위한 함수
   const handleSearch = async () => {
     try {
-      const response = await fetch(`http://dekku.co.kr:8080/api/products/search/names?keyword=${keyword}`);
+      const response = await fetch(`https://dekku.co.kr/api/products/search/names?keyword=${keyword}`);
       const data = await response.json();
 
       // API 응답이 배열일 경우 처리
@@ -96,7 +96,7 @@ const CreateDeskSetupPage = () => {
 
     try {
       // Presigned URL 요청
-      const presignedResponse = await fetch("http://dekku.co.kr:8080/api/s3/presigned-url", {
+      const presignedResponse = await fetch("https://dekku.co.kr/api/s3/presigned-url", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -135,7 +135,7 @@ const CreateDeskSetupPage = () => {
       }
 
       // 서버에 최종 데이터 전송
-      const response = await fetch("http://dekku.co.kr:8080/api/deskterior-post", {
+      const response = await fetch("https://dekku.co.kr/api/deskterior-post", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

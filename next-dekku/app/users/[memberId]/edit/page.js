@@ -10,7 +10,7 @@ export default function ProfileEdit(id) {
   const [profileImage, setProfileImage] = useState("");
   const [nickname, setNickname] = useState("");
   const [introduction, setIntroduction] = useState("");
-  const {isLoggedIn} = useLogin();
+  const { isLoggedIn } = useLogin();
   const [profileImageUrl, setProfileImageUrl] = useState("");
 
   useEffect(() => {
@@ -103,6 +103,14 @@ export default function ProfileEdit(id) {
 
     // Step 3: Update user profile with the new image URL
     try {
+      if (nickname === 0 || nickname > 20) {
+        alert("닉네임은 1자 이상 20자 이하로 작성해 주세요.");
+        return;
+      }
+      if (introduction > 20) {
+        alert("소개글은 20자 이하로 작성해 주세요.");
+        return;
+      }
       const accessToken = window.localStorage.getItem("access");
       const response = await fetch("https://dekku.co.kr/api/users/update", {
         method: "PUT",
