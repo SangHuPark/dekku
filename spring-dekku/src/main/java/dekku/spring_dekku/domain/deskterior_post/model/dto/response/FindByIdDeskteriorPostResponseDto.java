@@ -26,7 +26,9 @@ public record FindByIdDeskteriorPostResponseDto(
         int likeCount,
         int commentCount,
         OpenStatus openStatus,
-        DeskteriorAttributes deskteriorAttributes
+        DeskteriorAttributes deskteriorAttributes,
+        String createdAt,
+        String updatedAt
 ) {
     public FindByIdDeskteriorPostResponseDto(DeskteriorPost deskteriorPost, List<CommentResponseDto> comments) {
         this(
@@ -42,7 +44,9 @@ public record FindByIdDeskteriorPostResponseDto(
                 deskteriorPost.getLikeCount(),
                 deskteriorPost.getCommentCount(),
                 deskteriorPost.getOpenStatus(),
-                deskteriorPost.getDeskteriorAttributes()
+                deskteriorPost.getDeskteriorAttributes(),
+                deskteriorPost.getCreatedAt(),
+                deskteriorPost.getUpdatedAt()
         );
     }
 
