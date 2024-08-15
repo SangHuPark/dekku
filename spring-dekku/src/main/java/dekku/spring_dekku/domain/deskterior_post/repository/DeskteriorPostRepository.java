@@ -14,5 +14,5 @@ public interface DeskteriorPostRepository extends JpaRepository<DeskteriorPost, 
     @Query(value = "SELECT D FROM DeskteriorPost D ORDER BY D.likeCount DESC LIMIT 3")
     List<DeskteriorPost> findTopPosts();
 
-    List<DeskteriorPost> findByCreatedAfter(LocalDateTime dateTime);
+    List<DeskteriorPost> findByCreatedAfter(LocalDateTime createdAt);
 }
