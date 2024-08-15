@@ -25,9 +25,9 @@ const Header = () => {
   useEffect(() => {
     // 경로에 따라 클래스를 설정합니다.
     if (pathname === "/threeD") {
-      setHeaderClasses("flex justify-between px-4 py-6");
+      setHeaderClasses("flex justify-between py-6");
     } else {
-      setHeaderClasses("flex justify-between px-4 py-6 max-w-6xl mx-auto");
+      setHeaderClasses("flex justify-between py-6 max-w-6xl mx-auto");
     }
   }, [pathname]);
 
@@ -80,7 +80,7 @@ const Header = () => {
   }, [setIsLoggedIn]);
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-white">
+    <header className="fixed top-0 w-full px-4 z-50 bg-white">
       <div className={headerClasses}>
         <div className="flex items-center">
           <Link href="/">

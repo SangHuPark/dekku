@@ -1,24 +1,64 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import DeskSetupCard from "./components/deskSetup/DeskSetupCard";
 import { useRecentTopDeveloperPosts } from "./components/useRecentTopDeveloperPosts";
-import { useRecentProducts } from "./components/useRecentProducts"
+import { useRecentProducts } from "./components/useRecentProducts";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import ProductCard from "./components/threeD/ProductCard";
 
 export default function HomePage() {
   const [hoveredIndex, setHoveredIndex] = useState(0);
-  const recentTopDeveloperPosts = useRecentTopDeveloperPosts();
-  const recentProducts = useRecentProducts();
+  const [recentTopDeveloperPosts, setRecentTopDeveloperPosts] = useState([]);
+  const [recentProducts, setRecentProducts] = useState([]);
 
   const images = [
     { src: "/desk1.jpg", title: "3D Desk", link: "/threeD" },
     { src: "/desk2.jpg", title: "Desk Setup", link: "/deskSetup" },
     { src: "/desk3.jpg", title: "Share Your Desk", link: "/deskSetup/create" },
   ];
+
+  useEffect(() => {
+    const GetRTDP = async () => {
+      const response = await fetch(
+        "https://dekku.co.kr/api/deskterior-post/recommend-posts",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            job: "ARCHITECT",
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch RTDP");
+      }
+      const data = await response.json();
+      console.log(data);
+      setRecentTopDeveloperPosts(data);
+    };
+    GetRTDP();
+  }, []);
+
+  useEffect(() => {
+    const GetRecentProducts = async () => {
+      const response = await fetch("https://dekku.co.kr/api/products", {
+        method: "GET",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch Recent Products");
+      }
+      const data = await response.json();
+      console.log(data);
+      setRecentProducts(data);
+    };
+    GetRecentProducts();
+  }, []);
 
   // Slider settings
   const sliderSettings = {
@@ -93,17 +133,15 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      
+
       {/* 개발자 추천 데스크 */}
       <section className="px-4 flex justify-center bg-gray-100">
         <div className="max-w-6xl mx-auto my-20">
-          <div>
-            <h2 className="text-4xl font-bold mb-8">개발자 추천 데스크</h2>
-          </div>
+          <h2 className="text-[2rem] font-semibold mb-8">개발자 추천 데스크</h2>
           <Slider {...sliderSettings}>
             {recentTopDeveloperPosts.map((data) => (
-              <div key={data.id} className="p-2">
-                <DeskSetupCard key={data.id} data={data} isNoProfilePost={true} />
+              <div key={data.postId} className="p-2">
+                <DeskSetupCard data={data} isNoProfilePost={true} />
               </div>
             ))}
           </Slider>
@@ -113,7 +151,30 @@ export default function HomePage() {
       {/* 신규 업데이트 상품 */}
       <section className="px-4 flex justify-center bg-gray-200">
         <div className="max-w-6xl mx-auto my-20">
-          <h2 className="text-4xl font-bold mb-8">신규 업데이트 상품</h2>
+          <h2 className="text-[2rem] font-semibold mb-8">신규 업데이트 상품</h2>
+          <Slider {...sliderSettings}>
+            {recentProducts.slice(0, 6).map((data) => (
+              <div
+                key={data.id}
+                className="p-4 flex flex-col justify-center items-center text-center transform transition-transform hover:scale-105 hover:shadow-2xl border border-gray-200"
+              >
+                <div className="flex justify-center items-center h-64 w-full">
+                  {" "}
+                  {/* Flex container to center the image */}
+                  <img
+                    src={data.imageUrl}
+                    alt={data.name}
+                    className="h-64 object-cover"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold mb-2 text-gray-800">
+                    {data.name}
+                  </h3>
+                </div>
+              </div>
+            ))}
+          </Slider>
         </div>
       </section>
     </div>
