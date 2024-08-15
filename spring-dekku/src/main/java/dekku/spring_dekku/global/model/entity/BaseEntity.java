@@ -18,19 +18,19 @@ public class BaseEntity {
 
     @CreatedDate
     @Column(updatable = false)
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private String updatedAt;
+    private LocalDateTime updatedAt;
 
     @PrePersist
     public void onPrePersist(){
-        this.createdAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.createdAt = LocalDateTime.now();
         this.updatedAt = this.createdAt;
     }
 
     @PreUpdate
     public void onPreUpdate(){
-        this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.updatedAt = LocalDateTime.now();
     }
 }
