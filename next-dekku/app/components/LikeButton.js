@@ -46,7 +46,7 @@ const LikeButton = ({ toPostId, setLikeChangeTrigger }) => {
         return;
       }
       const response = await fetch(
-        `https://dekku.co.kr/api/likes/${toPostId.toPostId}`,
+        `https://dekku.co.kr/api/likes/${toPostId}`,
         {
           method: "POST",
           headers: {
@@ -73,7 +73,7 @@ const LikeButton = ({ toPostId, setLikeChangeTrigger }) => {
         return;
       }
       const response = await fetch(
-        `https://dekku.co.kr/api/likes/${toPostId.toPostId}`,
+        `https://dekku.co.kr/api/likes/${toPostId}`,
         {
           method: "DELETE",
           headers: {
