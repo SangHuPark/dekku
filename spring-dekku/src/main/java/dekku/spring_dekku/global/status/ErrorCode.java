@@ -35,6 +35,7 @@ public enum ErrorCode {
     NOT_EXISTS_PRODUCT(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다."),
     NOT_EXISTS_DESKTERIOR_POST(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다."),
     NOT_EXISTS_COMMENT(HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다."),
+    NOT_EXISTS_PRODUCT_INCLUDED_IN_DESKTERIOR_POST(HttpStatus.NOT_FOUND, "해당 게시물에 포함된 제품이 없습니다"),
 
     /**
      * {@code 409 Conflict}
