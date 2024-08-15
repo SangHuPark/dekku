@@ -4,23 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchRecommendedPosts } from "./RecommendApi"; // API 함수 임포트
 
-const RecommendSetup = () => {
+const RecommendSetup = ({ selectedProductIds }) => { // selectedProductIds를 prop으로 받습니다.
   const [posts, setPosts] = useState([]);
-  const [selectedProductIds, setSelectedProductIds] = useState([]);
-
-  useEffect(() => {
-    // localStorage에서 selectedProducts를 가져와 ID들을 추출합니다.
-    const storedProducts = localStorage.getItem('selectedProducts');
-    if (storedProducts) {
-      try {
-        const productsArray = JSON.parse(storedProducts);
-        const productIds = productsArray.map(product => product.id);
-        setSelectedProductIds(productIds); // 추출한 ID들을 상태에 저장합니다.
-      } catch (error) {
-        console.error("Error parsing selectedProducts:", error);
-      }
-    }
-  }, []);
 
   useEffect(() => {
     if (selectedProductIds.length > 0) {
