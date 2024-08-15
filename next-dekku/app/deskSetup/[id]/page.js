@@ -73,6 +73,9 @@ export default function Details({ params }) {
           `https://dekku.co.kr/api/deskterior-post/${params.id}`,
           {
             method: "GET",
+            body: {
+              isRender: "false",
+            }
           }
         );
 
@@ -99,6 +102,9 @@ export default function Details({ params }) {
           `https://dekku.co.kr/api/deskterior-post/${params.id}`,
           {
             method: "GET",
+            body: {
+              isRender: "false",
+            }
           }
         );
 
@@ -126,6 +132,9 @@ export default function Details({ params }) {
           `https://dekku.co.kr/api/deskterior-post/${params.id}`,
           {
             method: "GET",
+            body: {
+              isRender: "true",
+            }
           }
         );
 
