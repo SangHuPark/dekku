@@ -6,6 +6,7 @@ import dekku.spring_dekku.domain.member.service.oauth2.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -76,7 +77,7 @@ public class MemberController {
 			)
 	})
 	@PutMapping("/update")
-	public ResponseEntity<Void> update(@RequestHeader(name="access") String token, @RequestBody MemberUpdateDto requestDto) throws Exception {
+	public ResponseEntity<Void> update(@RequestHeader(name="access") String token, @RequestBody @Valid MemberUpdateDto requestDto) throws Exception {
 		memberService.updateMember(requestDto, token);
 
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -86,7 +87,7 @@ public class MemberController {
 	@ApiResponses({
 			@ApiResponse(
 					responseCode = "200",
-					description = "댓글 삭제 성공"
+					description = "회원 탈퇴 성공"
 			),
 			@ApiResponse(
 					responseCode = "404",
@@ -126,6 +127,7 @@ public class MemberController {
 			)
 	})
 	@GetMapping("/logout")
+
 	public ResponseEntity<?> logout(@RequestHeader(value="access") String token) {
 		memberService.deleteMember(token);
 

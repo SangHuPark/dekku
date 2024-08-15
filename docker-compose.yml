@@ -28,21 +28,21 @@ services:
     networks:
       - dekku-network
 
-  dekku-mongo:
-    container_name: dekku-mongo
-    image: mongo
-    ports:
-      - 27017:27017
-    volumes:
-      - mongodata:/data
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=Dekku1234
-      - MONGO_INITDB_DATABASE=dekkudb
-      - TZ=Asia/Seoul
-    restart: on-failure
-    networks:
-      - dekku-network
+  # dekku-mongo:
+  #   container_name: dekku-mongo
+  #   image: mongo
+  #   ports:
+  #     - 27017:27017
+  #   volumes:
+  #     - mongodata:/data
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=root
+  #     - MONGO_INITDB_ROOT_PASSWORD=Dekku1234
+  #     - MONGO_INITDB_DATABASE=dekkudb
+  #     - TZ=Asia/Seoul
+  #   restart: on-failure
+  #   networks:
+  #     - dekku-network
 
   dekku-backend:
     container_name: dekku-backend

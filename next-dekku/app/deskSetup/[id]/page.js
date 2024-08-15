@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer"; // ThreeJSRenderer 임포트
 import DeskSetupCard from "../../components/deskSetup/DeskSetupCard";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import LikeButton from "../../components/LikeButton";
+import FollowButton from "../../components/FollowButton";
+import Image from "next/image";
 
 export default function Details({ params }) {
   const postId = parseInt(params.id, 10); // 문자열을 정수로 변환
@@ -17,6 +19,50 @@ export default function Details({ params }) {
   const [isEditMode, setIsEditMode] = useState(false); // 수정 모드 상태
   const [editedData, setEditedData] = useState({}); // 수정된 데이터 상태
   const router = useRouter();
+  const [comment, setComment] = useState("");
+
+  const handleCommentChange = (e) => {
+    setComment(e.target.value);
+  };
+
+  const handleCommentSubmit = async () => {
+    try {
+      if (comment.length === 0 || comment.length > 50) {
+        alert("댓글은 1자 이상 50자 이하로 작성해 주세요.");
+        return;
+      }
+
+      const accessToken = window.localStorage.getItem("access");
+      if (!accessToken) {
+        console.log("No access token found");
+        return;
+      }
+
+      const response = await fetch(
+        `https://dekku.co.kr/api/comments/${postId}`,
+        {
+          method: "POST",
+          headers: {
+            access: accessToken,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: comment, // 상태에 저장된 댓글을 body에 담음
+          }),
+        }
+      );
+      console.log(response);
+      if (!response.ok) {
+        throw new Error("Failed to create comment");
+      }
+
+      const data = await response.json();
+      console.log("Comment created successfully:", data);
+      setComment(""); // 댓글 작성 후 입력 창을 초기화
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
 
   useEffect(() => {
     console.log(params.id);
@@ -33,8 +79,9 @@ export default function Details({ params }) {
           throw new Error("Failed to fetch post details");
         }
 
-        console.log(response);
-        const postData = await response.json();
+        const responseData = await response.json();
+        console.log(responseData);
+        const postData = responseData.data;
         console.log(postData);
 
         setData(postData);
@@ -57,6 +104,7 @@ export default function Details({ params }) {
           );
           if (prevResponse.ok) {
             setPrevPostData(await prevResponse.json());
+            console.log(prevPostData);
           }
         }
 
@@ -64,7 +112,9 @@ export default function Details({ params }) {
           `https://dekku.co.kr/api/deskterior-post/${postId + 1}`
         );
         if (nextResponse.ok) {
-          setNextPostData(await nextResponse.json());
+          const nextResponseData = await nextResponse.json();
+          console.log(nextResponseData);
+          setNextPostData(nextResponseData);
         }
       } catch (error) {
         console.error("Error fetching post details:", error);
@@ -77,15 +127,18 @@ export default function Details({ params }) {
   const fetchUserId = async () => {
     // access 토큰을 사용하여 서버에서 userId를 가져오는 로직
     const accessToken = window.localStorage.getItem("access");
-    const response = await fetch("https://dekku.co.kr/api/user/info", {
+    if (!accessToken) return;
+    const response = await fetch("https://dekku.co.kr/api/users/info", {
       method: "GET",
       headers: {
         access: accessToken, // 로컬스토리지에서 access 토큰 가져오기
       },
     });
+    console.log(response);
 
     if (response.ok) {
       const data = await response.json();
+      console.log(data);
       return data.userId; // 서버에서 반환된 사용자 ID
     } else {
       throw new Error("Failed to fetch user info");
@@ -163,7 +216,7 @@ export default function Details({ params }) {
 
         <div className="flex justify-center mb-6">
           <img
-            src={data.imgSrc}
+            src={data.deskteriorPostImages[0]}
             alt={data.title}
             className="w-1/2 h-auto rounded-md object-cover"
           />
@@ -183,54 +236,82 @@ export default function Details({ params }) {
         </div>
 
         <h2 className="text-xl font-bold mb-4">제품 내용</h2>
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-3 gap-4 mb-6">
           {(data?.deskteriorPostProductInfos ?? []).map((product, index) => (
             <div
               key={index}
-              className="bg-gray-200 h-32 rounded-md flex items-center justify-center"
+              className="rounded-md flex flex-col items-center justify-center"
             >
-              {product.name}
+              <img src={product.imageUrl} className="w-auto" />
+              <div>{product.name}</div>
             </div>
           ))}
         </div>
 
         {/* 2번 코드에서 추가된 부분: 조회수 및 좋아요 표시 */}
-        <div className="flex justify-end mb-6 text-gray-600 space-x-4">
+        <div className="flex justify-end mb-4 text-gray-600 space-x-4">
           <div className="flex items-center space-x-2">
-            <img src="/view_icon.png" alt="views" className="w-5 h-5" />
-            <span>{data.views}</span>
+            <img src="/view.svg" alt="views" className="w-5 h-5" />
+            <span>{data.viewCount}</span>
           </div>
           <div className="flex items-center space-x-2">
             {/* <img src="/like_icon.png" alt="likes" className="w-5 h-5" /> */}
-            <LikeButton/>
-            <span>{data.likes}</span>
+            <LikeButton toPostId={postId} />
+            <span>{data.likeCount}</span>
+          </div>
+        </div>
+
+        <hr className="border-t-2 border-gray-300 mb-4" />
+        {/* 2번 코드에서 추가된 부분: 작성자 프로필 정보 및 팔로우 버튼 */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex ">
+            <img
+              src={data.memberImage}
+              alt={data.memberNickName}
+              className="w-12 h-12 rounded-full mr-4"
+            />
+            <div className="flex items-center">
+              <div className="font-semibold text-lg">{data.memberNickName}</div>
+              {/* <div className="text-gray-500">{data.introduce}</div> */}
+            </div>
+          </div>
+          <div className="ml-4">
+            <FollowButton toMemberId={data.memberId} />
           </div>
         </div>
 
         <hr className="border-t-2 border-gray-300 mb-4" />
 
-        <div className="mb-4">댓글 : {data?.comments?.length ?? 0}개</div>
+        <div className="mb-4">댓글 : {data.commentCount}개</div>
 
-        <div className="bg-gray-100 p-4 rounded-md mb-4">
-          댓글이 들어갈 공간
-        </div>
-
-        {/* 2번 코드에서 추가된 부분: 작성자 프로필 정보 및 팔로우 버튼 */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex ">
-            <img
-              src={data.profileImg}
-              alt={data.username}
-              className="w-12 h-12 rounded-full mr-4"
-            />
-            <div>
-              <div className="font-semibold text-lg">{data.username}</div>
-              <div className="text-gray-500">{data.introduce}</div>
+        <div className="bg-gray-100 p-4 rounded-md mb-4 space-y-2">
+          {data.comments.map((comment) => (
+            <div key={comment.id} className="flex">
+              <img
+                src={comment.memberImageUrl}
+                className="w-6 h-6 rounded-full mr-2"
+              />
+              <span className="w-12 truncate mr-2">
+                {comment.memberNickname}
+              </span>
+              <span className="w-[48rem]">{comment.content}</span>
             </div>
-          </div>
-          <div className="ml-4">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
-              팔로우
+          ))}
+          <div className="comment-section">
+            {/* 댓글 작성 칸과 버튼 */}
+            <textarea
+              className="border rounded p-2 w-full mb-2"
+              placeholder="댓글을 작성하세요"
+              rows={1}
+              value={comment}
+              onChange={handleCommentChange}
+            ></textarea>
+
+            <button
+              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+              onClick={handleCommentSubmit}
+            >
+              댓글 작성
             </button>
           </div>
         </div>
@@ -280,7 +361,10 @@ export default function Details({ params }) {
         <div className="flex justify-evenly">
           {prevPostData && (
             <div className="">
-              <DeskSetupCard key={prevPostData.id} data={prevPostData} />
+              <DeskSetupCard
+                key={prevPostData.data.id}
+                data={prevPostData.data}
+              />
               <p className="text-center mt-2 font-bold text-gray-600">
                 이전 게시물
               </p>
@@ -288,7 +372,10 @@ export default function Details({ params }) {
           )}
           {nextPostData && (
             <div className="">
-              <DeskSetupCard key={nextPostData.id} data={nextPostData} />
+              <DeskSetupCard
+                key={nextPostData.data.id}
+                data={nextPostData.data}
+              />
               <p className="text-center mt-2 font-bold text-gray-600">
                 다음 게시물
               </p>

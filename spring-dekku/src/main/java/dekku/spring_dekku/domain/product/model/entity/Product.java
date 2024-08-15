@@ -33,7 +33,7 @@ public class Product extends BaseEntity {
 
     private String description; // 제품 설명
 
-    private String salesLink; // 파트너스 링크
+    private String scale; // 파트너스 링크
 
     @Enumerated(EnumType.STRING)
     private ExistStatus existStatus; // 모델 존재 여부
@@ -47,12 +47,12 @@ public class Product extends BaseEntity {
     private FilePath filePath; // 내부 3D 파일 경로
 
     @Builder
-    public Product(Long id, String name, String price, String imageUrl, String salesLink, String description, ExistStatus existStatus, Category category, FilePath filePath) {
+    public Product(Long id, String name, String price, String imageUrl, String scale, String description, ExistStatus existStatus, Category category, FilePath filePath) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.salesLink = salesLink;
+        this.scale = scale;
         this.description = description;
         this.existStatus = existStatus;
         this.category = category;
