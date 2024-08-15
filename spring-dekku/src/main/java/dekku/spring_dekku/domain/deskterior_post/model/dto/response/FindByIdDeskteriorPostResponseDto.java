@@ -43,7 +43,7 @@ public record FindByIdDeskteriorPostResponseDto(
                 mapDeskteriorPostProductInfos(deskteriorPost.getDeskteriorPostProductInfos()),
                 comments,
                 deskteriorPost.getViewCount(),
-                deskteriorPost.getLikeCount(),
+                deskteriorPost.getLikes().size(),
                 deskteriorPost.getCommentCount(),
                 deskteriorPost.getOpenStatus(),
                 deskteriorPost.getDeskteriorAttributes(),
