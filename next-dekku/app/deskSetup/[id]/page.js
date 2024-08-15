@@ -20,6 +20,50 @@ export default function Details({ params }) {
   const [isEditMode, setIsEditMode] = useState(false); // 수정 모드 상태
   const [editedData, setEditedData] = useState({}); // 수정된 데이터 상태
   const router = useRouter();
+  const [comment, setComment] = useState("");
+
+  const handleCommentChange = (e) => {
+    setComment(e.target.value);
+  };
+
+  const handleCommentSubmit = async () => {
+    try {
+      if (comment.length === 0 || comment.length > 50) {
+        alert("댓글은 1자 이상 50자 이하로 작성해 주세요.");
+        return;
+      }
+
+      const accessToken = window.localStorage.getItem("access");
+      if (!accessToken) {
+        console.log("No access token found");
+        return;
+      }
+
+      const response = await fetch(
+        `https://dekku.co.kr/api/comments/${postId}`,
+        {
+          method: "POST",
+          headers: {
+            access: accessToken,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: comment, // 상태에 저장된 댓글을 body에 담음
+          }),
+        }
+      );
+      console.log(response);
+      if (!response.ok) {
+        throw new Error("Failed to create comment");
+      }
+
+      const data = await response.json();
+      console.log("Comment created successfully:", data);
+      setComment(""); // 댓글 작성 후 입력 창을 초기화
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
 
   useEffect(() => {
     console.log(params.id);
@@ -233,7 +277,7 @@ export default function Details({ params }) {
             </div>
           </div>
           <div className="ml-4">
-            <FollowButton toMemberId={data.memberId}/>
+            <FollowButton toMemberId={data.memberId} />
           </div>
         </div>
 
@@ -244,11 +288,33 @@ export default function Details({ params }) {
         <div className="bg-gray-100 p-4 rounded-md mb-4 space-y-2">
           {data.comments.map((comment) => (
             <div key={comment.id} className="flex">
-              <img src={comment.memberImageUrl} className="w-6 h-6 rounded-full mr-2"/>
-              <span className="w-12 truncate mr-2">{comment.memberNickname}</span>
+              <img
+                src={comment.memberImageUrl}
+                className="w-6 h-6 rounded-full mr-2"
+              />
+              <span className="w-12 truncate mr-2">
+                {comment.memberNickname}
+              </span>
               <span className="w-[48rem]">{comment.content}</span>
             </div>
           ))}
+          <div className="comment-section">
+            {/* 댓글 작성 칸과 버튼 */}
+            <textarea
+              className="border rounded p-2 w-full mb-2"
+              placeholder="댓글을 작성하세요"
+              rows={1}
+              value={comment}
+              onChange={handleCommentChange}
+            ></textarea>
+
+            <button
+              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+              onClick={handleCommentSubmit}
+            >
+              댓글 작성
+            </button>
+          </div>
         </div>
 
         <hr className="border-t-2 border-gray-300 mb-4" />
