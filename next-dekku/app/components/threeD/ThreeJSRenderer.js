@@ -6,7 +6,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import MouseControls from "./MouseControls";
 import TransformControls from "./TransformControls";
-import SelectedProducts from "./SelectedProducts";
+import selectedProducts from "./SelectedProducts";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
 
@@ -34,7 +34,7 @@ const ThreeJSRenderer = ({
       uniqueId: model.userData.uniqueId,
       name: model.userData.product.name,
       description: model.userData.product.description,
-      image: model.userData.product.image,
+      imageUrl: model.userData.product.imageUrl,
       modelPath: model.userData.product.modelPath,
       position: model.position.toArray(),
       scale: model.scale.toArray(),
@@ -43,9 +43,9 @@ const ThreeJSRenderer = ({
       isFetched: model.userData.isFetched,
     }));
     localStorage.setItem("sceneState", JSON.stringify(data));
-    console.log(data);
+    console.log('tlqkf', models);
   };
-
+  
   const captureThumbnail = () => {
     renderer.render(scene, camera);
     const thumbnail = renderer.domElement.toDataURL("image/png");
@@ -71,14 +71,17 @@ const ThreeJSRenderer = ({
           model.userData = {
             id: modelData.id,
             uniqueId: modelData.uniqueId || uuidv4(),
-            product: modelData,
+            product: {
+              ...modelData,
+              imageUrl: modelData.imageUrl
+            },
             isFetched: true,
           };
-
+          console.log(modelData)
           // 그림자 설정
           model.castShadow = true;
           model.receiveShadow = true;
-
+          
           setModels((prevModels) => [...prevModels, model]);
           setSelectedProducts((prevProducts) => [
             ...prevProducts,
@@ -86,7 +89,7 @@ const ThreeJSRenderer = ({
               id: modelData.id,
               name: modelData.name,
               description: modelData.description,
-              image: modelData.image,
+              imageUrl: modelData.imageUrl,
               modelPath: modelData.modelPath,
               scale: modelData.scale,
               uniqueId: modelData.uniqueId || uuidv4(),
