@@ -17,8 +17,8 @@ public record CreateProductRequestDto (
         @NotBlank(message = "이미지 URL은 공백일 수 없습니다.") // 이미지 url
         String imageUrl,
 
-        @NotNull(message = "파트너스 링크는 NULL일 수 없습니다.") // 파트너스 링크
-        String salesLink,
+        @NotNull(message = "모델의 크기는 NULL일 수 없습니다.") // 파트너스 링크
+        String scale,
 
         @NotNull(message = "제품 설명은 NULL일 수 없습니다.") // 제품 설명
         String description,

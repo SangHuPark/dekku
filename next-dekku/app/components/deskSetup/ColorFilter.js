@@ -11,7 +11,7 @@ export default function ColorFilter({ colorFilter, setColorFilter }) {
       onChange={(e) => setColorFilter(e.target.value)}
       className="font-pretendard font-bold p-2 bg-[#F5F5F5] text-[#757575] w-30"
     >
-      <option value="NON_SELECT">컬러 정보 추가</option>
+      <option value="all">컬러 정보 추가</option>
       <option value="BLACK_AND_WHITE">블랙&화이트</option>
       <option value="BLACK">블랙</option>
       <option value="WHITE">화이트</option>

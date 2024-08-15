@@ -29,7 +29,8 @@ public record FindByIdDeskteriorPostResponseDto(
         OpenStatus openStatus,
         DeskteriorAttributes deskteriorAttributes,
         String createdAt,
-        String updatedAt
+        String updatedAt,
+        String thumbnail
 ) {
     public FindByIdDeskteriorPostResponseDto(DeskteriorPost deskteriorPost, List<CommentResponseDto> comments) {
         this(
@@ -48,7 +49,8 @@ public record FindByIdDeskteriorPostResponseDto(
                 deskteriorPost.getOpenStatus(),
                 deskteriorPost.getDeskteriorAttributes(),
                 deskteriorPost.getCreatedAt(),
-                deskteriorPost.getUpdatedAt()
+                deskteriorPost.getUpdatedAt(),
+                deskteriorPost.getThumbnailUrl()
         );
     }
 
@@ -78,7 +80,7 @@ public record FindByIdDeskteriorPostResponseDto(
                     product.getName(),
                     product.getPrice(),
                     product.getImageUrl(),
-                    product.getSalesLink(),
+                    product.getScale(),
                     product.getDescription(),
                     product.getExistStatus(),
                     product.getCategory(),
