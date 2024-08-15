@@ -18,7 +18,7 @@ public interface DeskteriorPostService {
 
     List<FindDeskteriorPostResponseDto> findJobPosts(FindPostsByJobRequestDto request);
 
-    FindByIdDeskteriorPostResponseDto findById(Long id);
+    FindByIdDeskteriorPostResponseDto findById(Long id, Boolean isRender);
 
     DeskteriorPost updateDeskteriorPost(Long id, String token, UpdateDeskteriorPostRequestDto requestDto);
 
