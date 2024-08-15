@@ -21,6 +21,8 @@ import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.model.entity.Member;
 import dekku.spring_dekku.domain.member.repository.MemberRepository;
 import dekku.spring_dekku.domain.product.exception.NotExistsProductException;
+import dekku.spring_dekku.domain.product.model.dto.request.RecommendRequestDto;
+import dekku.spring_dekku.domain.product.model.dto.response.CreatePostProductMatchResponseDto;
 import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
 import dekku.spring_dekku.domain.product.model.entity.Product;
 import dekku.spring_dekku.domain.product.repository.ProductRepository;
@@ -278,6 +280,8 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
 
         return false;
     }
+
+
 
 
     @EventListener
