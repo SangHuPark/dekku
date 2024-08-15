@@ -61,7 +61,7 @@ public class ProductServiceimpl implements ProductService {
     }
 
     public List<CreateProductResponseDto> findAllProductDtos() {
-        List<Product> products = productRepository.findAll();
+        List<Product> products = productRepository.findAllProductsOrderByCreatedAtDesc();
         List<CreateProductResponseDto> productResponseDtos = new ArrayList<>();
 
         for (Product product : products) {
