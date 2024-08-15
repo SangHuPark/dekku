@@ -158,7 +158,7 @@ const Profile = (id) => {
                 />
               </div>
             </div>
-            <p>{userData.introduction || "소개글이 없습니다."}</p>
+            <p>{userData.data.introduction || "소개글이 없습니다."}</p>
           </div>
         </div>
         <div className="flex justify-start">
