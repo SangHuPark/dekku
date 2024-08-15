@@ -112,7 +112,7 @@ export default function DeskSetupPage() {
           </div>
         </div>
       </div>
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center mt-6 mb-6">
           <h1 className="font-bold text-3xl">게시된 데스크 셋업</h1>
           <div className="relative flex items-center">
@@ -156,7 +156,7 @@ export default function DeskSetupPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {filteredData.slice(0, displayedCount).map((data) => (
-            <DeskSetupCard key={data.id} data={data} />
+            <DeskSetupCard key={data.postId} data={data} />
           ))}
         </div>
 
