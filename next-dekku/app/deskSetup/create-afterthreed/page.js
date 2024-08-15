@@ -45,17 +45,17 @@ const CreateAfterThreedPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
+  
     const style = styleInfo || "NON_SELECT";
     const color = colorInfo || "NON_SELECT";
     const job = jobInfo || "NON_SELECT";
-
+  
     // 로컬 스토리지에서 씬 상태와 썸네일 가져오기
     const storedSceneState = localStorage.getItem('sceneState');
     const storedThumbnail = localStorage.getItem('thumbnail');
     const accessToken = localStorage.getItem('access');
     const selectedProducts = localStorage.getItem('selectedProducts')
-
+  
     // 선택한 상품 ID 추출
     let productIds = [];
     if (selectedProducts) {
@@ -66,26 +66,21 @@ const CreateAfterThreedPage = () => {
         console.error("Error parsing selectedProducts:", error);
       }
     }
-
-    console.log('선택한 상품들 Id:', productIds);
-
+  
     if (!storedSceneState || !storedThumbnail) {
       console.error("No scene state or thumbnail found in localStorage.");
       setIsSubmitting(false);
       return;
     }
-
-    // 멤버 ID는 로그인 정보를 사용해 가져와야 합니다.
+  
     const memberId = "yourMemberId"; // 실제 구현 시 수정
-
+  
     try {
       // JSON과 썸네일을 S3로 업로드
       const { jsonUrl, imageUrl } = await uploadToS3(storedSceneState, storedThumbnail, memberId);
-
-      console.log("Uploaded file URLs:", { jsonUrl, imageUrl });
-
+  
       // 업로드된 URL을 백엔드 서버에 전달
-      const response = await fetch('http://dekku.co.kr:8080/api/deskterior-post', {
+      const response = await fetch('https://dekku.co.kr/api/deskterior-post', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,44 +89,43 @@ const CreateAfterThreedPage = () => {
         body: JSON.stringify({
           title,
           content,
-          style: styleInfo,
-          color: colorInfo,
-          job: jobInfo,
+          style: style,
+          color: color,
+          job: job,
           deskteriorPostImages: [imageUrl, jsonUrl], // 이미지, 모델json URL 전달
-          productId: productIds,                    // 관련된 제품 ID가 있다면 추가
-          openStatus: isPublic ? "OPENED":'CLOSED',   // 공개 상태 반영
+          productIds: productIds.length > 0 ? productIds : [], // 제품 ID가 없는 경우 빈 배열로 설정
+          openStatus: isPublic ? "OPENED" : "CLOSED",
         }),
       });
-
+  
       if (!response.ok) {
-        throw new Error('Failed to create post');
+        const errorMessage = await response.text();
+        throw new Error(`Failed to create post: ${errorMessage}`);
       }
-
+  
       const result = await response.json();
-      console.log('Sever Response:', result.data)
-
-      const postId = result.postId; // 서버에서 반환한 생성된 게시글 ID 사용
+      console.log(result)
+      const postId = result.data.postId;
+  
       if (!postId) {
-        console.error('Post id 응답에 없음')
-        throw new Error('Post id 응답에 없음')
+        throw new Error('Post ID not found in the server response');
       }
-      console.log("Post successfully created with ID:", postId);
-      
+  
       // 모달 띄우기
       setIsModalOpen(true);
-
+  
       // 생성된 게시글 ID 저장
       localStorage.setItem('createdPostId', postId);
-
+  
     } catch (err) {
       console.error("Failed to upload files:", err);
       setIsSubmitting(false);
       return;
     }
-
+  
     setIsSubmitting(false);
   };
-
+  
   const handleModalClose = () => {
     setIsModalOpen(false);
     const postId = localStorage.getItem('createdPostId') // 생성된 게시글 ID 가져오기
