@@ -51,7 +51,7 @@ services:
     depends_on:
       - dekku-mysql
       - dekku-redis
-      - dekku-mongo
+      # - dekku-mongo
     environment:
       - TZ=Asia/Seoul
     ports:
@@ -84,7 +84,7 @@ services:
 volumes:
   mydata:
   redisdata:
-  mongodata:
+  # mongodata:
 
 networks:
   dekku-network:
