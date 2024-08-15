@@ -34,9 +34,11 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.PriorityQueue;
 
 @Service
 @RequiredArgsConstructor
@@ -143,19 +145,42 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     @Override
     @Transactional
     public List<FindDeskteriorPostResponseDto> findTopThreePosts() {
-        List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findTopPosts();
-        if (deskteriorPosts.isEmpty()) {
+        LocalDateTime sevenDaysBefore = LocalDateTime.now().minusDays(7);
+        List<DeskteriorPost> recentPosts = deskteriorPostRepository.findByCreatedAfter(sevenDaysBefore);
+
+        if (recentPosts.isEmpty()) {
             throw new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST);
         }
 
+        PriorityQueue<DeskteriorPost> pq = new PriorityQueue<>(
+                (a, b) -> b.getViewCount() - a.getViewCount()
+        );
+
+        pq.addAll(recentPosts);
+
         List<FindDeskteriorPostResponseDto> response = new ArrayList<>();
-        for (DeskteriorPost deskteriorPost : deskteriorPosts) {
-            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost);
+
+        for (int i = 0; i < 3 && !pq.isEmpty(); i++) {
+            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(pq.poll());
             response.add(findDeskteriorPostResponseDto);
         }
 
         return response;
     }
+//    public List<FindDeskteriorPostResponseDto> findTopThreePosts() {
+//        List<DeskteriorPost> deskteriorPosts = deskteriorPostRepository.findTopPosts();
+//        if (deskteriorPosts.isEmpty()) {
+//            throw new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST);
+//        }
+//
+//        List<FindDeskteriorPostResponseDto> response = new ArrayList<>();
+//        for (DeskteriorPost deskteriorPost : deskteriorPosts) {
+//            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost);
+//            response.add(findDeskteriorPostResponseDto);
+//        }
+//
+//        return response;
+//    }
 
 
     @DistributeLock(key = "#id")
