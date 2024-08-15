@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record FindByIdDeskteriorPostResponseDto(
+        Long memberId,
         String memberNickName,
         String memberImage,
         String title,
@@ -26,10 +27,13 @@ public record FindByIdDeskteriorPostResponseDto(
         int likeCount,
         int commentCount,
         OpenStatus openStatus,
-        DeskteriorAttributes deskteriorAttributes
+        DeskteriorAttributes deskteriorAttributes,
+        String createdAt,
+        String updatedAt
 ) {
     public FindByIdDeskteriorPostResponseDto(DeskteriorPost deskteriorPost, List<CommentResponseDto> comments) {
         this(
+                deskteriorPost.getMember().getId(),
                 deskteriorPost.getMember().getNickname(),
                 deskteriorPost.getMember().getImageUrl(),
                 deskteriorPost.getTitle(),
@@ -39,10 +43,12 @@ public record FindByIdDeskteriorPostResponseDto(
                 mapDeskteriorPostProductInfos(deskteriorPost.getDeskteriorPostProductInfos()),
                 comments,
                 deskteriorPost.getViewCount(),
-                deskteriorPost.getLikeCount(),
+                deskteriorPost.getLikes().size(),
                 deskteriorPost.getCommentCount(),
                 deskteriorPost.getOpenStatus(),
-                deskteriorPost.getDeskteriorAttributes()
+                deskteriorPost.getDeskteriorAttributes(),
+                deskteriorPost.getCreatedAt(),
+                deskteriorPost.getUpdatedAt()
         );
     }
 
@@ -57,7 +63,7 @@ public record FindByIdDeskteriorPostResponseDto(
     private static List<String> mapLikes(List<Like> likes) {
         List<String> likeList = new ArrayList<>();
         for (Like like : likes) {
-            likeList.add(like.getMember().getUsername());
+            likeList.add(like.getMember().getNickname());
         }
         return likeList;
     }

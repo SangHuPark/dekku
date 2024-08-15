@@ -23,7 +23,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
 
-    private final Long accessExpiredTime = 3600000L;
+    private final Long accessExpiredTime = 36000000L;
     private final Long refreshExpiredTime = 86400000L;
 
     @Override

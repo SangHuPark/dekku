@@ -83,7 +83,6 @@ const CreateAfterThreedPage = () => {
       // 업로드된 URL을 백엔드 서버에 전달
       const response = await fetch('http://dekku.co.kr:8080/api/deskterior-post', {
         method: 'POST',
-        credentials: "include",
         headers: {
           'Content-Type': 'application/json',
           'access': accessToken,
