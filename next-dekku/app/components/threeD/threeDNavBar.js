@@ -7,10 +7,16 @@ import { v4 as uuidv4 } from 'uuid';
 import { useFetchProducts } from './LoadAllProducts'; // 훅 임포트
 
 const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searchTerm, onSearch }) => {
-  const [activeCategory, setActiveCategory] = useState(selectedCategory);
+  // 초기 활성화된 카테고리를 'MONITOR'로 설정
+  const [activeCategory, setActiveCategory] = useState('MONITOR'); 
 
   // useFetchProducts 훅을 사용해 모든 제품 불러오기
   const { products: allProducts, loading, error } = useFetchProducts();
+
+  // 페이지가 처음 로드될 때 'MONITOR' 카테고리를 설정
+  useEffect(() => {
+    setSelectedCategory('MONITOR');
+  }, [setSelectedCategory]);
 
   // 로드된 모든 제품을 콘솔에 출력
   console.log(allProducts);
@@ -22,7 +28,6 @@ const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searc
 
   // 카테고리 이미지 매핑
   const categoryImages = {
-    'DESK': '/category/desk.png',
     'MONITOR': '/category/monitor.png',
     'LAPTOP': '/category/laptop.png',
     'MOUSE': '/category/computer-mouse.png',
@@ -43,12 +48,6 @@ const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searc
     scale: product.salesLink ? product.salesLink.split(',').map(val => parseFloat(val.trim())) : [1, 1, 1] // salesLink를 scale 배열로 변환
   }));
   
-  console.log('Filtered Products:', filteredProducts);
-  
-  
-  console.log('Filtered Products:', filteredProducts);
-  
-
   console.log('Filtered Products:', filteredProducts);
 
   // 카테고리 클릭 핸들러
@@ -97,13 +96,13 @@ const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searc
       </div>
       {/* 필터링된 제품 목록 영역 */}
       <div className="p-8 overflow-y-auto bg-white w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      {filteredProducts.map((product) => (
-        <ProductCard 
-          key={product.uniqueId} // 각 제품에 고유한 key prop으로 uniqueId를 사용합니다.
-          {...product} 
-          addProduct={addProduct} // 제품 추가 함수 전달
-        />
-      ))}
+        {filteredProducts.map((product) => (
+          <ProductCard 
+            key={product.uniqueId} // 각 제품에 고유한 key prop으로 uniqueId를 사용합니다.
+            {...product} 
+            addProduct={addProduct} // 제품 추가 함수 전달
+          />
+        ))}
         {filteredProducts.length === 0 && (
           <div className="col-span-full text-center text-gray-500">No products found</div>
         )}

@@ -148,17 +148,17 @@ const ThreeJSRenderer = ({
     scene.add(directionalLight);
     scene.add(directionalLight.target);
 
-    // 조명의 위치를 나타내는 구체 추가
-    const lightSphereGeometry = new THREE.SphereGeometry(5, 10, 8); // 구체의 크기 조정 가능
-    const lightSphereMaterial = new THREE.MeshBasicMaterial({
-      color: 0xffff00,
-    }); // 노란색 구체로 조명 표시
-    const lightSphere = new THREE.Mesh(
-      lightSphereGeometry,
-      lightSphereMaterial
-    );
-    lightSphere.position.copy(directionalLight.position); // 조명의 위치와 동일하게 설정
-    scene.add(lightSphere);
+    // // 조명의 위치를 나타내는 구체 추가
+    // const lightSphereGeometry = new THREE.SphereGeometry(5, 10, 8); // 구체의 크기 조정 가능
+    // const lightSphereMaterial = new THREE.MeshBasicMaterial({
+    //   color: 0xffff00,
+    // }); // 노란색 구체로 조명 표시
+    // const lightSphere = new THREE.Mesh(
+    //   lightSphereGeometry,
+    //   lightSphereMaterial
+    // );
+    // lightSphere.position.copy(directionalLight.position); // 조명의 위치와 동일하게 설정
+    // scene.add(lightSphere);
 
     const loader = new GLTFLoader();
     loader.load("/threedmodels/ssafydesk.glb", (gltf) => {
@@ -343,7 +343,7 @@ const ThreeJSRenderer = ({
   return (
     <div
       ref={mountRef}
-      style={{ width: "100%", height: "100%", position: "relative" }}
+      style={{ width: "900px", height: "100%", position: "relative" }}
     >
       {scene && camera && (
         <>
@@ -373,18 +373,6 @@ const ThreeJSRenderer = ({
               onClose={handleCloseTransformControls}
             />
           )}
-          <SelectedProducts
-            selectedProducts={selectedProducts}
-            removeProduct={(uniqueId) => {
-              console.log(
-                "removeProduct called in ThreeJSRenderer with uniqueId:",
-                uniqueId
-              );
-              setSelectedProducts((prevProducts) =>
-                prevProducts.filter((product) => product.uniqueId !== uniqueId)
-              );
-            }}
-          />
           <button
             className="bg-cyan-800 text-white px-10 py-4 rounded mt-2 fixed bottom-10 right-10 text-lg"
             onClick={handleComplete}
