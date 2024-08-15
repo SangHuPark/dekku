@@ -45,10 +45,12 @@ const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searc
     ...product,
     uniqueId: product.uniqueId || uuidv4(),
     modelPath: product.filePath, // filePath를 modelPath로 할당
-    scale: product.salesLink ? product.salesLink.split(',').map(val => parseFloat(val.trim())) : [1, 1, 1] // salesLink를 scale 배열로 변환
+    scale: product.salesLink ? product.salesLink.split(',').map(val => parseFloat(val.trim())) : [1, 1, 1], // salesLink를 scale 배열로 변환
+  
   }));
   
   console.log('Filtered Products:', filteredProducts);
+  
 
   // 카테고리 클릭 핸들러
   const handleCategoryClick = (category) => {
