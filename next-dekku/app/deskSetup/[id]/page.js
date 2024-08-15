@@ -1,13 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer"; // ThreeJSRenderer 임포트
 import DeskSetupCard from "../../components/deskSetup/DeskSetupCard";
 import { useRouter } from "next/navigation";
 import LikeButton from "../../components/LikeButton";
 import FollowButton from "../../components/FollowButton";
-import Image from "next/image";
 
 export default function Details({ params }) {
   const postId = parseInt(params.id, 10); // 문자열을 정수로 변환
@@ -20,6 +18,10 @@ export default function Details({ params }) {
   const [editedData, setEditedData] = useState({}); // 수정된 데이터 상태
   const router = useRouter();
   const [comment, setComment] = useState("");
+  const [likeChangeTrigger, setLikeChangeTrigger] = useState(false);
+  const [likeStatus, setLikeStatus] = useState(0);
+  const [commentChangeTrigger, setCommentChangeTrigger] = useState(false);
+  const [commentStatus, setCommentStatus] = useState(false);
 
   const handleCommentChange = (e) => {
     setComment(e.target.value);
@@ -63,6 +65,58 @@ export default function Details({ params }) {
       console.log("error: ", error);
     }
   };
+
+  useEffect(() => {
+    const fetchLike = async () => {
+      try {
+        const response = await fetch(
+          `https://dekku.co.kr/api/deskterior-post/${params.id}`,
+          {
+            method: "GET",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch post details");
+        }
+
+        const responseData = await response.json();
+        console.log(responseData);
+        const postData = responseData.data;
+        console.log(postData);
+        setLikeStatus(postData);
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
+    fetchLike();
+  }, [likeChangeTrigger]);
+
+  useEffect(() => {
+    const fetchComment = async () => {
+      try {
+        const response = await fetch(
+          `https://dekku.co.kr/api/deskterior-post/${params.id}`,
+          {
+            method: "GET",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch post details");
+        }
+
+        const responseData = await response.json();
+        console.log(responseData);
+        const postData = responseData.data;
+        console.log(postData);
+        setCommentStatus(postData);
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
+    fetchComment();
+  }, [commentChangeTrigger]);
 
   useEffect(() => {
     console.log(params.id);
@@ -256,8 +310,11 @@ export default function Details({ params }) {
           </div>
           <div className="flex items-center space-x-2">
             {/* <img src="/like_icon.png" alt="likes" className="w-5 h-5" /> */}
-            <LikeButton toPostId={postId} />
-            <span>{data.likeCount}</span>
+            <LikeButton
+              toPostId={postId}
+              setLikeChangeTrigger={setLikeChangeTrigger}
+            />
+            <span>{likeStatus.likeCount}</span>
           </div>
         </div>
 
@@ -282,10 +339,10 @@ export default function Details({ params }) {
 
         <hr className="border-t-2 border-gray-300 mb-4" />
 
-        <div className="mb-4">댓글 : {data.commentCount}개</div>
+        <div className="mb-4">댓글 : {commentStatus.commentCount}개</div>
 
         <div className="bg-gray-100 p-4 rounded-md mb-4 space-y-2">
-          {data.comments.map((comment) => (
+          {commentStatus.comments.map((comment) => (
             <div key={comment.id} className="flex">
               <img
                 src={comment.memberImageUrl}
@@ -300,7 +357,7 @@ export default function Details({ params }) {
           <div className="comment-section">
             {/* 댓글 작성 칸과 버튼 */}
             <textarea
-              className="border rounded p-2 w-full mb-2"
+              className="border rounded p-2 w-full my-2"
               placeholder="댓글을 작성하세요"
               rows={1}
               value={comment}
@@ -309,7 +366,11 @@ export default function Details({ params }) {
 
             <button
               className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-              onClick={handleCommentSubmit}
+              onClick={() => {
+                handleCommentSubmit();
+                setComment('');
+                setCommentChangeTrigger((prev) => !prev);
+              }}
             >
               댓글 작성
             </button>

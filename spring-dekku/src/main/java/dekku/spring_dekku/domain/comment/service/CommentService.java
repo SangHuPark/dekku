@@ -8,7 +8,6 @@ import dekku.spring_dekku.domain.comment.model.dto.CommentDto;
 import dekku.spring_dekku.domain.comment.model.dto.response.CommentResponseDto;
 import dekku.spring_dekku.domain.comment.model.entity.Comment;
 import dekku.spring_dekku.domain.comment.repository.CommentRepository;
-import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
 import dekku.spring_dekku.domain.member.exception.NotExistsUserException;
 import dekku.spring_dekku.domain.member.jwt.JwtTokenProvider;
 import dekku.spring_dekku.domain.member.model.entity.Member;
@@ -16,7 +15,6 @@ import dekku.spring_dekku.domain.member.repository.MemberRepository;
 import dekku.spring_dekku.global.status.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,7 +86,8 @@ public class CommentService {
                     comment.getCommentId(),
                     comment.getContent(),
                     member.getNickname(),
-                    member.getImageUrl()
+                    member.getImageUrl(),
+                    memberId
             );
 
             commentResponseDtos.add(commentResponseDto);

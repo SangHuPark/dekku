@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLogin } from "./AuthContext";
 
-const LikeButton = (toPostId) => {
+const LikeButton = ({ toPostId, setLikeChangeTrigger }) => {
   const { isLoggedIn } = useLogin();
   const [isLikedPost, setIsLikedPost] = useState(false);
 
@@ -18,7 +18,7 @@ const LikeButton = (toPostId) => {
         console.log(toPostId);
         console.log(toPostId.toPostId);
         const response = await fetch(
-          `https://dekku.co.kr/api/deskterior-post/liked/${toPostId.toPostId}`,
+          `https://dekku.co.kr/api/deskterior-post/liked/${toPostId}`,
           {
             method: "GET",
             headers: {
@@ -59,6 +59,7 @@ const LikeButton = (toPostId) => {
       }
       const data = await response.json();
       setIsLikedPost(true);
+      setLikeChangeTrigger(prev => !prev);
     } catch (error) {
       console.log("error: ", error);
     }
@@ -85,6 +86,7 @@ const LikeButton = (toPostId) => {
       }
       const data = await response.json();
       setIsLikedPost(false);
+      setLikeChangeTrigger(prev => !prev);
     } catch (error) {
       console.log("error: ", error);
     }
@@ -92,8 +94,8 @@ const LikeButton = (toPostId) => {
 
   return (
     <button onClick={isLikedPost ? handelUnlike : handleLike}>
-      {isLikedPost && <img className="w-6 h-6" src="/like_fill.svg"/>}
-      {!isLikedPost && <img className="w-6 h-6" src="/like_empty.svg"/>}
+      {isLikedPost && <img className="w-6 h-6" src="/like_fill.svg" />}
+      {!isLikedPost && <img className="w-6 h-6" src="/like_empty.svg" />}
     </button>
   );
 };
