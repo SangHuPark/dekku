@@ -46,6 +46,10 @@ const CreateAfterThreedPage = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const style = styleInfo || "NON_SELECT";
+    const color = colorInfo || "NON_SELECT";
+    const job = jobInfo || "NON_SELECT";
+
     // 로컬 스토리지에서 씬 상태와 썸네일 가져오기
     const storedSceneState = localStorage.getItem('sceneState');
     const storedThumbnail = localStorage.getItem('thumbnail');
