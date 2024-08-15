@@ -7,13 +7,6 @@ import "./styles/globals.css";
 import localFont from "next/font/local";
 import AuthProvider from "./components/AuthContext";
 
-// export const metadata = {
-//   title: "Next Dekku",
-//   description: "A Next.js project",
-// };
-
-// bg-gradient-to-b from-white to-[#F1EFEB]
-
 const pretendard = localFont({
   src: "../fonts/PretendardVariable.woff2",
   display: "swap",
@@ -26,13 +19,14 @@ export default function RootLayout({ children }) {
     <html lang="ko">
       <body
         className={`${pretendard.variable} min-h-screen flex flex-col font-pretendard`}
+        style={{ transform: "scale(0.8)", transformOrigin: "top left", width: "125%", height: "100vh", overflow: "auto" }} // 화면을 80%로 축소 및 오버플로우 설정
       >
         <AuthProvider>
           <Header className="" />
-          <main className="mt-20 flex-grow bg-gradient-to-b from-white to-[#F1EFEB]">
+          <main className="flex-grow"> {/* main에 flex-grow 추가 */}
             {children}
           </main>
-          <Footer />
+          <Footer className="mt-auto" /> {/* Footer가 항상 하단에 위치하도록 설정 */}
         </AuthProvider>
       </body>
     </html>
