@@ -10,6 +10,7 @@ import dekku.spring_dekku.domain.product.model.dto.response.CreateProductRespons
 import dekku.spring_dekku.domain.product.model.entity.DeskteriorPostProductInfo;
 import dekku.spring_dekku.domain.product.model.entity.Product;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +29,8 @@ public record FindByIdDeskteriorPostResponseDto(
         int commentCount,
         OpenStatus openStatus,
         DeskteriorAttributes deskteriorAttributes,
-        String createdAt,
-        String updatedAt,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt,
         String thumbnail
 ) {
     public FindByIdDeskteriorPostResponseDto(DeskteriorPost deskteriorPost, List<CommentResponseDto> comments) {
