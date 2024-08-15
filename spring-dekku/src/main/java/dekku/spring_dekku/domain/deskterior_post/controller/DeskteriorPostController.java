@@ -117,7 +117,7 @@ public class DeskteriorPostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Operation(summary = "카테고리별 추천 게시글 조회")
+    @Operation(summary = "직업별 추천 게시글 조회")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -134,7 +134,7 @@ public class DeskteriorPostController {
                     description = "추천 게시글 조회 요청 실패"
             )
     })
-    @GetMapping("/recommend-posts")
+    @PostMapping("/recommend-posts")
     public ResponseEntity<List<FindDeskteriorPostResponseDto>> findPostsByJob(@RequestBody FindPostsByJobRequestDto request) {
         List<FindDeskteriorPostResponseDto> response = deskteriorPostService.findJobPosts(request);
 
