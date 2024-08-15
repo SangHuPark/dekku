@@ -136,6 +136,7 @@ public class DeskteriorPostController {
     })
     @PostMapping("/recommend-posts")
     public ResponseEntity<List<FindDeskteriorPostResponseDto>> findPostsByJob(@RequestBody FindPostsByJobRequestDto request) {
+        log.info("request: {}", request);
         List<FindDeskteriorPostResponseDto> response = deskteriorPostService.findJobPosts(request);
 
         if(response == null || response.isEmpty()) {
