@@ -195,7 +195,7 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     }
 
     @DistributeLock(key = "#id")
-    public FindByIdDeskteriorPostResponseDto findById(Long id) {
+    public FindByIdDeskteriorPostResponseDto findById(Long id, Boolean isRender) {
         DeskteriorPost deskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
 
@@ -203,7 +203,10 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
             deskteriorPost.insertThumbnailUrl(deskteriorPost.getDeskteriorPostImages().get(0).getImageUrl());
         }
 
-        deskteriorPost.increase(1);
+        if(isRender){
+            deskteriorPost.increase(1);
+        }
+
         deskteriorPostRepository.saveAndFlush(deskteriorPost);
 
         List<CommentResponseDto> commentResponseDtos = commentService.getCommentsByPostId(id);

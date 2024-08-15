@@ -74,7 +74,7 @@ class ViewCountServiceTest {
     @Test
     @DisplayName("실제 포스트 조회 시 분산 락 적용 여부 테스트")
     public void viewCountTest() throws Exception {
-        viewTest((_no) -> deskteriorPostService.findById(POST_ID));
+        viewTest((_no) -> deskteriorPostService.findById(POST_ID, true));
     }
 
 }

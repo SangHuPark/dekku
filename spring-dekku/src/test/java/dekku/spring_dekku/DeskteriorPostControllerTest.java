@@ -71,7 +71,7 @@ public class DeskteriorPostControllerTest {
         assertThat(failCount.get()).isZero();
 
         // Check the final view count
-        FindByIdDeskteriorPostResponseDto finalResponse = deskteriorPostService.findById(postId);
+        FindByIdDeskteriorPostResponseDto finalResponse = deskteriorPostService.findById(postId, true);
         assertThat(finalResponse.viewCount()).isEqualTo(numberOfThreads);
     }
 }
