@@ -196,15 +196,19 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
 
     @DistributeLock(key = "#id")
     public FindByIdDeskteriorPostResponseDto findById(Long id) {
-        DeskteriorPost foundDeskteriorPost = deskteriorPostRepository.findById(id)
+        DeskteriorPost deskteriorPost = deskteriorPostRepository.findById(id)
                 .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
 
-        foundDeskteriorPost.increase(1);
-        deskteriorPostRepository.saveAndFlush(foundDeskteriorPost);
+        if (Objects.isNull(deskteriorPost.getThumbnailUrl()) && !deskteriorPost.getDeskteriorPostImages().isEmpty()) {
+            deskteriorPost.insertThumbnailUrl(deskteriorPost.getDeskteriorPostImages().get(0).getImageUrl());
+        }
+
+        deskteriorPost.increase(1);
+        deskteriorPostRepository.saveAndFlush(deskteriorPost);
 
         List<CommentResponseDto> commentResponseDtos = commentService.getCommentsByPostId(id);
 
-        return new FindByIdDeskteriorPostResponseDto(foundDeskteriorPost, commentResponseDtos);
+        return new FindByIdDeskteriorPostResponseDto(deskteriorPost, commentResponseDtos);
     }
 
     @DistributeLock(key = "#postId")
