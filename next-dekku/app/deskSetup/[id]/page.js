@@ -141,8 +141,12 @@ export default function Details({ params }) {
         setData(postData);
         setEditedData(postData); // 수정 모드가 활성화되었을 때 편집할 수 있도록 초기 데이터 설정
 
-        if (postData.jsonUrl) {
-          setJsonUrl(postData.jsonUrl); // jsonUrl 설정
+        // jsonUrl이 deskteriorPostImages에 포함되어 있는지 확인
+        const foundJsonUrl = postData.deskteriorPostImages.find((url) =>
+          url.includes(".json")
+        );
+        if (foundJsonUrl) {
+          setJsonUrl(foundJsonUrl); // jsonUrl 설정
         }
 
         // 현재 사용자와 게시글 작성자를 비교하여 isAuthor 상태 설정
@@ -176,6 +180,7 @@ export default function Details({ params }) {
 
     fetchPostDetails();
   }, [postId]);
+
 
   const fetchUserId = async () => {
     // access 토큰을 사용하여 서버에서 userId를 가져오는 로직
