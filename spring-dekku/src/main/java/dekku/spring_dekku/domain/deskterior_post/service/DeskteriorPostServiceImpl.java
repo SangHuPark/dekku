@@ -160,8 +160,12 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
 
         List<FindDeskteriorPostResponseDto> response = new ArrayList<>();
 
-        for (int i = 0; i < 3 && !pq.isEmpty(); i++) {
-            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(pq.poll());
+        for (int i = 0; i < 3 && !pq.isEmpty(); ++i) {
+            DeskteriorPost deskteriorPost = pq.poll();
+            if (Objects.isNull(deskteriorPost.getThumbnailUrl()) && !deskteriorPost.getDeskteriorPostImages().isEmpty()) {
+                deskteriorPost.insertThumbnailUrl(deskteriorPost.getDeskteriorPostImages().get(0).getImageUrl());
+            }
+            FindDeskteriorPostResponseDto findDeskteriorPostResponseDto = new FindDeskteriorPostResponseDto(deskteriorPost);
             response.add(findDeskteriorPostResponseDto);
         }
 
