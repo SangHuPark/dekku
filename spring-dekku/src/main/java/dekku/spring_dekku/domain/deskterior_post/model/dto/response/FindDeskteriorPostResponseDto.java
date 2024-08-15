@@ -43,7 +43,7 @@ public record FindDeskteriorPostResponseDto(
                         deskteriorPost.getContent(),
                         deskteriorPost.getThumbnailUrl(),
                         deskteriorPost.getViewCount(),
-                        deskteriorPost.getLikeCount(),
+                        deskteriorPost.getLikes().size(),
                         deskteriorPost.getCommentCount(),
                         deskteriorPost.getOpenStatus(),
                         deskteriorPost.getDeskteriorAttributes(),
