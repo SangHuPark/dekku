@@ -163,7 +163,7 @@ public class DeskteriorPostController {
             )
     })
     @GetMapping("/{postId}")
-    public ResponseEntity findDeskteriorPost(@PathVariable("postId") Long postId, @RequestBody Boolean isRender) {
+    public ResponseEntity findDeskteriorPost(@PathVariable("postId") Long postId, @RequestParam Boolean isRender) {
         FindByIdDeskteriorPostResponseDto response = deskteriorPostService.findById(postId, isRender);
 
         log.info("response : {}", response);
