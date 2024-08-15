@@ -167,7 +167,6 @@ export default function Details({ params }) {
         );
         if (nextResponse.ok) {
           const nextResponseData = await nextResponse.json();
-          console.log(nextResponseData);
           setNextPostData(nextResponseData);
         }
       } catch (error) {
@@ -242,6 +241,41 @@ export default function Details({ params }) {
       ...editedData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleDeleteComment = async (commentId, memberId) => {
+    try {
+      const accessToken = window.localStorage.getItem("access");
+      if (!accessToken) {
+        console.log("No access token");
+        return;
+      }
+      const getId = await fetch(`https://dekku.co.kr/api/users/info`, {
+        method: "GET",
+        headers: {
+          access: accessToken,
+        },
+      });
+      const getIdData = await getId.json();
+      const nowId = getIdData.id;
+      console.log(nowId);
+      console.log(memberId);
+      if (nowId !== memberId) {
+        alert("자신의 댓글만 지울 수 있습니다.");
+        return;
+      }
+      const response = await fetch(
+        `https://dekku.co.kr/api/comments/${commentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            access: accessToken,
+          },
+        }
+      );
+    } catch (error) {
+      console.log("Error delete comment: ", error);
+    }
   };
 
   if (!data) {
@@ -344,6 +378,14 @@ export default function Details({ params }) {
         <div className="bg-gray-100 p-4 rounded-md mb-4 space-y-2">
           {commentStatus.comments.map((comment) => (
             <div key={comment.id} className="flex">
+              <button
+                onClick={() =>
+                  handleDeleteComment(comment.id, comment.memberId)
+                }
+                className="mr-2"
+              >
+                &#x2715;
+              </button>
               <img
                 src={comment.memberImageUrl}
                 className="w-6 h-6 rounded-full mr-2"
@@ -368,7 +410,7 @@ export default function Details({ params }) {
               className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
               onClick={() => {
                 handleCommentSubmit();
-                setComment('');
+                setComment("");
                 setCommentChangeTrigger((prev) => !prev);
               }}
             >
