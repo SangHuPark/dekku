@@ -1,8 +1,10 @@
 package dekku.spring_dekku.domain.product.service;
 
+import dekku.spring_dekku.domain.deskterior_post.exception.NotExistsDeskteriorPostException;
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
 import dekku.spring_dekku.domain.deskterior_post.model.entity.DeskteriorPost;
 import dekku.spring_dekku.domain.deskterior_post.repository.DeskteriorPostRepository;
+import dekku.spring_dekku.domain.product.exception.NotExistsProductsIncludedInDeskteriorPostException;
 import dekku.spring_dekku.domain.product.model.dto.request.CreateProductRequestDto;
 import dekku.spring_dekku.domain.product.model.dto.request.RecommendByProductIdsRequestDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreatePostProductMatchResponseDto;
@@ -15,6 +17,7 @@ import dekku.spring_dekku.domain.product.model.entity.code.Category;
 import dekku.spring_dekku.domain.product.model.entity.code.ExistStatus;
 import dekku.spring_dekku.domain.product.repository.DeskteriorPostProductInfoRepository;
 import dekku.spring_dekku.domain.product.repository.ProductRepository;
+import dekku.spring_dekku.global.status.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -173,13 +176,13 @@ public class ProductServiceimpl implements ProductService {
     public List<CreatePostProductMatchResponseDto> findDeskteriorPostByDetails(Long postId) {
         List<Long> productIds = deskteriorPostProductInfoRepository.findProductIdsByPostId(postId);
         if (productIds.isEmpty()) {
-            throw new NoSuchElementException("해당 게시물에 포함된 제품이 없습니다: " + postId);
+            throw new NotExistsProductsIncludedInDeskteriorPostException(ErrorCode.NOT_EXISTS_PRODUCT_INCLUDED_IN_DESKTERIOR_POST);
         }
 
         List<Object[]> results = deskteriorPostProductInfoRepository.findDeskteriorPostsWithProductIds(productIds);
 
         if (results.isEmpty()) {
-            throw new NoSuchElementException("관련 게시물이 존재하지 않습니다.");
+            throw new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST);
         }
 
         PriorityQueue<CreatePostProductMatchResponseDto> pq = new PriorityQueue<>(

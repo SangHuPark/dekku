@@ -118,16 +118,14 @@ const ThreeJSRenderer = ({
 
     const camera = new THREE.PerspectiveCamera(
       20,
-      mount.clientWidth / mount.clientHeight,
+      (window.innerWidth - 543.5) / window.innerHeight,
       0.1,
       1000
     );
-    camera.position.set(0, 10, -10);
-    camera.lookAt(0, 10, 0);
     setCamera(camera);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(mount.clientWidth, mount.clientHeight);
+    renderer.setSize(window.innerWidth - 543.5, window.innerHeight);
     renderer.shadowMap.enabled = true; // 그림자 활성화
     mount.appendChild(renderer.domElement);
     setRenderer(renderer);
@@ -148,18 +146,6 @@ const ThreeJSRenderer = ({
     scene.add(directionalLight);
     scene.add(directionalLight.target);
 
-    // // 조명의 위치를 나타내는 구체 추가
-    // const lightSphereGeometry = new THREE.SphereGeometry(5, 10, 8); // 구체의 크기 조정 가능
-    // const lightSphereMaterial = new THREE.MeshBasicMaterial({
-    //   color: 0xffff00,
-    // }); // 노란색 구체로 조명 표시
-    // const lightSphere = new THREE.Mesh(
-    //   lightSphereGeometry,
-    //   lightSphereMaterial
-    // );
-    // lightSphere.position.copy(directionalLight.position); // 조명의 위치와 동일하게 설정
-    // scene.add(lightSphere);
-
     const loader = new GLTFLoader();
     loader.load("/threedmodels/ssafydesk.glb", (gltf) => {
       const desk = gltf.scene;
@@ -173,6 +159,10 @@ const ThreeJSRenderer = ({
       setDeskCenter(deskBox.getCenter(new THREE.Vector3()));
 
       scene.add(desk);
+
+      // 카메라 위치를 책상의 중심으로 설정
+      camera.position.set(deskCenter.x, deskCenter.y + 15, deskCenter.z - 10);
+      camera.lookAt(deskCenter.x, deskCenter.y, deskCenter.z);
 
       // Load the room model and position it
       loader.load("/threedmodels/ssafyroom.glb", (roomGltf) => {
@@ -206,6 +196,7 @@ const ThreeJSRenderer = ({
     scene.add(plane);
 
     const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(deskCenter.x, deskCenter.y, deskCenter.z); // OrbitControls의 타겟을 책상의 중심으로 설정
     controlsRef.current = controls;
 
     const animate = () => {
@@ -216,8 +207,20 @@ const ThreeJSRenderer = ({
 
     animate();
 
+    // 화면 크기 변경 시, 너비를 다시 계산하여 renderer 크기 업데이트
+    const handleResize = () => {
+      const width = window.innerWidth - 543.5;
+      const height = window.innerHeight;
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    };
+
+    window.addEventListener("resize", handleResize);
+
     return () => {
       mount.removeChild(renderer.domElement);
+      window.removeEventListener("resize", handleResize);
     };
   }, [jsonUrl]);
 
@@ -343,7 +346,7 @@ const ThreeJSRenderer = ({
   return (
     <div
       ref={mountRef}
-      style={{ width: "900px", height: "100%", position: "relative" }}
+      style={{ width: "100%", height: "100%", position: "relative" }}
     >
       {scene && camera && (
         <>

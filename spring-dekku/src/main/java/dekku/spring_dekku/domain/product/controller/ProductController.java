@@ -74,7 +74,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "해당 게시물을 찾을 수 없습니다.")
     })
     @GetMapping("/deskterior-posts-by-details")
-    public ResponseEntity<List<CreatePostProductMatchResponseDto>> getDeskteriorPostByDetails(@RequestParam Long postId) {
+    public ResponseEntity<List<CreatePostProductMatchResponseDto>> getDeskteriorPostByDetails(@RequestParam(name = "postId") Long postId) {
         List<CreatePostProductMatchResponseDto> postProductMatches = productService.findDeskteriorPostByDetails(postId);
         if (postProductMatches.isEmpty()) {
             return ResponseEntity.noContent().build();
