@@ -26,7 +26,8 @@ export const filterAndSortPosts = (posts, filters, sortOrder, searchTerm) => {
   
     // 정렬
     if (sortOrder === "latest") {
-      filteredData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      // filteredData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      filteredData.sort((a, b) => parseInt(b.postId) - parseInt(a.postId));
     } else if (sortOrder === "likes") {
       filteredData.sort((a, b) => parseInt(b.likeCount) - parseInt(a.likeCount));
     } else if (sortOrder === "views") {
