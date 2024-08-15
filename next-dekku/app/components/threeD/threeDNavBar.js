@@ -38,8 +38,13 @@ const ThreeDNavBar = ({ selectedCategory, setSelectedCategory, addProduct, searc
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   ) || []).map(product => ({
     ...product,
-    uniqueId: product.uniqueId || uuidv4()
+    uniqueId: product.uniqueId || uuidv4(),
+    modelPath: product.filePath, // filePath를 modelPath로 할당
+    scale: product.salesLink ? product.salesLink.split(',').map(val => parseFloat(val.trim())) : [1, 1, 1] // salesLink를 scale 배열로 변환
   }));
+  
+  console.log('Filtered Products:', filteredProducts);
+  
   
   console.log('Filtered Products:', filteredProducts);
   

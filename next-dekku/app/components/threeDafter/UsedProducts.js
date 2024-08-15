@@ -24,8 +24,8 @@ const UsedProducts = () => {
       <div key={index} className="border p-4 rounded-lg shadow-lg h-72 border-gray-300"> {/* 테두리 스타일 추가 */}
         <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
         <p className="text-gray-600 mb-2">{product.description}</p>
-        <p className="text-gray-800 mb-2">{product.price}</p>
-        {product.image && <img src={product.image} alt={product.name} className="w-full h-40 object-contain rounded" />} {/* 이미지에 둥근 모서리 추가 */}
+        <p className="text-gray-800 mb-2">{product.price}원</p>
+        {product.imageUrl && <img src={product.imageUrl} alt={product.name} className="w-full h-40 object-contain rounded" />} {/* 이미지에 둥근 모서리 추가 */}
       </div>
     ));
   };
