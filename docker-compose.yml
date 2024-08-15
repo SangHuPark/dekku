@@ -6,6 +6,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=Dekku1234
       - MYSQL_ROOT_HOST=%
+      - TZ=Asia/Seoul
     ports:
       - 3306:3306
     volumes:
@@ -17,6 +18,8 @@ services:
   dekku-redis:
     container_name: dekku-redis
     image: redis
+    environment:
+      - TZ=Asia/Seoul
     ports:
       - '6379:6379'
     volumes:
@@ -25,19 +28,21 @@ services:
     networks:
       - dekku-network
 
-  dekku-mongo:
-    container_name: dekku-mongo
-    image: mongo
-    ports:
-      - 27017:27017
-    volumes:
-      - mongodata:/data
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=Dekku1234
-    restart: on-failure
-    networks:
-      - dekku-network
+  # dekku-mongo:
+  #   container_name: dekku-mongo
+  #   image: mongo
+  #   ports:
+  #     - 27017:27017
+  #   volumes:
+  #     - mongodata:/data
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=root
+  #     - MONGO_INITDB_ROOT_PASSWORD=Dekku1234
+  #     - MONGO_INITDB_DATABASE=dekkudb
+  #     - TZ=Asia/Seoul
+  #   restart: on-failure
+  #   networks:
+  #     - dekku-network
 
   dekku-backend:
     container_name: dekku-backend
@@ -47,6 +52,8 @@ services:
       - dekku-mysql
       - dekku-redis
       - dekku-mongo
+    environment:
+      - TZ=Asia/Seoul
     ports:
       - '8080:8080'
     volumes:
@@ -62,6 +69,8 @@ services:
     image: sanghupark/dekku-frontend
     depends_on:
       - dekku-backend
+    environment:
+      - TZ=Asia/Seoul
     ports:
       - '3000:3000'
     volumes:

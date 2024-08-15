@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record FindByIdDeskteriorPostResponseDto(
+        Long memberId,
         String memberNickName,
         String memberImage,
         String title,
@@ -32,6 +33,7 @@ public record FindByIdDeskteriorPostResponseDto(
 ) {
     public FindByIdDeskteriorPostResponseDto(DeskteriorPost deskteriorPost, List<CommentResponseDto> comments) {
         this(
+                deskteriorPost.getMember().getId(),
                 deskteriorPost.getMember().getNickname(),
                 deskteriorPost.getMember().getImageUrl(),
                 deskteriorPost.getTitle(),
@@ -41,7 +43,7 @@ public record FindByIdDeskteriorPostResponseDto(
                 mapDeskteriorPostProductInfos(deskteriorPost.getDeskteriorPostProductInfos()),
                 comments,
                 deskteriorPost.getViewCount(),
-                deskteriorPost.getLikeCount(),
+                deskteriorPost.getLikes().size(),
                 deskteriorPost.getCommentCount(),
                 deskteriorPost.getOpenStatus(),
                 deskteriorPost.getDeskteriorAttributes(),
