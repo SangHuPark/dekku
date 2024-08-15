@@ -1,12 +1,13 @@
 package dekku.spring_dekku.domain.product.controller;
 
 import dekku.spring_dekku.domain.deskterior_post.model.dto.response.FindDeskteriorPostResponseDto;
+import dekku.spring_dekku.domain.deskterior_post.service.DeskteriorPostService;
 import dekku.spring_dekku.domain.product.model.dto.request.CreateProductRequestDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreatePostProductMatchResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.response.CreateProductResponseDto;
 import dekku.spring_dekku.domain.product.model.dto.response.FindProductResponseDto;
 import dekku.spring_dekku.domain.product.model.entity.code.Category;
-import dekku.spring_dekku.domain.product.service.ProductService;
+import dekku.spring_dekku.domain.product.service.ProductServiceimpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,15 +20,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.hibernate.query.sqm.tree.SqmNode.log;
-
 @Tag(name = "제품 관련 API")
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final ProductService productService;
+    private final ProductServiceimpl productServiceimpl;
+    private final DeskteriorPostService deskteriorPostService;
 
     @Operation(summary = "새로운 제품 저장")
     @ApiResponses({
@@ -36,7 +36,7 @@ public class ProductController {
     })
     @PostMapping("/save")
     public ResponseEntity<CreateProductResponseDto> saveProduct(@Valid @RequestBody CreateProductRequestDto requestDto) {
-        CreateProductResponseDto responseDto = productService.saveProduct(requestDto);
+        CreateProductResponseDto responseDto = productServiceimpl.saveProduct(requestDto);
         return ResponseEntity.status(201).body(responseDto);
     }
 
@@ -47,7 +47,7 @@ public class ProductController {
     })
     @GetMapping
     public ResponseEntity<List<CreateProductResponseDto>> getAllProducts() {
-        List<CreateProductResponseDto> products = productService.findAllProductDtos();
+        List<CreateProductResponseDto> products = productServiceimpl.findAllProductDtos();
         if (products.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -61,21 +61,21 @@ public class ProductController {
     })
     @GetMapping("/category")
     public ResponseEntity<List<CreateProductResponseDto>> getProductsByCategory(@RequestParam Category category) {
-        List<CreateProductResponseDto> products = productService.getProductsByCategory(category);
+        List<CreateProductResponseDto> products = productServiceimpl.getProductsByCategory(category);
         if (products.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(products);
     }
 
-    @Operation(summary = "게시물의 제품들과 연관된 데스크테리어 게시물 조회")
+    @Operation(summary = "게시물 내에서 제품들과 연관된 데스크테리어 게시물 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "연관된 게시물 조회 성공"),
             @ApiResponse(responseCode = "404", description = "해당 게시물을 찾을 수 없습니다.")
     })
-    @GetMapping("/deskterior-posts-by-products")
-    public ResponseEntity<List<CreatePostProductMatchResponseDto>> getDeskteriorPostByProducts(@RequestParam Long postId) {
-        List<CreatePostProductMatchResponseDto> postProductMatches = productService.findDeskteriorPostByProducts(postId);
+    @GetMapping("/deskterior-posts-by-details")
+    public ResponseEntity<List<CreatePostProductMatchResponseDto>> getDeskteriorPostByDetails(@RequestParam Long postId) {
+        List<CreatePostProductMatchResponseDto> postProductMatches = productServiceimpl.findDeskteriorPostByDetails(postId);
         if (postProductMatches.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -89,7 +89,7 @@ public class ProductController {
     })
     @GetMapping("/search/names")
     public ResponseEntity<List<FindProductResponseDto>> searchProductNames(@RequestParam("keyword") String keyword) {
-        List<FindProductResponseDto> productNames = productService.searchProductNamesByKeyword(keyword);
+        List<FindProductResponseDto> productNames = productServiceimpl.searchProductNamesByKeyword(keyword);
 
         if (productNames.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -115,7 +115,7 @@ public class ProductController {
         List<FindDeskteriorPostResponseDto> posts;
         try {
             // 서비스 호출하여 게시물 목록 조회
-            posts = productService.findPostsByProductName(productName);
+            posts = productServiceimpl.findPostsByProductName(productName);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // 500 응답
         }
