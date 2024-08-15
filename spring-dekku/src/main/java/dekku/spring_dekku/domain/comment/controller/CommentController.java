@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +62,7 @@ public class CommentController {
             )
     })
     @PostMapping("/{postId}")
-    public ResponseEntity<?> createComment(@PathVariable(name = "postId") Long postId, @RequestHeader("Access") String token, @RequestBody CommentDto commentDto) {
+    public ResponseEntity<?> createComment(@PathVariable(name = "postId") Long postId, @RequestHeader("Access") String token, @RequestBody @Valid CommentDto commentDto) {
         commentService.createComment(postId, token, commentDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
