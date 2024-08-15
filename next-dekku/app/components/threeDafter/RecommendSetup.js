@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchRecommendedPosts } from "./RecommendApi"; // API 함수 임포트
 
-const RecommendSetup = ({ selectedProductIds = [] }) => {
+const RecommendSetup = ({ selectedProductIds }) => { // selectedProductIds를 prop으로 받습니다.
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {

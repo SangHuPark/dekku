@@ -5,8 +5,8 @@ export const fetchRecommendedPosts = async (productIds) => {
     const query = productIds.map(id => `productIds=${id}`).join('&');
     
     // API 호출
-    const response = await fetch(`https://dekku.co.kr/api/products/deskterior-posts-by-products?${query}`, {
-      method: 'GET',
+    const response = await fetch(`https://dekku.co.kr/api/recommend`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },

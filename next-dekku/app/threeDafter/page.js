@@ -10,7 +10,6 @@ const ThreeDAfter = () => {
   const router = useRouter();
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]); // 선택된 제품 상태
-  const [recommendedPosts, setRecommendedPosts] = useState([]); // 추천 게시물 상태
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -19,6 +18,7 @@ const ThreeDAfter = () => {
     if (!accessToken) {
       // 로그인이 되어 있지 않다면 로그인 페이지로 리다이렉트
       alert("로그인 후 이용할 수 있습니다.");
+      router.push("/login"); // 로그인 페이지로 이동
     } else {
       setIsLoggedIn(true);
     }
@@ -34,16 +34,6 @@ const ThreeDAfter = () => {
       const storedProducts = localStorage.getItem("selectedProducts");
       if (storedProducts) {
         setSelectedProducts(JSON.parse(storedProducts)); // 로컬 스토리지에서 선택한 제품 목록 설정
-
-        // 백엔드로 제품 ID 리스트 전송
-        axios
-          .post("/api/recommend", { productIds })
-          .then((response) => {
-            setRecommendedPosts(response.data); // 추천된 게시물 데이터 설정
-          })
-          .catch((error) => {
-            console.error("Error fetching recommended posts:", error);
-          });
       }
     }
   }, [isLoggedIn]);
@@ -65,7 +55,7 @@ const ThreeDAfter = () => {
         <UsedProducts selectedProducts={selectedProducts} />
       </div>
       <div>
-        <RecommendSetup posts={selectedProducts} />{" "}
+        <RecommendSetup selectedProductIds={selectedProducts.map(product => product.id)} />{" "}
         {/* 선택된 제품 기반 추천 세팅 */}
       </div>
     </div>
