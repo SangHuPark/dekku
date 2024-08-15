@@ -6,13 +6,13 @@ export const filterAndSortPosts = (posts, filters, sortOrder, searchTerm) => {
   
     // 필터링
     if (filters.style !== "all") {
-      filteredData = filteredData.filter((post) => post.style === filters.style);
+      filteredData = filteredData.filter((post) => post.deskteriorAttributes.style === filters.style);
     }
     if (filters.color !== "all") {
-      filteredData = filteredData.filter((post) => post.color === filters.color);
+      filteredData = filteredData.filter((post) => post.deskteriorAttributes.color === filters.color);
     }
     if (filters.job !== "all") {
-      filteredData = filteredData.filter((post) => post.job === filters.job);
+      filteredData = filteredData.filter((post) => post.deskteriorAttributes.job === filters.job);
     }
   
     // 검색어 필터링
@@ -28,9 +28,9 @@ export const filterAndSortPosts = (posts, filters, sortOrder, searchTerm) => {
     if (sortOrder === "latest") {
       filteredData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     } else if (sortOrder === "likes") {
-      filteredData.sort((a, b) => parseInt(b.likes) - parseInt(a.likes));
+      filteredData.sort((a, b) => parseInt(b.likeCount) - parseInt(a.likeCount));
     } else if (sortOrder === "views") {
-      filteredData.sort((a, b) => parseInt(b.views) - parseInt(a.views));
+      filteredData.sort((a, b) => parseInt(b.viewCount) - parseInt(a.viewCount));
     }
   
     return filteredData;
