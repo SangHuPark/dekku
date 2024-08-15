@@ -329,7 +329,7 @@ export default function Details({ params }) {
           <div className="comment-section">
             {/* 댓글 작성 칸과 버튼 */}
             <textarea
-              className="border rounded p-2 w-full mb-2"
+              className="border rounded p-2 w-full my-2"
               placeholder="댓글을 작성하세요"
               rows={1}
               value={comment}
