@@ -94,7 +94,7 @@ const ThreeJSRenderer = ({
           // 그림자 설정
           model.castShadow = true;
           model.receiveShadow = true;
-
+          
           setModels((prevModels) => [...prevModels, model]);
           setSelectedProducts((prevProducts) => [
             ...prevProducts,
