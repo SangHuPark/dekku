@@ -110,7 +110,6 @@ const ThreeJSRenderer = ({
             },
           ]);
           scene.add(model);
-          console.log("Model loaded and added to scene:", modelData);
         },
         undefined,
         (error) => {
