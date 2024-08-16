@@ -157,15 +157,17 @@ public class ProductServiceimpl implements ProductService {
                     relatedPost.getThumbnailUrl(),
                     relatedPost.getViewCount(),
                     relatedPost.getLikeCount(),
+                    relatedPost.getCommentCount(),
                     relatedPost.getDeskteriorAttributes()
             );
 
             pq.add(dto);
         }
 
-        // 우선순위 큐에서 결과를 꺼내어 리스트로 변환
+        // 우선순위 큐에서 최대 3개의 결과를 꺼내어 리스트로 변환
         List<CreatePostProductMatchResponseDto> postProductMatches = new ArrayList<>();
-        while (!pq.isEmpty()) {
+        int maxPosts = 3; // Limit the number of posts to 3
+        while (!pq.isEmpty() && postProductMatches.size() < maxPosts) {
             postProductMatches.add(pq.poll());
         }
 
@@ -220,6 +222,7 @@ public class ProductServiceimpl implements ProductService {
                     relatedPost.getThumbnailUrl(), // 썸네일 URL 추가
                     relatedPost.getViewCount(),
                     relatedPost.getLikeCount(),
+                    relatedPost.getCommentCount(),
                     relatedPost.getDeskteriorAttributes()
             );
 

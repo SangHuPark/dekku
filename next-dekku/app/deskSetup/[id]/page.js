@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer"; // ThreeJSRenderer 임포트
+import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer";
 import DeskSetupCard from "../../components/deskSetup/DeskSetupCard";
 import { useRouter } from "next/navigation";
 import LikeButton from "../../components/LikeButton";
@@ -19,9 +19,12 @@ export default function Details({ params }) {
   const router = useRouter();
   const [comment, setComment] = useState("");
   const [likeChangeTrigger, setLikeChangeTrigger] = useState(false);
-  const [likeStatus, setLikeStatus] = useState(0);
+  const [likeStatus, setLikeStatus] = useState([]);
   const [commentChangeTrigger, setCommentChangeTrigger] = useState(false);
-  const [commentStatus, setCommentStatus] = useState(false);
+  const [commentStatus, setCommentStatus] = useState({
+    comments: [],
+    commentCount: 0,
+  });
 
   const handleCommentChange = (e) => {
     setComment(e.target.value);
@@ -31,6 +34,39 @@ export default function Details({ params }) {
     try {
       if (comment.length === 0 || comment.length > 50) {
         alert("댓글은 1자 이상 50자 이하로 작성해 주세요.");
+        useEffect(() => {
+          const fetchComment = async () => {
+            try {
+              const response = await fetch(
+                `https://dekku.co.kr/api/deskterior-post/${params.id}?isRender=false`,
+                {
+                  method: "GET",
+                }
+              );
+
+              if (!response.ok) {
+                throw new Error("Failed to fetch post details");
+              }
+
+              const responseData = await response.json();
+              console.log(responseData);
+
+              // 실제 데이터를 확인하기 위한 로그 추가
+              const postData = responseData.data;
+              console.log("Fetched Post Data for Comments:", postData);
+
+              // commentStatus에 설정하기 전에 데이터 구조 확인
+              if (postData && postData.comments) {
+                setCommentStatus(postData); // comments를 포함한 postData 전체를 설정
+              } else {
+                console.error("No comments found in postData");
+              }
+            } catch (error) {
+              console.log("Error fetching comments: ", error);
+            }
+          };
+          fetchComment();
+        }, [commentChangeTrigger]);
         return;
       }
 
@@ -70,7 +106,7 @@ export default function Details({ params }) {
     const fetchLike = async () => {
       try {
         const response = await fetch(
-          `https://dekku.co.kr/api/deskterior-post/${params.id}`,
+          `https://dekku.co.kr/api/deskterior-post/${params.id}?isRender=false`,
           {
             method: "GET",
           }
@@ -96,7 +132,7 @@ export default function Details({ params }) {
     const fetchComment = async () => {
       try {
         const response = await fetch(
-          `https://dekku.co.kr/api/deskterior-post/${params.id}`,
+          `https://dekku.co.kr/api/deskterior-post/${params.id}?isRender=false`,
           {
             method: "GET",
           }
@@ -108,11 +144,19 @@ export default function Details({ params }) {
 
         const responseData = await response.json();
         console.log(responseData);
+
+        // 실제 데이터를 확인하기 위한 로그 추가
         const postData = responseData.data;
-        console.log(postData);
-        setCommentStatus(postData);
+        console.log("Fetched Post Data for Comments:", postData);
+
+        // commentStatus에 설정하기 전에 데이터 구조 확인
+        if (postData && postData.comments) {
+          setCommentStatus(postData); // comments를 포함한 postData 전체를 설정
+        } else {
+          console.error("No comments found in postData");
+        }
       } catch (error) {
-        console.log("error: ", error);
+        console.log("Error fetching comments: ", error);
       }
     };
     fetchComment();
@@ -120,10 +164,11 @@ export default function Details({ params }) {
 
   useEffect(() => {
     console.log(params.id);
+    console.log("Post ID:", postId);
     const fetchPostDetails = async () => {
       try {
         const response = await fetch(
-          `https://dekku.co.kr/api/deskterior-post/${params.id}`,
+          `https://dekku.co.kr/api/deskterior-post/${params.id}?isRender=true`,
           {
             method: "GET",
           }
@@ -134,43 +179,46 @@ export default function Details({ params }) {
         }
 
         const responseData = await response.json();
-        console.log(responseData);
         const postData = responseData.data;
-        console.log(postData);
+
+        console.log("Fetched Post Data:", postData); // 로그 추가
 
         setData(postData);
-        setEditedData(postData); // 수정 모드가 활성화되었을 때 편집할 수 있도록 초기 데이터 설정
+        setEditedData(postData);
 
-        // jsonUrl이 deskteriorPostImages에 포함되어 있는지 확인
+        // jsonUrl 설정 확인 로그
         const foundJsonUrl = postData.deskteriorPostImages.find((url) =>
           url.includes(".json")
         );
         if (foundJsonUrl) {
-          setJsonUrl(foundJsonUrl); // jsonUrl 설정
+          console.log("Found JSON URL:", foundJsonUrl); // 로그 추가
+          setJsonUrl(foundJsonUrl);
         }
 
-        // 현재 사용자와 게시글 작성자를 비교하여 isAuthor 상태 설정
-        const userId = await fetchUserId(); // 사용자의 userId를 가져오는 함수
-        if (userId === postData.memberId) {
-          setIsAuthor(true); // 사용자가 작성자일 경우 isAuthor를 true로 설정
-        }
+        // API에서 반환된 isAuthor 값을 직접 사용
+        setIsAuthor(postData.isAuthor);
+        console.log("Is Author:", postData.isAuthor); // 로그 추가
 
-        // 이전 및 다음 게시물 데이터를 가져오기 위한 추가 요청
+        // 이전 및 다음 게시물 데이터 로드 로그
         if (postId > 1) {
           const prevResponse = await fetch(
-            `https://dekku.co.kr/api/deskterior-post/${postId - 1}`
+            `https://dekku.co.kr/api/deskterior-post/${
+              postId - 1
+            }?isRender=false`
           );
           if (prevResponse.ok) {
-            setPrevPostData(await prevResponse.json());
-            console.log(prevPostData);
+            const prevData = await prevResponse.json();
+            console.log("Previous Post Data:", prevData); // 로그 추가
+            setPrevPostData(prevData);
           }
         }
 
         const nextResponse = await fetch(
-          `https://dekku.co.kr/api/deskterior-post/${postId + 1}`
+          `https://dekku.co.kr/api/deskterior-post/${postId + 1}?isRender=false`
         );
         if (nextResponse.ok) {
           const nextResponseData = await nextResponse.json();
+          console.log("Next Post Data:", nextResponseData); // 로그 추가
           setNextPostData(nextResponseData);
         }
       } catch (error) {
@@ -181,29 +229,9 @@ export default function Details({ params }) {
     fetchPostDetails();
   }, [postId]);
 
-
-  const fetchUserId = async () => {
-    // access 토큰을 사용하여 서버에서 userId를 가져오는 로직
-    const accessToken = window.localStorage.getItem("access");
-    if (!accessToken) return;
-    const response = await fetch("https://dekku.co.kr/api/users/info", {
-      method: "GET",
-      headers: {
-        access: accessToken, // 로컬스토리지에서 access 토큰 가져오기
-      },
-    });
-    console.log(response);
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log(data);
-      return data.userId; // 서버에서 반환된 사용자 ID
-    } else {
-      throw new Error("Failed to fetch user info");
-    }
-  };
-
   const handleLoadModelClick = () => {
+    console.log("JSON URL:", jsonUrl); // 로그 추가
+
     if (jsonUrl) {
       router.push(`/threeD?jsonUrl=${encodeURIComponent(jsonUrl)}`);
     } else {
@@ -341,14 +369,12 @@ export default function Details({ params }) {
           ))}
         </div>
 
-        {/* 2번 코드에서 추가된 부분: 조회수 및 좋아요 표시 */}
         <div className="flex justify-end mb-4 text-gray-600 space-x-4">
           <div className="flex items-center space-x-2">
             <img src="/view.svg" alt="views" className="w-5 h-5" />
             <span>{data.viewCount}</span>
           </div>
           <div className="flex items-center space-x-2">
-            {/* <img src="/like_icon.png" alt="likes" className="w-5 h-5" /> */}
             <LikeButton
               toPostId={postId}
               setLikeChangeTrigger={setLikeChangeTrigger}
@@ -358,7 +384,7 @@ export default function Details({ params }) {
         </div>
 
         <hr className="border-t-2 border-gray-300 mb-4" />
-        {/* 2번 코드에서 추가된 부분: 작성자 프로필 정보 및 팔로우 버튼 */}
+
         <div className="flex items-center justify-between mb-4">
           <div className="flex ">
             <img
@@ -368,7 +394,6 @@ export default function Details({ params }) {
             />
             <div className="flex items-center">
               <div className="font-semibold text-lg">{data.memberNickName}</div>
-              {/* <div className="text-gray-500">{data.introduce}</div> */}
             </div>
           </div>
           <div className="ml-4">
@@ -402,7 +427,6 @@ export default function Details({ params }) {
             </div>
           ))}
           <div className="comment-section">
-            {/* 댓글 작성 칸과 버튼 */}
             <textarea
               className="border rounded p-2 w-full my-2"
               placeholder="댓글을 작성하세요"
@@ -470,7 +494,8 @@ export default function Details({ params }) {
           {prevPostData && (
             <div className="">
               <DeskSetupCard
-                key={prevPostData.data.id}
+                key={postId - 1}
+                postId={postId - 1}
                 data={prevPostData.data}
               />
               <p className="text-center mt-2 font-bold text-gray-600">
@@ -481,7 +506,8 @@ export default function Details({ params }) {
           {nextPostData && (
             <div className="">
               <DeskSetupCard
-                key={nextPostData.data.id}
+                key={postId + 1}
+                postId={postId + 1}
                 data={nextPostData.data}
               />
               <p className="text-center mt-2 font-bold text-gray-600">
