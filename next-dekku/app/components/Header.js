@@ -22,15 +22,7 @@ const Header = () => {
     document.cookie = name + "=; Max-Age=0; path=/";
   };
 
-  useEffect(() => {
-    // 경로에 따라 클래스를 설정합니다.
-    if (pathname === "/threeD") {
-      setHeaderClasses("flex justify-between py-6");
-    } else {
-      setHeaderClasses("flex justify-between py-6 max-w-6xl mx-auto");
-    }
-  }, [pathname]);
-
+  // Fetch user info on component mount or when login status changes
   useEffect(() => {
     const GetUserInfo = async () => {
       try {
@@ -38,6 +30,9 @@ const Header = () => {
 
         if (!accessToken) {
           console.log("No access token found");
+          setIsLoggedIn(false);
+          setMemberId(null);
+          setImageUrl(null);
           return;
         }
 
@@ -65,19 +60,26 @@ const Header = () => {
         console.log(data);
 
         const id = data.id;
-        const imageUrl = data.imageUrl;
-        console.log(id);
-        console.log(imageUrl);
+        const profileImageUrl = data.imageUrl;
 
         setMemberId(id);
-        setImageUrl(imageUrl);
+        setImageUrl(profileImageUrl);  // Update the image URL with the latest info
       } catch (error) {
         console.log("error: ", error);
       }
     };
 
     GetUserInfo();
-  }, [setIsLoggedIn]);
+  }, [isLoggedIn, setIsLoggedIn]); // Re-fetch user info when login state changes
+
+  // Adjust header styles based on the path
+  useEffect(() => {
+    if (pathname === "/threeD") {
+      setHeaderClasses("flex justify-between py-6");
+    } else {
+      setHeaderClasses("flex justify-between py-6 max-w-6xl mx-auto");
+    }
+  }, [pathname]);
 
   return (
     <header className="fixed top-0 w-full px-4 z-50 bg-white">
