@@ -64,6 +64,8 @@ export default function ProfileEdit(id) {
 
     try {
       // Step 1: Upload only if the image was changed
+      console.log(profileImage)
+      console.log(profileImageFile)
       if (profileImageFile) {
         const response = await fetch("https://dekku.co.kr/api/s3/presigned-url", {
           method: "POST",
@@ -85,7 +87,7 @@ export default function ProfileEdit(id) {
         const presignedUrls = presignedData.data.preSignedUrl;
 
         // Step 2: Upload the image to the presigned URL
-        const imageBlob = await fetch(profileImageFile).then((res) => res.blob());
+        const imageBlob = await fetch(profileImage).then((res) => res.blob());
         const uploadImageResponse = await fetch(presignedUrls[0], {
           method: "PUT",
           headers: {
@@ -152,7 +154,7 @@ export default function ProfileEdit(id) {
             <div className="flex justify-center">
               <div className="w-32 h-32 rounded-full border">
                 <img
-                  src={profileImage || "/profile_icon1.png"}
+                  src={profileImage || "https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/profile/profile.svg"}
                   alt="Profile Preview"
                   className="w-32 h-32 object-cover rounded-full cursor-pointer"
                   onClick={() => document.getElementById("profileImage").click()}
