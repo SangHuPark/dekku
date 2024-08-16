@@ -19,9 +19,9 @@ export default function Details({ params }) {
   const router = useRouter();
   const [comment, setComment] = useState("");
   const [likeChangeTrigger, setLikeChangeTrigger] = useState(false);
-  const [likeStatus, setLikeStatus] = useState(0);
+  const [likeStatus, setLikeStatus] = useState([]);
   const [commentChangeTrigger, setCommentChangeTrigger] = useState(false);
-  const [commentStatus, setCommentStatus] = useState(false);
+  const [commentStatus, setCommentStatus] = useState([])
 
   const handleCommentChange = (e) => {
     setComment(e.target.value);
@@ -70,12 +70,9 @@ export default function Details({ params }) {
     const fetchLike = async () => {
       try {
         const response = await fetch(
-          `https://dekku.co.kr/api/deskterior-post/${params.id}`,
+          `https://dekku.co.kr/api/deskterior-post/${params.id}?isRender=false`,
           {
             method: "GET",
-            body: {
-              isRender: "false",
-            }
           }
         );
 
@@ -99,12 +96,9 @@ export default function Details({ params }) {
     const fetchComment = async () => {
       try {
         const response = await fetch(
-          `https://dekku.co.kr/api/deskterior-post/${params.id}`,
+          `https://dekku.co.kr/api/deskterior-post/${params.id}?isRender=false`,
           {
             method: "GET",
-            body: {
-              isRender: "false",
-            }
           }
         );
 
@@ -117,6 +111,7 @@ export default function Details({ params }) {
         const postData = responseData.data;
         console.log(postData);
         setCommentStatus(postData);
+        console.log(commentStatus);
       } catch (error) {
         console.log("error: ", error);
       }
@@ -129,12 +124,9 @@ export default function Details({ params }) {
     const fetchPostDetails = async () => {
       try {
         const response = await fetch(
-          `https://dekku.co.kr/api/deskterior-post/${params.id}`,
+          `https://dekku.co.kr/api/deskterior-post/${params.id}?isRender=true`,
           {
             method: "GET",
-            body: {
-              isRender: "true",
-            }
           }
         );
 
