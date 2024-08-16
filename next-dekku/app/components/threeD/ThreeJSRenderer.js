@@ -6,7 +6,6 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import MouseControls from "./MouseControls";
 import TransformControls from "./TransformControls";
-import selectedProducts from "./SelectedProducts";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
 
@@ -29,6 +28,7 @@ const ThreeJSRenderer = ({
   const [deskCenter, setDeskCenter] = useState(new THREE.Vector3());
   const [relatedPosts, setRelatedPosts] = useState([]);
 
+  // Function to save model data to localStorage
   const saveModelData = () => {
     const data = models.map((model) => ({
       id: model.userData.id,
@@ -44,20 +44,20 @@ const ThreeJSRenderer = ({
       isFetched: model.userData.isFetched,
     }));
     localStorage.setItem("sceneState", JSON.stringify(data));
-    console.log('tlqkf', models);
   };
-  
+
+  // Function to capture thumbnail
   const captureThumbnail = () => {
     renderer.render(scene, camera);
     const canvas = renderer.domElement;
-  
+
     // Create a larger canvas for a better quality thumbnail
     const thumbnailCanvas = document.createElement('canvas');
     const ctx = thumbnailCanvas.getContext('2d');
     thumbnailCanvas.width = 400; // Increase size for better quality
     thumbnailCanvas.height = (400 / canvas.width) * canvas.height;
     ctx.drawImage(canvas, 0, 0, thumbnailCanvas.width, thumbnailCanvas.height);
-  
+
     const thumbnail = thumbnailCanvas.toDataURL('image/jpeg', 0.85); // Increase quality
     localStorage.setItem("thumbnail", thumbnail);
     return thumbnail;
@@ -87,11 +87,11 @@ const ThreeJSRenderer = ({
             },
             isFetched: true,
           };
-          console.log(modelData)
+          console.log(modelData);
           // 그림자 설정
           model.castShadow = true;
           model.receiveShadow = true;
-          
+
           setModels((prevModels) => [...prevModels, model]);
           setSelectedProducts((prevProducts) => [
             ...prevProducts,
@@ -142,11 +142,9 @@ const ThreeJSRenderer = ({
     mount.appendChild(renderer.domElement);
     setRenderer(renderer);
 
-    // Ambient Light: 장면 전체를 부드럽게 밝히는 기본 조명
     const ambientLight = new THREE.AmbientLight(0x404040, 5);
     scene.add(ambientLight);
 
-    // Directional Light: 방과 책상 전체를 비추는 방향성 있는 빛
     const directionalLight = new THREE.DirectionalLight(0xffffff, 3.5);
     directionalLight.position.set(30, 30, -30); // 왼쪽 대각선에서 오른쪽 대각선으로 빛을 비추도록 위치 조정
     directionalLight.target.position.set(0, 0, -1.5); // 책상 중심을 향하게 설정
@@ -351,44 +349,49 @@ const ThreeJSRenderer = ({
   const handleComplete = async () => {
     saveModelData();
     const thumbnail = captureThumbnail();
+
     localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
-  
+
     const sceneState = JSON.parse(localStorage.getItem("sceneState")) || [];
     const sceneStateIds = sceneState.map((item) => item.id);
-  
+
     localStorage.setItem("sceneStateIds", JSON.stringify(sceneStateIds));
-  
+
     console.log('IDs stored in sceneStateIds:', sceneStateIds);
-  
+
     try {
-        const response = await fetch('http://localhost:8080/api/products/related-posts', {  // Replace with actual backend URL
-        method: 'POST',
+      const response = await fetch('https://dekku.co.kr/api/products/related-posts', {
+        method: 'POST', 
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ productIds: sceneStateIds }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const data = await response.json(); // Parse the response as JSON
       console.log('Related posts:', data);
-  
+
       setRelatedPosts(data);
+
+      localStorage.setItem("recommendedPosts", JSON.stringify(data));
 
     } catch (error) {
       console.error('Error fetching related posts:', error);
     }
-  
+
     onComplete();
   };
 
-  const recommendedPosts = JSON.parse(localStorage.getItem("recommendedPosts"));
-  if (recommendedPosts) {
-    console.log('Loaded recommended posts:', recommendedPosts);
-  }
+  useEffect(() => {
+    const recommendedPosts = JSON.parse(localStorage.getItem("recommendedPosts"));
+    if (recommendedPosts) {
+      console.log('Loaded recommended posts:', recommendedPosts);
+    }
+  }, []);
 
   return (
     <div

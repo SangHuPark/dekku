@@ -4,7 +4,7 @@ export async function fetchRecommendedPosts(productIds) {
     const requestBody = { productIds };
     console.log("Sending request with body:", JSON.stringify(requestBody)); // Log the request body
 
-    const response = await fetch('http://localhost:8080/api/products/related-posts', {
+    const response = await fetch('https://dekku.co.kr/api/products/related-posts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
