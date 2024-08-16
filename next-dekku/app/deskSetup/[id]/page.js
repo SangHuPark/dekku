@@ -6,6 +6,7 @@ import DeskSetupCard from "../../components/deskSetup/DeskSetupCard";
 import { useRouter } from "next/navigation";
 import LikeButton from "../../components/LikeButton";
 import FollowButton from "../../components/FollowButton";
+import Link from "next/link";
 
 export default function Details({ params }) {
   const postId = parseInt(params.id, 10); // 문자열을 정수로 변환
@@ -409,7 +410,7 @@ export default function Details({ params }) {
         <hr className="border-t-2 border-gray-300 mb-4" />
 
         <div className="flex items-center justify-between mb-4">
-          <div className="flex ">
+          <Link href={`/users/${data.memberId}`} className="flex ">
             <img
               src={data.memberImage}
               alt={data.memberNickName}
@@ -420,7 +421,7 @@ export default function Details({ params }) {
                 {data.memberNickName}
               </div>
             </div>
-          </div>
+          </Link>
           <div className="ml-4">
             <FollowButton toMemberId={data.memberId} />
           </div>
