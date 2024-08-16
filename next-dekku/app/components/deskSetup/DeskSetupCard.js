@@ -14,7 +14,7 @@ export default function DeskSetupCard({ postId, data, isNoProfilePost = false })
             alt="desk"
             className="w-96 h-72 rounded-lg object-cover"
           />
-          <div className="absolute bottom-1.5 right-1.5 text-white bg-black bg-opacity-50 rounded px-2 py-1">
+          <div className="text-sm absolute bottom-1.5 right-1.5 text-white bg-black bg-opacity-50 rounded px-2 py-1">
             조회수 {data.viewCount}
           </div>
         </div>
