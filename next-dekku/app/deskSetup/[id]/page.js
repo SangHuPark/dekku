@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer"; 
+import ThreeJSRenderer from "../../components/threeD/ThreeJSRenderer";
 import DeskSetupCard from "../../components/deskSetup/DeskSetupCard";
 import { useRouter } from "next/navigation";
 import LikeButton from "../../components/LikeButton";
@@ -25,7 +25,6 @@ export default function Details({ params }) {
     comments: [],
     commentCount: 0,
   });
-  
 
   const handleCommentChange = (e) => {
     setComment(e.target.value);
@@ -34,7 +33,8 @@ export default function Details({ params }) {
   const handleCommentSubmit = async () => {
     try {
       if (comment.length === 0 || comment.length > 50) {
-        alert("댓글은 1자 이상 50자 이하로 작성해 주세요.");useEffect(() => {
+        alert("댓글은 1자 이상 50자 이하로 작성해 주세요.");
+        useEffect(() => {
           const fetchComment = async () => {
             try {
               const response = await fetch(
@@ -43,25 +43,24 @@ export default function Details({ params }) {
                   method: "GET",
                 }
               );
-        
+
               if (!response.ok) {
                 throw new Error("Failed to fetch post details");
               }
-        
+
               const responseData = await response.json();
               console.log(responseData);
-        
+
               // 실제 데이터를 확인하기 위한 로그 추가
               const postData = responseData.data;
               console.log("Fetched Post Data for Comments:", postData);
-        
+
               // commentStatus에 설정하기 전에 데이터 구조 확인
               if (postData && postData.comments) {
                 setCommentStatus(postData); // comments를 포함한 postData 전체를 설정
               } else {
                 console.error("No comments found in postData");
               }
-        
             } catch (error) {
               console.log("Error fetching comments: ", error);
             }
@@ -138,37 +137,34 @@ export default function Details({ params }) {
             method: "GET",
           }
         );
-  
+
         if (!response.ok) {
           throw new Error("Failed to fetch post details");
         }
-  
+
         const responseData = await response.json();
         console.log(responseData);
-  
+
         // 실제 데이터를 확인하기 위한 로그 추가
         const postData = responseData.data;
         console.log("Fetched Post Data for Comments:", postData);
-  
+
         // commentStatus에 설정하기 전에 데이터 구조 확인
         if (postData && postData.comments) {
           setCommentStatus(postData); // comments를 포함한 postData 전체를 설정
         } else {
           console.error("No comments found in postData");
         }
-  
       } catch (error) {
         console.log("Error fetching comments: ", error);
       }
     };
     fetchComment();
   }, [commentChangeTrigger]);
-  
-  
 
   useEffect(() => {
     console.log(params.id);
-    console.log('Post ID:', postId)
+    console.log("Post ID:", postId);
     const fetchPostDetails = async () => {
       try {
         const response = await fetch(
@@ -177,72 +173,71 @@ export default function Details({ params }) {
             method: "GET",
           }
         );
-    
+
         if (!response.ok) {
           throw new Error("Failed to fetch post details");
         }
-    
+
         const responseData = await response.json();
         const postData = responseData.data;
-    
-        console.log('Fetched Post Data:', postData); // 로그 추가
-    
+
+        console.log("Fetched Post Data:", postData); // 로그 추가
+
         setData(postData);
         setEditedData(postData);
-    
+
         // jsonUrl 설정 확인 로그
         const foundJsonUrl = postData.deskteriorPostImages.find((url) =>
           url.includes(".json")
         );
         if (foundJsonUrl) {
-          console.log('Found JSON URL:', foundJsonUrl); // 로그 추가
+          console.log("Found JSON URL:", foundJsonUrl); // 로그 추가
           setJsonUrl(foundJsonUrl);
         }
-    
+
         // API에서 반환된 isAuthor 값을 직접 사용
         setIsAuthor(postData.isAuthor);
-        console.log('Is Author:', postData.isAuthor); // 로그 추가
-    
+        console.log("Is Author:", postData.isAuthor); // 로그 추가
+
         // 이전 및 다음 게시물 데이터 로드 로그
         if (postId > 1) {
           const prevResponse = await fetch(
-            `https://dekku.co.kr/api/deskterior-post/${postId - 1}?isRender=false`
+            `https://dekku.co.kr/api/deskterior-post/${
+              postId - 1
+            }?isRender=false`
           );
           if (prevResponse.ok) {
             const prevData = await prevResponse.json();
-            console.log('Previous Post Data:', prevData); // 로그 추가
+            console.log("Previous Post Data:", prevData); // 로그 추가
             setPrevPostData(prevData);
           }
         }
-    
+
         const nextResponse = await fetch(
           `https://dekku.co.kr/api/deskterior-post/${postId + 1}?isRender=false`
         );
         if (nextResponse.ok) {
           const nextResponseData = await nextResponse.json();
-          console.log('Next Post Data:', nextResponseData); // 로그 추가
+          console.log("Next Post Data:", nextResponseData); // 로그 추가
           setNextPostData(nextResponseData);
         }
       } catch (error) {
         console.error("Error fetching post details:", error);
       }
     };
-    
 
     fetchPostDetails();
   }, [postId]);
 
-
   const handleLoadModelClick = () => {
-    console.log('JSON URL:', jsonUrl); // 로그 추가
-  
+    console.log("JSON URL:", jsonUrl); // 로그 추가
+
     if (jsonUrl) {
       router.push(`/threeD?jsonUrl=${encodeURIComponent(jsonUrl)}`);
     } else {
       console.error("No JSON URL found for this post.");
     }
   };
-  
 
   const handleEditClick = () => {
     setIsEditMode(true); // 수정 모드 활성화
@@ -499,7 +494,8 @@ export default function Details({ params }) {
           {prevPostData && (
             <div className="">
               <DeskSetupCard
-                key={prevPostData.data.id}
+                key={postId - 1}
+                postId={postId - 1}
                 data={prevPostData.data}
               />
               <p className="text-center mt-2 font-bold text-gray-600">
@@ -510,7 +506,8 @@ export default function Details({ params }) {
           {nextPostData && (
             <div className="">
               <DeskSetupCard
-                key={nextPostData.data.id}
+                key={postId + 1}
+                postId={postId + 1}
                 data={nextPostData.data}
               />
               <p className="text-center mt-2 font-bold text-gray-600">
