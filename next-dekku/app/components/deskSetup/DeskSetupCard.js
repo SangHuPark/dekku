@@ -29,7 +29,7 @@ export default function DeskSetupCard({ postId, data, isNoProfilePost = false })
                   alt="profile"
                   className="w-12 h-12 object-cover rounded-full"
                 />
-                <div className="text-lg font-bold truncate">
+                <div className="font-medium truncate">
                   {data.memberNickName}
                 </div>
               </div>
@@ -39,7 +39,7 @@ export default function DeskSetupCard({ postId, data, isNoProfilePost = false })
         </div>
       )}
       <Link href={`/deskSetup/${finalPostId}`}>
-        <div className="text-lg font-semibold px-1 mb-1 truncate">
+        <div className="text-xl font-semibold px-1 mb-1 truncate">
           {data.title}
         </div>
         <ul className="flex space-x-4 font-bold text-[#777777] px-1">
