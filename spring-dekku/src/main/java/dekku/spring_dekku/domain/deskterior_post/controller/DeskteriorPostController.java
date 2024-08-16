@@ -194,7 +194,7 @@ public class DeskteriorPostController {
                     description = "존재하지 않는 계정"
             )
     })
-    @GetMapping("validate/{postId}")
+    @GetMapping("/validate/{postId}")
     public ResponseEntity<Boolean> isCreator(@PathVariable("postId") Long postId, @RequestHeader(name = "access") String token) {
         if(token == null || token.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
