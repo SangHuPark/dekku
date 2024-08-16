@@ -360,7 +360,7 @@ const ThreeJSRenderer = ({
     console.log('IDs stored in sceneStateIds:', sceneStateIds);
 
     try {
-      const response = await fetch('/http:dekku.co.kr/api/products/related-posts', {
+      const response = await fetch('https://dekku.co.kr/api/products/related-posts', {
         method: 'POST', 
         headers: {
           'Content-Type': 'application/json',
