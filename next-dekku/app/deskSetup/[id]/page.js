@@ -6,6 +6,7 @@ import DeskSetupCard from "../../components/deskSetup/DeskSetupCard";
 import { useRouter } from "next/navigation";
 import LikeButton from "../../components/LikeButton";
 import FollowButton from "../../components/FollowButton";
+import Link from "next/link";
 
 export default function Details({ params }) {
   const postId = parseInt(params.id, 10); // 문자열을 정수로 변환
@@ -30,116 +31,39 @@ export default function Details({ params }) {
     setComment(e.target.value);
   };
 
-// 최상위 수준에 useEffect를 배치합니다.
-useEffect(() => {
-  const fetchComment = async () => {
-    try {
-      const response = await fetch(
-        `https://dekku.co.kr/api/deskterior-post/${params.id}?isRender=false`,
-        {
-          method: "GET",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch post details");
-      }
-
-      const responseData = await response.json();
-      console.log(responseData);
-
-      // 실제 데이터를 확인하기 위한 로그 추가
-      const postData = responseData.data;
-      console.log("Fetched Post Data for Comments:", postData);
-
-      // commentStatus에 설정하기 전에 데이터 구조 확인
-      if (postData && postData.comments) {
-        setCommentStatus(postData); // comments를 포함한 postData 전체를 설정
-      } else {
-        console.error("No comments found in postData");
-      }
-    } catch (error) {
-      console.log("Error fetching comments: ", error);
-    }
-  };
-
-  fetchComment();
-}, [commentChangeTrigger]);  // commentChangeTrigger가 변경될 때마다 댓글을 다시 로드
-
-// handleCommentSubmit 함수
-const handleCommentSubmit = async () => {
-  try {
-    if (comment.length === 0 || comment.length > 50) {
-      alert("댓글은 1자 이상 50자 이하로 작성해 주세요.");
-      return;  // 조건에 맞지 않으면 함수를 종료합니다.
-    }
-
-    const accessToken = window.localStorage.getItem("access");
-    if (!accessToken) {
-      console.log("No access token found");
-      return;
-    }
-
-    const response = await fetch(
-      `https://dekku.co.kr/api/comments/${postId}`,
-      {
-        method: "POST",
-        headers: {
-          access: accessToken,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: comment,
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to create comment");
-    }
-
-    const newComment = await response.json();
-    console.log("Comment created successfully:", newComment);
-
-    // 댓글 작성 후 상태 업데이트
-    setCommentStatus((prevState) => ({
-      ...prevState,
-      comments: [...prevState.comments, newComment],
-      commentCount: prevState.commentCount + 1,
-    }));
-
-    setComment(""); // 댓글 작성 후 입력 창을 초기화
-  } catch (error) {
-    console.log("error: ", error);
-  }
-};
-
-
   useEffect(() => {
-    const fetchLike = async () => {
+    const validateUser = async () => {
       try {
+        const accessToken = window.localStorage.getItem("access");
+        console.log("acess Token", accessToken)
+        console.log("Validating user with postId:", postId); // 디버깅 로그
         const response = await fetch(
-          `https://dekku.co.kr/api/deskterior-post/${params.id}?isRender=false`,
+          `https://dekku.co.kr/api/deskterior-post/validate/${postId}`,
           {
             method: "GET",
+            headers: {
+              access: accessToken,
+              "Content-Type": "application/json",
+            },
           }
         );
 
+        console.log("Validation response:", response); // 디버깅 로그
+
         if (!response.ok) {
-          throw new Error("Failed to fetch post details");
+          throw new Error("Failed to validate user");
         }
 
-        const responseData = await response.json();
-        console.log(responseData);
-        const postData = responseData.data;
-        console.log(postData);
-        setLikeStatus(postData);
+        const data = await response.json();
+        console.log("isAuthor value:", data); // 디버깅 로그
+        setIsAuthor(data);
       } catch (error) {
-        console.log("error: ", error);
+        console.error("Error validating user:", error);
       }
     };
-    fetchLike();
-  }, [likeChangeTrigger]);
+
+    validateUser();
+  }, [postId]);
 
   useEffect(() => {
     const fetchComment = async () => {
@@ -156,15 +80,13 @@ const handleCommentSubmit = async () => {
         }
 
         const responseData = await response.json();
-        console.log(responseData);
+        console.log("Comment data response:", responseData); // 디버깅 로그
 
-        // 실제 데이터를 확인하기 위한 로그 추가
         const postData = responseData.data;
         console.log("Fetched Post Data for Comments:", postData);
 
-        // commentStatus에 설정하기 전에 데이터 구조 확인
         if (postData && postData.comments) {
-          setCommentStatus(postData); // comments를 포함한 postData 전체를 설정
+          setCommentStatus(postData);
         } else {
           console.error("No comments found in postData");
         }
@@ -172,12 +94,87 @@ const handleCommentSubmit = async () => {
         console.log("Error fetching comments: ", error);
       }
     };
+
     fetchComment();
   }, [commentChangeTrigger]);
 
+  const handleCommentSubmit = async () => {
+    try {
+      if (comment.length === 0 || comment.length > 50) {
+        alert("댓글은 1자 이상 50자 이하로 작성해 주세요.");
+        return;
+      }
+
+      const accessToken = window.localStorage.getItem("access");
+      if (!accessToken) {
+        console.log("No access token found");
+        return;
+      }
+
+      const response = await fetch(
+        `https://dekku.co.kr/api/comments/${postId}`,
+        {
+          method: "POST",
+          headers: {
+            access: accessToken,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: comment,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to create comment");
+      }
+
+      const newComment = await response.json();
+      console.log("Comment created successfully:", newComment);
+
+      // 댓글 상태를 즉시 업데이트
+      setCommentStatus((prevState) => ({
+        ...prevState,
+        comments: [...prevState.comments, newComment],
+        commentCount: prevState.commentCount + 1,
+      }));
+
+      // 댓글 입력 창을 초기화
+      setComment("");
+
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
+
   useEffect(() => {
-    console.log(params.id);
-    console.log("Post ID:", postId);
+    const fetchLike = async () => {
+      try {
+        const response = await fetch(
+          `https://dekku.co.kr/api/deskterior-post/${params.id}?isRender=false`,
+          {
+            method: "GET",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch post details");
+        }
+
+        const responseData = await response.json();
+        console.log("Like data response:", responseData); // 디버깅 로그
+        const postData = responseData.data;
+        console.log("Fetched Post Data for Likes:", postData); // 디버깅 로그
+        setLikeStatus(postData);
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
+    fetchLike();
+  }, [likeChangeTrigger]);
+
+  useEffect(() => {
+    console.log("Fetching post details with postId:", postId); // 디버깅 로그
     const fetchPostDetails = async () => {
       try {
         const response = await fetch(
@@ -194,25 +191,24 @@ const handleCommentSubmit = async () => {
         const responseData = await response.json();
         const postData = responseData.data;
 
-        console.log("Fetched Post Data:", postData); // 로그 추가
+        console.log("Fetched Post Data:", postData); // 디버깅 로그
 
         setData(postData);
         setEditedData(postData);
+        console.log("deskteriorPostImages:", postData.deskteriorPostImages);  // 배열 전체를 로그로 출력
 
-        // jsonUrl 설정 확인 로그
-        const foundJsonUrl = postData.deskteriorPostImages.find((url) =>
-          url.includes(".json")
-        );
+        const foundJsonUrl = postData.deskteriorPostImages[1];
         if (foundJsonUrl) {
-          console.log("Found JSON URL:", foundJsonUrl); // 로그 추가
+          console.log("Found JSON URL:", foundJsonUrl); // 디버깅 로그
           setJsonUrl(foundJsonUrl);
+        } else {
+          console.log("No JSON URL found in deskteriorPostImages"); // 디버깅 로그
+          setJsonUrl(null); // jsonUrl을 찾지 못하면 null로 설정
         }
 
-        // API에서 반환된 isAuthor 값을 직접 사용
         setIsAuthor(postData.isAuthor);
-        console.log("Is Author:", postData.isAuthor); // 로그 추가
+        console.log("Is Author:", postData.isAuthor); // 디버깅 로그
 
-        // 이전 및 다음 게시물 데이터 로드 로그
         if (postId > 1) {
           const prevResponse = await fetch(
             `https://dekku.co.kr/api/deskterior-post/${
@@ -221,7 +217,7 @@ const handleCommentSubmit = async () => {
           );
           if (prevResponse.ok) {
             const prevData = await prevResponse.json();
-            console.log("Previous Post Data:", prevData); // 로그 추가
+            console.log("Previous Post Data:", prevData); // 디버깅 로그
             setPrevPostData(prevData);
           }
         }
@@ -231,7 +227,7 @@ const handleCommentSubmit = async () => {
         );
         if (nextResponse.ok) {
           const nextResponseData = await nextResponse.json();
-          console.log("Next Post Data:", nextResponseData); // 로그 추가
+          console.log("Next Post Data:", nextResponseData); // 디버깅 로그
           setNextPostData(nextResponseData);
         }
       } catch (error) {
@@ -243,14 +239,17 @@ const handleCommentSubmit = async () => {
   }, [postId]);
 
   const handleLoadModelClick = () => {
-    console.log("JSON URL:", jsonUrl); // 로그 추가
-
     if (jsonUrl) {
-      router.push(`/threeD?jsonUrl=${encodeURIComponent(jsonUrl)}`);
+        // JSON URL을 ThreeJSRenderer 페이지로 넘기지 않고, 필요한 데이터를 저장하거나 처리한 후에 넘깁니다.
+        // ThreeJSRenderer에서 jsonUrl을 활용해 로딩을 진행합니다.
+        console.log("Loading 3D model with JSON URL:", jsonUrl); // 디버깅 로그
+
+        router.push(`/threeD`);
     } else {
-      console.error("No JSON URL found for this post.");
+        console.error("No JSON URL found for this post.");
     }
   };
+
 
   const handleEditClick = () => {
     setIsEditMode(true); // 수정 모드 활성화
@@ -264,9 +263,9 @@ const handleCommentSubmit = async () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            access: localStorage.getItem("access"), // 로컬스토리지에서 access 토큰 가져오기
+            access: localStorage.getItem("access"),
           },
-          body: JSON.stringify(editedData), // 수정된 데이터를 PUT 요청으로 전송
+          body: JSON.stringify(editedData),
         }
       );
 
@@ -296,8 +295,7 @@ const handleCommentSubmit = async () => {
         console.log("No access token");
         return;
       }
-  
-      // 사용자 ID 가져오기
+
       const getId = await fetch(`https://dekku.co.kr/api/users/info`, {
         method: "GET",
         headers: {
@@ -306,14 +304,12 @@ const handleCommentSubmit = async () => {
       });
       const getIdData = await getId.json();
       const nowId = getIdData.id;
-  
-      // 댓글 작성자와 현재 사용자가 동일한지 확인
+
       if (nowId !== memberId) {
         alert("자신의 댓글만 지울 수 있습니다.");
         return;
       }
-  
-      // 댓글 삭제 요청 보내기
+
       const response = await fetch(
         `https://dekku.co.kr/api/comments/${commentId}`,
         {
@@ -323,12 +319,13 @@ const handleCommentSubmit = async () => {
           },
         }
       );
-  
+
       if (response.ok) {
-        // 댓글이 성공적으로 삭제된 후에 상태 업데이트
         setCommentStatus((prevState) => ({
           ...prevState,
-          comments: prevState.comments.filter(comment => comment.id !== commentId),
+          comments: prevState.comments.filter(
+            (comment) => comment.id !== commentId
+          ),
           commentCount: prevState.commentCount - 1,
         }));
       } else {
@@ -338,7 +335,6 @@ const handleCommentSubmit = async () => {
       console.log("Error delete comment: ", error);
     }
   };
-  
 
   if (!data) {
     return <p>게시물을 찾을 수 없습니다.</p>;
@@ -415,16 +411,18 @@ const handleCommentSubmit = async () => {
         <hr className="border-t-2 border-gray-300 mb-4" />
 
         <div className="flex items-center justify-between mb-4">
-          <div className="flex ">
+          <Link href={`/users/${data.memberId}`} className="flex ">
             <img
               src={data.memberImage}
               alt={data.memberNickName}
               className="w-12 h-12 rounded-full mr-4"
             />
             <div className="flex items-center">
-              <div className="font-semibold text-lg">{data.memberNickName}</div>
+              <div className="font-semibold text-lg">
+                {data.memberNickName}
+              </div>
             </div>
-          </div>
+          </Link>
           <div className="ml-4">
             <FollowButton toMemberId={data.memberId} />
           </div>
@@ -479,7 +477,7 @@ const handleCommentSubmit = async () => {
 
         <hr className="border-t-2 border-gray-300 mb-4" />
 
-        {isAuthor && (
+        {isAuthor ? (
           <div className="flex justify-end space-x-4 mb-6">
             {isEditMode ? (
               <button
@@ -505,17 +503,17 @@ const handleCommentSubmit = async () => {
               </>
             )}
           </div>
-        )}
-
-        {jsonUrl && !isAuthor && (
-          <div className="text-center mb-6">
-            <button
-              onClick={handleLoadModelClick}
-              className="bg-green-500 text-white px-6 py-2 rounded-md"
-            >
-              불러오기
-            </button>
-          </div>
+        ) : (
+          jsonUrl && (
+            <div className="text-center mb-6">
+              <button
+                onClick={handleLoadModelClick}
+                className="bg-green-500 text-white px-6 py-2 rounded-md"
+              >
+                3D 모델 불러오기
+              </button>
+            </div>
+          )
         )}
 
         <h2 className="text-xl font-bold mb-4">다른 게시물</h2>

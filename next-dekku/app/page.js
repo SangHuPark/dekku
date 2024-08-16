@@ -31,7 +31,7 @@ export default function HomePage() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            job: "ARCHITECT",
+            job: "DEVELOPER",
           }),
         }
       );
@@ -137,7 +137,9 @@ export default function HomePage() {
       {/* 개발자 추천 데스크 */}
       <section className="px-4 flex justify-center bg-gray-100">
         <div className="max-w-6xl mx-auto my-20">
-          <h2 className="text-[2rem] font-semibold mb-8 text-center">개발자 추천 데스크</h2>
+          <h2 className="text-[2rem] font-semibold mb-8 text-center">
+            개발자 추천 데스크
+          </h2>
           <Slider {...sliderSettings}>
             {recentTopDeveloperPosts.map((data) => (
               <div key={data.postId} className="p-2">
@@ -156,18 +158,18 @@ export default function HomePage() {
             {recentProducts.slice(0, 6).map((data) => (
               <div
                 key={data.id}
-                className="bg-white p-4 flex flex-col justify-center items-center text-center transform transition-transform hover:scale-105 hover:shadow-2xl border border-gray-200"
+                className="p-2 flex flex-col justify-center items-center text-center border border-gray-200"
               >
-                <div className="flex justify-center items-center h-64">
-                  {" "}
-                  {/* Flex container to center the image */}
-                  <img
-                    src={data.imageUrl}
-                    alt={data.name}
-                    className="h-64 object-cover"
-                  />
-                </div>
-                <div className="p-4">
+                <div className="rounded-xl shadow-xl bg-white p-2">
+                  <div className="flex justify-center items-center h-64">
+                    {" "}
+                    {/* Flex container to center the image */}
+                    <img
+                      src={data.imageUrl}
+                      alt={data.name}
+                      className="h-64 object-cover"
+                    />
+                  </div>
                   <h3 className="text-lg font-regular mb-2 text-gray-800">
                     {data.name}
                   </h3>
