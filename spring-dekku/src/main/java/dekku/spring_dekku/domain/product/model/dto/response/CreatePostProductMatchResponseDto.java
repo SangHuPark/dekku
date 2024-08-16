@@ -15,5 +15,6 @@ public record CreatePostProductMatchResponseDto (
         String thumbnail, // 썸네일 이미지
         int viewCount, // 조회수
         int likeCount, // 좋아요 수
+        int commentCount, // 댓글 수
         DeskteriorAttributes deskteriorAttributes // 게시물 속성 (색상, 스타일 등)
 ) { }
