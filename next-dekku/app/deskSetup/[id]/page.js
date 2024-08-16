@@ -288,6 +288,8 @@ export default function Details({ params }) {
         console.log("No access token");
         return;
       }
+  
+      // 사용자 ID 가져오기
       const getId = await fetch(`https://dekku.co.kr/api/users/info`, {
         method: "GET",
         headers: {
@@ -296,12 +298,14 @@ export default function Details({ params }) {
       });
       const getIdData = await getId.json();
       const nowId = getIdData.id;
-      console.log(nowId);
-      console.log(memberId);
+  
+      // 댓글 작성자와 현재 사용자가 동일한지 확인
       if (nowId !== memberId) {
         alert("자신의 댓글만 지울 수 있습니다.");
         return;
       }
+  
+      // 댓글 삭제 요청 보내기
       const response = await fetch(
         `https://dekku.co.kr/api/comments/${commentId}`,
         {
@@ -311,10 +315,22 @@ export default function Details({ params }) {
           },
         }
       );
+  
+      if (response.ok) {
+        // 댓글이 성공적으로 삭제된 후에 상태 업데이트
+        setCommentStatus((prevState) => ({
+          ...prevState,
+          comments: prevState.comments.filter(comment => comment.id !== commentId),
+          commentCount: prevState.commentCount - 1,
+        }));
+      } else {
+        console.error("Failed to delete comment.");
+      }
     } catch (error) {
       console.log("Error delete comment: ", error);
     }
   };
+  
 
   if (!data) {
     return <p>게시물을 찾을 수 없습니다.</p>;
