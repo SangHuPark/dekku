@@ -21,7 +21,11 @@ export default function Details({ params }) {
   const [likeChangeTrigger, setLikeChangeTrigger] = useState(false);
   const [likeStatus, setLikeStatus] = useState([]);
   const [commentChangeTrigger, setCommentChangeTrigger] = useState(false);
-  const [commentStatus, setCommentStatus] = useState([])
+  const [commentStatus, setCommentStatus] = useState({
+    comments: [],
+    commentCount: 0,
+  });
+  
 
   const handleCommentChange = (e) => {
     setComment(e.target.value);
@@ -30,7 +34,40 @@ export default function Details({ params }) {
   const handleCommentSubmit = async () => {
     try {
       if (comment.length === 0 || comment.length > 50) {
-        alert("댓글은 1자 이상 50자 이하로 작성해 주세요.");
+        alert("댓글은 1자 이상 50자 이하로 작성해 주세요.");useEffect(() => {
+          const fetchComment = async () => {
+            try {
+              const response = await fetch(
+                `https://dekku.co.kr/api/deskterior-post/${params.id}?isRender=false`,
+                {
+                  method: "GET",
+                }
+              );
+        
+              if (!response.ok) {
+                throw new Error("Failed to fetch post details");
+              }
+        
+              const responseData = await response.json();
+              console.log(responseData);
+        
+              // 실제 데이터를 확인하기 위한 로그 추가
+              const postData = responseData.data;
+              console.log("Fetched Post Data for Comments:", postData);
+        
+              // commentStatus에 설정하기 전에 데이터 구조 확인
+              if (postData && postData.comments) {
+                setCommentStatus(postData); // comments를 포함한 postData 전체를 설정
+              } else {
+                console.error("No comments found in postData");
+              }
+        
+            } catch (error) {
+              console.log("Error fetching comments: ", error);
+            }
+          };
+          fetchComment();
+        }, [commentChangeTrigger]);
         return;
       }
 
@@ -101,23 +138,33 @@ export default function Details({ params }) {
             method: "GET",
           }
         );
-
+  
         if (!response.ok) {
           throw new Error("Failed to fetch post details");
         }
-
+  
         const responseData = await response.json();
         console.log(responseData);
+  
+        // 실제 데이터를 확인하기 위한 로그 추가
         const postData = responseData.data;
-        console.log(postData);
-        setCommentStatus(postData);
-        console.log(commentStatus);
+        console.log("Fetched Post Data for Comments:", postData);
+  
+        // commentStatus에 설정하기 전에 데이터 구조 확인
+        if (postData && postData.comments) {
+          setCommentStatus(postData); // comments를 포함한 postData 전체를 설정
+        } else {
+          console.error("No comments found in postData");
+        }
+  
       } catch (error) {
-        console.log("error: ", error);
+        console.log("Error fetching comments: ", error);
       }
     };
     fetchComment();
   }, [commentChangeTrigger]);
+  
+  
 
   useEffect(() => {
     console.log(params.id);
