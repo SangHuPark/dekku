@@ -51,14 +51,14 @@ const ThreeJSRenderer = ({
     renderer.render(scene, camera);
     const canvas = renderer.domElement;
   
-    // Create a smaller canvas for thumbnail
+    // Create a larger canvas for a better quality thumbnail
     const thumbnailCanvas = document.createElement('canvas');
     const ctx = thumbnailCanvas.getContext('2d');
-    thumbnailCanvas.width = 200; // or any smaller size
-    thumbnailCanvas.height = (200 / canvas.width) * canvas.height;
+    thumbnailCanvas.width = 400; // Increase size for better quality
+    thumbnailCanvas.height = (400 / canvas.width) * canvas.height;
     ctx.drawImage(canvas, 0, 0, thumbnailCanvas.width, thumbnailCanvas.height);
   
-    const thumbnail = thumbnailCanvas.toDataURL('image/jpeg', 0.7); // Reduce quality
+    const thumbnail = thumbnailCanvas.toDataURL('image/jpeg', 0.85); // Increase quality
     localStorage.setItem("thumbnail", thumbnail);
     return thumbnail;
   };
