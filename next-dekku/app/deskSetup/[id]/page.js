@@ -206,7 +206,7 @@ export default function Details({ params }) {
         // 이전 및 다음 게시물 데이터 로드 로그
         if (postId > 1) {
           const prevResponse = await fetch(
-            `https://dekku.co.kr/api/deskterior-post/${postId - 1}`
+            `https://dekku.co.kr/api/deskterior-post/${postId - 1}?isRender=false`
           );
           if (prevResponse.ok) {
             const prevData = await prevResponse.json();
@@ -216,7 +216,7 @@ export default function Details({ params }) {
         }
     
         const nextResponse = await fetch(
-          `https://dekku.co.kr/api/deskterior-post/${postId + 1}`
+          `https://dekku.co.kr/api/deskterior-post/${postId + 1}?isRender=false`
         );
         if (nextResponse.ok) {
           const nextResponseData = await nextResponse.json();
