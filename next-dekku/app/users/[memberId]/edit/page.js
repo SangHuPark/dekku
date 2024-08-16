@@ -64,20 +64,23 @@ export default function ProfileEdit(id) {
 
     try {
       // Step 1: Upload only if the image was changed
-      console.log(profileImage)
-      console.log(profileImageFile)
+      console.log(profileImage);
+      console.log(profileImageFile);
       if (profileImageFile) {
-        const response = await fetch("https://dekku.co.kr/api/s3/presigned-url", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: memberId,
-            fileCount: 1,
-            directory: "profile",
-          }),
-        });
+        const response = await fetch(
+          "https://dekku.co.kr/api/s3/presigned-url",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: memberId,
+              fileCount: 1,
+              directory: "profile",
+            }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch presigned URL");
@@ -135,7 +138,10 @@ export default function ProfileEdit(id) {
       });
       if (response.ok) {
         console.log("Profile updated successfully");
-        router.push(`/users/${id.params.memberId}`, { replace: true });
+        // router.push(`/users/${id.params.memberId}`).then(() => {
+        //   window.location.reload();
+        // });
+        window.location.href = `/users/${id.params.memberId}`;
       } else {
         console.error("Failed to update profile", response.statusText);
       }
@@ -154,10 +160,15 @@ export default function ProfileEdit(id) {
             <div className="flex justify-center">
               <div className="w-32 h-32 rounded-full border">
                 <img
-                  src={profileImage || "https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/profile/profile.svg"}
+                  src={
+                    profileImage ||
+                    "https://dekku-bucket.s3.ap-northeast-2.amazonaws.com/profile/profile.svg"
+                  }
                   alt="Profile Preview"
                   className="w-32 h-32 object-cover rounded-full cursor-pointer"
-                  onClick={() => document.getElementById("profileImage").click()}
+                  onClick={() =>
+                    document.getElementById("profileImage").click()
+                  }
                 />
               </div>
               <input
