@@ -27,6 +27,7 @@ const ThreeJSRenderer = ({
   const [renderer, setRenderer] = useState(null);
   const [activeModel, setActiveModel] = useState(null);
   const [deskCenter, setDeskCenter] = useState(new THREE.Vector3());
+  const [relatedPosts, setRelatedPosts] = useState([]);
 
   const saveModelData = () => {
     const data = models.map((model) => ({
@@ -48,7 +49,16 @@ const ThreeJSRenderer = ({
   
   const captureThumbnail = () => {
     renderer.render(scene, camera);
-    const thumbnail = renderer.domElement.toDataURL("image/png");
+    const canvas = renderer.domElement;
+  
+    // Create a smaller canvas for thumbnail
+    const thumbnailCanvas = document.createElement('canvas');
+    const ctx = thumbnailCanvas.getContext('2d');
+    thumbnailCanvas.width = 200; // or any smaller size
+    thumbnailCanvas.height = (200 / canvas.width) * canvas.height;
+    ctx.drawImage(canvas, 0, 0, thumbnailCanvas.width, thumbnailCanvas.height);
+  
+    const thumbnail = thumbnailCanvas.toDataURL('image/jpeg', 0.7); // Reduce quality
     localStorage.setItem("thumbnail", thumbnail);
     return thumbnail;
   };
@@ -339,12 +349,47 @@ const ThreeJSRenderer = ({
     setActiveModel(null);
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     saveModelData();
     const thumbnail = captureThumbnail();
     localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
+  
+    const sceneState = JSON.parse(localStorage.getItem("sceneState")) || [];
+    const sceneStateIds = sceneState.map((item) => item.id);
+  
+    localStorage.setItem("sceneStateIds", JSON.stringify(sceneStateIds));
+  
+    console.log('IDs stored in sceneStateIds:', sceneStateIds);
+  
+    try {
+        const response = await fetch('http://localhost:8080/api/products/related-posts', {  // Replace with actual backend URL
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productIds: sceneStateIds }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json(); // Parse the response as JSON
+      console.log('Related posts:', data);
+  
+      setRelatedPosts(data);
+
+    } catch (error) {
+      console.error('Error fetching related posts:', error);
+    }
+  
     onComplete();
   };
+
+  const recommendedPosts = JSON.parse(localStorage.getItem("recommendedPosts"));
+  if (recommendedPosts) {
+    console.log('Loaded recommended posts:', recommendedPosts);
+  }
 
   return (
     <div

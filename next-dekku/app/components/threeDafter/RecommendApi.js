@@ -1,28 +1,25 @@
 // API 호출 함수
-export const fetchRecommendedPosts = async (productIds) => {
+export async function fetchRecommendedPosts(productIds) {
   try {
-    // productIds를 쿼리 파라미터로 변환
-    const query = productIds.map(id => `productIds=${id}`).join('&');
-    
-    // API 호출
-    const response = await fetch(`https://dekku.co.kr/api/recommend`, {
+    const requestBody = { productIds };
+    console.log("Sending request with body:", JSON.stringify(requestBody)); // Log the request body
+
+    const response = await fetch('http://localhost:8080/api/products/related-posts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify(requestBody),
     });
 
-    // 응답이 성공적이지 않으면 에러 던지기
     if (!response.ok) {
-      throw new Error('Failed to fetch recommended posts');
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    // JSON 데이터 파싱
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (error) {
-    console.error("Error fetching recommended posts:", error);
+    console.error('Error fetching recommended posts:', error);
     return [];
   }
-};
+}
