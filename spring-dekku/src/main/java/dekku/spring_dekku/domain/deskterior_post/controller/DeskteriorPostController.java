@@ -174,6 +174,39 @@ public class DeskteriorPostController {
                         .build());
     }
 
+    //회원일 때 해당 게시글이 본인의 게시글인지
+
+    //회원 여부 상관x
+    //작성자 & 요청자의 동일 여부 boolean
+    @Operation(summary = "단일 게시글 조회")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청 완료",
+                    content = @Content(schema = @Schema(implementation = FindByIdDeskteriorPostResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "단일 게시글 조회 요청 실패"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "존재하지 않는 계정"
+            )
+    })
+    @GetMapping("/validate/{postId}")
+    public ResponseEntity<Boolean> isCreator(@PathVariable("postId") Long postId, @RequestHeader(name = "access") String token) {
+        if(token == null || token.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+        }
+        Boolean sameMember = deskteriorPostService.isCreator(postId, token);
+        if(sameMember) {
+            return ResponseEntity.status(HttpStatus.OK).body(true);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+    }
+
+
     @Operation(summary = "게시글 수정")
     @ApiResponses({
             @ApiResponse(

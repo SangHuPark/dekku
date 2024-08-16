@@ -1,10 +1,13 @@
 import Link from "next/link";
 import FollowButton from "../FollowButton";
 
-export default function DeskSetupCard({ data, isNoProfilePost = false }) {
+export default function DeskSetupCard({ postId, data, isNoProfilePost = false }) {
+  // postId와 data.postId 중 하나를 선택
+  const finalPostId = postId ?? data.postId;
+
   return (
     <div className="rounded-lg w-auto hover:bg-gray-200">
-      <Link href={`/deskSetup/${data.postId}`}>
+      <Link href={`/deskSetup/${finalPostId}`}>
         <div className="relative flex justify-center mb-2">
           <img
             src={data.thumbnail}
@@ -26,20 +29,17 @@ export default function DeskSetupCard({ data, isNoProfilePost = false }) {
                   alt="profile"
                   className="w-12 h-12 object-cover rounded-full"
                 />
-                <div className="text-lg font-bold truncate">
+                <div className="font-medium truncate">
                   {data.memberNickName}
                 </div>
               </div>
-              {/* <button className="rounded px-3 p-1 h-8 bg-[#77C3EB] text-white flex-shrink-0 hover:bg-[#09addb]">
-              팔로우
-            </button> */}
             </div>
           </Link>
           <FollowButton toMemberId={data.memberId} />
         </div>
       )}
-      <Link href={`/deskSetup/${data.postId}`}>
-        <div className="text-lg font-semibold px-1 mb-1 truncate">
+      <Link href={`/deskSetup/${finalPostId}`}>
+        <div className="text-xl font-semibold px-1 mb-1 truncate">
           {data.title}
         </div>
         <ul className="flex space-x-4 font-bold text-[#777777] px-1">

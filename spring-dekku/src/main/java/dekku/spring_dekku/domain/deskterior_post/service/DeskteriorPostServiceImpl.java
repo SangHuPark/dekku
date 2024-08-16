@@ -350,4 +350,15 @@ public class DeskteriorPostServiceImpl implements DeskteriorPostService {
     private String extractUsernameFromToken(String token) {
         return jwtTokenProvider.getUsername(token);
     }
+
+    @Transactional
+    public Boolean isCreator(Long postId, String token) {
+        String username = jwtTokenProvider.getUsername(token);
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
+        DeskteriorPost existingDeskteriorPost = deskteriorPostRepository.findById(postId)
+                .orElseThrow(() -> new NotExistsDeskteriorPostException(ErrorCode.NOT_EXISTS_DESKTERIOR_POST));
+
+        return existingDeskteriorPost.getMember().getId().equals(member.getId());
+    }
 }

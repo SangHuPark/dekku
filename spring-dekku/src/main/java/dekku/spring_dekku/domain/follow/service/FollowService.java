@@ -1,6 +1,7 @@
 package dekku.spring_dekku.domain.follow.service;
 
 import dekku.spring_dekku.domain.follow.exception.AlreadyFollowUserException;
+import dekku.spring_dekku.domain.follow.exception.CannotFollowMySelfException;
 import dekku.spring_dekku.domain.follow.exception.NotFollowUserException;
 import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowerListResponseDto;
 import dekku.spring_dekku.domain.follow.model.dto.response.CreateFollowingListResponseDto;
@@ -17,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -110,9 +110,9 @@ public class FollowService {
         Member fromMember = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
 
-        // 특정 유저의 정보 확인
-        Member toMember = memberRepository.findById(toMemberId)
-                .orElseThrow(() -> new NotExistsUserException(ErrorCode.NOT_EXISTS_USER));
+        if (fromMember.getId().equals(toMemberId)) {
+            throw new CannotFollowMySelfException(ErrorCode.CONFLICT_FOLLOW_USER);
+        }
 
         // 팔로우한 유저들의 목록 가져오기
         List<Follow> followings = followRepository.findByFromMember(fromMember);
