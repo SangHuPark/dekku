@@ -27,4 +27,6 @@ public interface DeskteriorPostService {
     List<FindDeskteriorPostResponseDto> findTopThreePosts();
 
     boolean isPostLikedByUser(String token, Long postId);
+
+    Boolean isCreator(Long postId, String token);
 }
