@@ -30,77 +30,90 @@ export default function Details({ params }) {
     setComment(e.target.value);
   };
 
-  const handleCommentSubmit = async () => {
+// 최상위 수준에 useEffect를 배치합니다.
+useEffect(() => {
+  const fetchComment = async () => {
     try {
-      if (comment.length === 0 || comment.length > 50) {
-        alert("댓글은 1자 이상 50자 이하로 작성해 주세요.");
-        useEffect(() => {
-          const fetchComment = async () => {
-            try {
-              const response = await fetch(
-                `https://dekku.co.kr/api/deskterior-post/${params.id}?isRender=false`,
-                {
-                  method: "GET",
-                }
-              );
-
-              if (!response.ok) {
-                throw new Error("Failed to fetch post details");
-              }
-
-              const responseData = await response.json();
-              console.log(responseData);
-
-              // 실제 데이터를 확인하기 위한 로그 추가
-              const postData = responseData.data;
-              console.log("Fetched Post Data for Comments:", postData);
-
-              // commentStatus에 설정하기 전에 데이터 구조 확인
-              if (postData && postData.comments) {
-                setCommentStatus(postData); // comments를 포함한 postData 전체를 설정
-              } else {
-                console.error("No comments found in postData");
-              }
-            } catch (error) {
-              console.log("Error fetching comments: ", error);
-            }
-          };
-          fetchComment();
-        }, [commentChangeTrigger]);
-        return;
-      }
-
-      const accessToken = window.localStorage.getItem("access");
-      if (!accessToken) {
-        console.log("No access token found");
-        return;
-      }
-
       const response = await fetch(
-        `https://dekku.co.kr/api/comments/${postId}`,
+        `https://dekku.co.kr/api/deskterior-post/${params.id}?isRender=false`,
         {
-          method: "POST",
-          headers: {
-            access: accessToken,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            content: comment, // 상태에 저장된 댓글을 body에 담음
-          }),
+          method: "GET",
         }
       );
-      console.log(response);
+
       if (!response.ok) {
-        throw new Error("Failed to create comment");
+        throw new Error("Failed to fetch post details");
       }
 
-      const data = await response.json();
-      console.log("Comment created successfully:", data);
-      setComment(""); // 댓글 작성 후 입력 창을 초기화
+      const responseData = await response.json();
+      console.log(responseData);
+
+      // 실제 데이터를 확인하기 위한 로그 추가
+      const postData = responseData.data;
+      console.log("Fetched Post Data for Comments:", postData);
+
+      // commentStatus에 설정하기 전에 데이터 구조 확인
+      if (postData && postData.comments) {
+        setCommentStatus(postData); // comments를 포함한 postData 전체를 설정
+      } else {
+        console.error("No comments found in postData");
+      }
     } catch (error) {
-      console.log("error: ", error);
+      console.log("Error fetching comments: ", error);
     }
   };
+
+  fetchComment();
+}, [commentChangeTrigger]);  // commentChangeTrigger가 변경될 때마다 댓글을 다시 로드
+
+// handleCommentSubmit 함수
+const handleCommentSubmit = async () => {
+  try {
+    if (comment.length === 0 || comment.length > 50) {
+      alert("댓글은 1자 이상 50자 이하로 작성해 주세요.");
+      return;  // 조건에 맞지 않으면 함수를 종료합니다.
+    }
+
+    const accessToken = window.localStorage.getItem("access");
+    if (!accessToken) {
+      console.log("No access token found");
+      return;
+    }
+
+    const response = await fetch(
+      `https://dekku.co.kr/api/comments/${postId}`,
+      {
+        method: "POST",
+        headers: {
+          access: accessToken,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: comment,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to create comment");
+    }
+
+    const newComment = await response.json();
+    console.log("Comment created successfully:", newComment);
+
+    // 댓글 작성 후 상태 업데이트
+    setCommentStatus((prevState) => ({
+      ...prevState,
+      comments: [...prevState.comments, newComment],
+      commentCount: prevState.commentCount + 1,
+    }));
+
+    setComment(""); // 댓글 작성 후 입력 창을 초기화
+  } catch (error) {
+    console.log("error: ", error);
+  }
+};
+
 
   useEffect(() => {
     const fetchLike = async () => {
