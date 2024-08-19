@@ -297,15 +297,19 @@ const CreateDeskSetupPage = () => {
         {/* 상품 검색 및 선택 */}
         <div className="w-full relative flex flex-col mt-8">
           <h3 className="font-bold text-xl">상품 검색 및 선택</h3>
-          <div className="flex space-x-3 mt-4">
+          <div className="flex items-center space-x-3 mt-4">
             <input 
               type="text" 
               placeholder="상품 검색" 
               value={keyword} 
               onChange={(e) => setKeyword(e.target.value)} 
-              className="w-full p-3 border border-gray-300 rounded-full" // 둥근 검색창
+              className="flex-grow p-3 border border-gray-300 rounded-lg text-left" // 검색창의 크기를 유연하게 조절
             />
-            <button type="button" onClick={handleSearch} className="bg-black text-white py-2 px-4 rounded-full">
+            <button 
+              type="button" 
+              onClick={handleSearch} 
+              className="bg-black text-white py-2 px-4 rounded-lg whitespace-nowrap" // 버튼 글씨가 가로로 놓이도록 설정
+            >
               검색
             </button>
           </div>
@@ -358,10 +362,10 @@ const CreateDeskSetupPage = () => {
           })}
         </div>
 
-        <div className="flex justify-end mt-8">
+        <div className="flex justify-end my-8">
           <button
             type="submit"
-            className={`bg-black text-white py-2 px-4 rounded ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+            className={`bg-black text-white text-2xl py-2 px-4 rounded ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
             disabled={isSubmitting}
           >
             {isSubmitting ? "제출 중..." : "제출"}
