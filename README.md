@@ -1,6 +1,6 @@
 # 📰 Dekku - 나만을 위한 3D 데스크테리어 서비스
 
-![Logo](docs/img_1.png)
+![Logo](docs/DekkuLogo.png)
 
 </br>
 
@@ -84,10 +84,10 @@
 - Docker
 
 ## ERD Diagram
-![erd.JPG](..%2F..%2F..%2Fdekku%2Ferd.JPG)
+![ERD.JPG](docs%2FERD.JPG)
 
 ## System Architecture
-![img_2.png](docs/img_2.png)
+![img_2.png](docs/SystemArchitecture.png)
 
 ✔ 프로젝트 파일 구조도
 ---
@@ -234,5 +234,50 @@ next-dekku
 |:--------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------:|
 |김민수|권주안|
 
-🎵 Dekku 서비스 장면
+ Dekku 서비스 장면
 ---
+- ### 회원 관리
+  - #### 소셜 로그인(Kakao)
+    ![beforeKakao.JPG](docs%2Fmember%2FbeforeKakao.JPG)
+  - #### 개인 정보 동의 화면
+    ![DekkuAssign.JPG](docs%2Fmember%2FDekkuAssign.JPG)
+  - #### 로그인 완료 후 페이지
+    ![img.png](docs/member/afterKakao.png)
+  
+  - #### 마이페이지
+    ![mypageInfo.JPG](docs%2Fmypage%2FmypageInfo.JPG)
+    ![mypage2.JPG](docs%2Fmypage%2Fmypage2.JPG)
+  - #### 회원 정보 수정
+    ![beforeChange.JPG](docs%2Fmypage%2FbeforeChange.JPG)
+    ![afterChange.JPG](docs%2Fmypage%2FafterChange.JPG)
+  - #### 팔로우
+    ![beforeFollow.JPG](docs%2Ffollow%2FbeforeFollow.JPG)
+    ![afterFollow.JPG](docs%2Ffollow%2FafterFollow.JPG)
+- ### 3D 데꾸
+  - #### 3D 데꾸 과정
+      ![beforeDekku.JPG](docs%2Fdekku3d%2FbeforeDekku.JPG)
+      ![Dekkuing.JPG](docs%2Fdekku3d%2FDekkuing.JPG)
+      ![afterDekku.JPG](docs%2Fdekku3d%2FafterDekku.JPG)
+      ![recommend.JPG](docs%2Fdekku3d%2Frecommend.JPG)
+  - #### 게시글 작성
+      ![post.JPG](docs%2Fdekku3d%2Fpost.JPG)
+      ![mypost.JPG](docs%2Fdekku3d%2Fmypost.JPG)
+
+- ### 데스크 셋업 페이지 
+  - #### 전체 게시글
+      ![deskAll.JPG](docs%2Fpost%2FdeskAll.JPG)
+  - #### 상세 게시글
+      ![details.JPG](docs%2Fpost%2Fdetails.JPG)
+  - #### 좋아요
+      ![afterLike.JPG](docs%2Fpost%2FafterLike.JPG)
+      ![dislike.JPG](docs%2Fpost%2Fdislike.JPG)
+  - #### 댓글
+      ![afterComment.JPG](docs%2Fpost%2FafterComment.JPG)
+      ![deleteComment.JPG](docs%2Fpost%2FdeleteComment.JPG)
+
+- ### 상품 및 Dekku 추천 페이지
+  - #### 최신 상품 추천 페이지
+    ![updateItem.JPG](docs%2Frecommend%2FupdateItem.JPG)
+  - #### 데스크 셋업 추천 페이지
+    ![deskForDev.JPG](docs%2Frecommend%2FdeskForDev.JPG)
+    ![recentLikedPosts.JPG](docs%2Frecommend%2FrecentLikedPosts.JPG)
