@@ -1,6 +1,6 @@
 # 📰 Dekku - 나만을 위한 3D 데스크테리어 서비스
 
-![Logo](img_1.png)
+![Logo](docs/img_1.png)
 
 </br>
 
@@ -87,7 +87,7 @@
 ![erd.JPG](..%2F..%2F..%2Fdekku%2Ferd.JPG)
 
 ## System Architecture
-![img_2.png](img_2.png)
+![img_2.png](docs/img_2.png)
 
 ✔ 프로젝트 파일 구조도
 ---
