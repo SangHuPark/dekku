@@ -54,9 +54,9 @@ export default function Details({ params }) {
           throw new Error("Failed to validate user");
         }
 
-        const { isAuthor } = await response.json();
-        console.log("isAuthor value:", isAuthor); // 디버깅 로그
-        setIsAuthor(isAuthor);
+        const data = await response.json();
+        console.log("isAuthor value:", data); // 디버깅 로그
+        setIsAuthor(data);
       } catch (error) {
         console.error("Error validating user:", error);
       }
@@ -197,9 +197,7 @@ export default function Details({ params }) {
         setEditedData(postData);
         console.log("deskteriorPostImages:", postData.deskteriorPostImages);  // 배열 전체를 로그로 출력
 
-        const foundJsonUrl = postData.deskteriorPostImages.find((url) =>
-          url.includes(".json")
-        );
+        const foundJsonUrl = postData.deskteriorPostImages[1];
         if (foundJsonUrl) {
           console.log("Found JSON URL:", foundJsonUrl); // 디버깅 로그
           setJsonUrl(foundJsonUrl);
@@ -241,14 +239,17 @@ export default function Details({ params }) {
   }, [postId]);
 
   const handleLoadModelClick = () => {
-    console.log("JSON URL:", jsonUrl); // 디버깅 로그
-
     if (jsonUrl) {
-      router.push(`/threeD?jsonUrl=${encodeURIComponent(jsonUrl)}`);
+        // JSON URL을 ThreeJSRenderer 페이지로 넘기지 않고, 필요한 데이터를 저장하거나 처리한 후에 넘깁니다.
+        // ThreeJSRenderer에서 jsonUrl을 활용해 로딩을 진행합니다.
+        console.log("Loading 3D model with JSON URL:", jsonUrl); // 디버깅 로그
+
+        router.push(`/threeD`);
     } else {
-      console.error("No JSON URL found for this post.");
+        console.error("No JSON URL found for this post.");
     }
   };
+
 
   const handleEditClick = () => {
     setIsEditMode(true); // 수정 모드 활성화
@@ -509,7 +510,7 @@ export default function Details({ params }) {
                 onClick={handleLoadModelClick}
                 className="bg-green-500 text-white px-6 py-2 rounded-md"
               >
-                불러오기
+                3D 모델 불러오기
               </button>
             </div>
           )
