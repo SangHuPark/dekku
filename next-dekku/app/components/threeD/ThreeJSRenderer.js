@@ -81,7 +81,7 @@ const ThreeJSRenderer = ({
           // 그림자 설정
           model.castShadow = true;
           model.receiveShadow = true;
-          
+
           setModels((prevModels) => [...prevModels, model]);
           setSelectedProducts((prevProducts) => [
             ...prevProducts,
@@ -133,11 +133,9 @@ const ThreeJSRenderer = ({
     mount.appendChild(renderer.domElement);
     setRenderer(renderer);
 
-    // Ambient Light: 장면 전체를 부드럽게 밝히는 기본 조명
     const ambientLight = new THREE.AmbientLight(0x404040, 5);
     scene.add(ambientLight);
 
-    // Directional Light: 방과 책상 전체를 비추는 방향성 있는 빛
     const directionalLight = new THREE.DirectionalLight(0xffffff, 3.5);
     directionalLight.position.set(30, 30, -30); // 왼쪽 대각선에서 오른쪽 대각선으로 빛을 비추도록 위치 조정
     directionalLight.target.position.set(0, 0, -1.5); // 책상 중심을 향하게 설정
