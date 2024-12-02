@@ -1,7 +1,7 @@
 # 나만을 위한 3D 데스크테리어 서비스 - dekku 📰
 
 <div align=center>
-  <img width="30%" src="docs/dekku-logo.png">
+  <img width="40%" src="docs/dekku-logo.png">
 </div>
 
 </br>
