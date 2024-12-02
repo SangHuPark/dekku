@@ -1,61 +1,130 @@
-# 📰 Dekku - 나만을 위한 3D 데스크테리어 서비스
+# 나만을 위한 3D 데스크테리어 서비스 - dekku 📰
 
-![Logo](docs/DekkuLogo.png)
+<div align=center>
+  <img width="30%" src="docs/dekku-logo.png">
+</div>
 
 </br>
 
-## ❔ Why Dekku?
-내 책상이 너무 허전하다? 좀 꾸며보고 싶은데 나가기는 싫고..
+## 📖 주제
 
-그런 당신을 위한 서비스!! 바로 Dekku를 소개합니다!
+**3D** 방식의 **데스크 꾸미기 및 공유** 서비스
 
-<span style="color:black">Dekku</span>는 Desk를 꾸미자!의 약자입니다.  
-기존 방식대로 상품을 보러 직접 움직이고,
-정보를 찾기 위해 발품 팔았던 상황을 온라인에서 한 번에 해결하자는 취지로 만든 웹 서비스입니다.
+- ✨ 3D로 데스크 꾸미기
+- 🌐 나만의 결과물 공유
+- 💡 맞춤형 상품 추천
 
-다른 사람들의 잘 꾸며진 책상도 보고, 내 책상을 3D로 직접 꾸민 결과를 다른 사람들과 공유해봐요!!
+**dekku**는 'desk를 꾸미다'의 약자입니다.  
+기존의 상품을 보러 직접 매장을 방문하고고, 정보를 찾기 위해 발품 팔았던 상황을 **온라인에서 한 번에** 해결하자는 취지로 만들어졌습니다.
+
+다른 사람들의 잘 꾸며진 책상을 구경하고, 나만의 결과물을 3D로 만들어 공유해보세요!
 
 ## 💬 프로젝트 기간
 2024.07.01(월) ~ 2022.08.16(금)   
 
-</br>
+## 📝 주요 기능
 
-🛠️ 메인 기능
----
-- ### 회원 관리
-    - 번거로운 가입? NO! Kakao 로그인 한 번으로 Dekku의 멤버가 될 수 있어요!
-    - 나에 대해 간단한 소개글을 작성할 수 있어요! 팔로워들에게 더 좋은 모습을 어필할 수 있겠죠?
-    - 팔로워 및 팔로우 수를 볼 수 있고, 직접 그 사람들의 페이지를 찾아갈 수 있어요!
-    - 내가 업로드하거나 좋아요한 Dekku들을 볼 수 있어요! 직접 찾아가는 것보다 훨씬 간편하겠네요!
-    - 닉네임을 사용하여 실명이 아니어도 자유롭게 서비스를 이용할 수 있어요!
-      <br/>
-- ### 3D 데꾸
-    - 다양한 상품들로 나만의 책상을 Dekku해봐요!  
-      Monitor, Mouse, Keyboard 등 여러 상품들이 있어요
-    - 화면을 돌려가며 자유로운 구도를 통해 볼 수 있어요
-    - 상품의 각도를 조절하고 싶나요? Dekku는 상품의 각도 및 높이까지 조절할 수 있어요!
-    - 내가 선택한 상품들의 정보를 확인할 수 있어요!
-    - 완성 결과를 360도 회전하며 내 결과를 더 입체적으로 볼 수 있어요
-      <br/>
-- ### 데스크 셋업 페이지
-    - 나만의 3D 데스크 꾸미기 결과를 모두에게 공유하세요
-    - 자유로운 검색을 통해 여러 Dekku를 찾아봐요!  
-      검색할 때는 최신순, 조회순, 추천순 외에도 스타일, 컬러, 직업 정보에 따라 다양하게 검색할 수 있어요!
-    - Dekku한 게시글의 작성자를 팔로우하고 최신 정보들을 확인하세요!
-    - 다른 사람들의 Dekku에 좋아요와 댓글을 남겨보세요
-      <br/>
-- ### 게시글 추천
-    - 좋아요가 많을수록, 게시글 조회수가 많을수록 추천리스트에서 볼 수 있어요!
-    - 매 번 똑같은 것만 볼 순 없죠?? 7일마다 갱신되며 새로운 Dekku를 볼 수 있어요!
-    - 그러니 매력적인 Dekku를 소개해서 내 글을 다른 사람들에게 선보여볼까요?
-      <br/>
-- ### 상품 추천
-    - Dekku한 게시글에 어떤 상품들이 들어갔는지 확인할 수 있어요
-    - 내가 어떤 상품들을 사용할 수 있는지 신규 업데이트된 상품 목록을 볼 수 있어요!
-      </br>
+### 📚 사용자 관리
 
-✔ 주요 기술
----
+- 소셜 로그인(Kakao)으로 간편한 회원가입
+
+- 마이페이지에서 개인 정보 수정 및 내가 작성한 콘텐츠 관리
+
+- 팔로우/팔로워 시스템으로 다른 사용자와의 연결 강화
+
+<div align=center>
+  <table border="1" style="border-collapse: collapse; text-align: center; width: 100%;">
+    <tr>
+      <th scope="col" align=center> 소셜 로그인 </th>
+      <th scope="col" align=center> 마이페이지 </th>
+    </tr>
+    <tr>
+      <td align=center>
+        <img width="100%" src="docs/member/beforeKakao.JPG">
+      </td>
+      <td align=center>
+        <img width="100%" src="docs/mypage/mypageInfo.JPG">
+      </td>
+    </tr>
+  </table>
+</div>
+
+### 🖼️ 3D 데스크 꾸미기
+
+- 다양한 상품(Monitor, Keyboard 등)을 활용해 나만의 데스크를 꾸며보세요
+
+- 화면 회전, 상품 각도 및 높이 조절로 세밀한 커스터마이징 가능
+
+- 꾸민 결과를 360도 회전으로 더 입체적으로 확인
+
+<div align=center>
+  <table border="1" style="border-collapse: collapse; text-align: center; width: 100%;">
+    <tr>
+      <th scope="col" align=center> 3D 작업 </th>
+      <th scope="col" align=center> 완료 페이지 </th>
+    </tr>
+    <tr>
+      <td align=center>
+        <img width="100%" src="docs/dekku3d/beforeDekku.JPG">
+      </td>
+      <td align=center>
+        <img width="100%" src="docs/dekku3d/afterDekku.JPG">
+      </td>
+    </tr>
+  </table>
+</div>
+
+### 🖊️ 게시글 작성 및 공유
+
+- 꾸민 결과물을 게시글로 작성해 다른 사용자와 공유
+
+- 최신순, 조회순, 스타일별 등 다양한 검색 필터 제공
+
+- 좋아요, 댓글로 사용자 간 소통 강화
+
+<div align=center>
+  <table border="1" style="border-collapse: collapse; text-align: center; width: 100%;">
+    <tr>
+      <th scope="col" align=center> 전체 게시글 </th>
+      <th scope="col" align=center> 상세 게시글 </th>
+    </tr>
+    <tr>
+      <td align=center>
+        <img width="100%" src="docs/post/deskAll.JPG">
+      </td>
+      <td align=center>
+        <img width="100%" src="docs/post/details.JPG">
+      </td>
+    </tr>
+  </table>
+</div>
+
+### 🛍️ 상품 및 게시글 추천
+
+- Dekku한 게시글 속 상품 목록 확인
+
+- 새로운 상품 업데이트 및 인기 게시글 추천 시스템
+
+- 7일마다 갱신되는 추천 리스트로 매번 새로운 콘텐츠 제공
+
+<div align=center>
+  <table border="1" style="border-collapse: collapse; text-align: center; width: 100%;">
+    <tr>
+      <th scope="col" align=center> 상품 추천 </th>
+      <th scope="col" align=center> 게시글 추천 </th>
+    </tr>
+    <tr>
+      <td align=center>
+        <img width="100%" src="docs/recommend/updateItem.JPG">
+      </td>
+      <td align=center>
+        <img width="100%" src="docs/recommend/recentLikedPosts.JPG">
+      </td>
+    </tr>
+  </table>
+</div>
+
+## ⚒️ 기술 스택
 
 **Backend Skills**
 * IntelliJ IDEA Ultimate
@@ -83,201 +152,167 @@
 - NGINX
 - Docker
 
+## 🧑🏻 팀원
+
+<table border="1" style="border-collapse: collapse; text-align: center; width: 100%;">
+    <tr>
+      <th scope="col" colspan="4" style="text-align: center; background-color: #ADD8E6; color: #FFF;"> Server </th>
+      <th scope="col" colspan="2" style="text-align: center; background-color: #C6ABFF; color: #FFF;"> Client </th>
+    </tr>
+    <tr>
+      <td align="center" style="background-color: #ADD8E6; color: #FFF;">박상후</td>
+      <td align="center" style="background-color: #ADD8E6; color: #FFF;">김재윤</td>
+      <td align="center" style="background-color: #ADD8E6; color: #FFF;">박지환</td>
+      <td align="center" style="background-color: #ADD8E6; color: #FFF;">석준영</td>
+      <td align="center" style="background-color: #C6ABFF; color: #FFF;">김민수</td>
+      <td align="center" style="background-color: #C6ABFF; color: #FFF;">권주안</td>
+    </tr>
+    <tr>
+      <td>
+        <a href="https://github.com/SangHuPark"><img src="https://avatars.githubusercontent.com/SangHuPark" width=160/></a>
+      </td>
+      <td>
+        <a href="https://github.com/Joajy"><img src="https://avatars.githubusercontent.com/Joajy" width=160/></a>
+      </td>
+      <td>
+        <img src="docs/devMembers/pjh.png"  width="160"/>
+      </td>
+      <td>
+        <img src="docs/devMembers/sjy.png"  width="160"/>
+      </td>
+      <td>
+         <img src="docs/devMembers/kms.png"  width="160"/>
+      </td>
+      <td>
+         <img src="docs/devMembers/kja.png"  width="160"/>
+      </td>
+    </tr>
+</table>
+
 ## ERD Diagram
-![ERD.JPG](docs%2FERD.JPG)
+
+<div align=center>
+  <img src="docs/ERD.JPG"  width="70%"/>
+</div>
 
 ## System Architecture
-![img_2.png](docs/SystemArchitecture.png)
 
-✔ 프로젝트 파일 구조도
+<div align=center>
+  <img src="docs/SystemArchitecture.png"  width="70%"/>
+</div>
+
+##  프로젝트 파일 구조도
 ---
 ### Back
+<small>
+
 ```
-spring-dekku
-├───domain
-│   ├───comment
-│   │   ├───controller
-│   │   ├───event
-│   │   ├───exception
-│   │   ├───model
-│   │   │   ├───dto
-│   │   │   │   └───response
-│   │   │   └───entity
-│   │   ├───repository
-│   │   └───service
-│   ├───deskterior_post
-│   │   ├───controller
-│   │   ├───exception
-│   │   ├───model
-│   │   │   ├───dto
-│   │   │   │   ├───request
-│   │   │   │   └───response
-│   │   │   └───entity
-│   │   │       ├───attribute
-│   │   │       └───code
-│   │   ├───repository
-│   │   └───service
-│   ├───follow
-│   │   ├───controller
-│   │   ├───exception
-│   │   ├───model
-│   │   │   ├───dto
-│   │   │   │   └───response
-│   │   │   └───entity
-│   │   ├───repository
-│   │   └───service
-│   ├───like
-│   │   ├───controller
-│   │   ├───exception
-│   │   ├───model
-│   │   │   ├───dto
-│   │   │   └───entity
-│   │   ├───repository
-│   │   └───service
-│   ├───member
-│   │   ├───controller
-│   │   ├───exception
-│   │   ├───jwt
-│   │   ├───model
-│   │   │   ├───dto
-│   │   │   │   └───response
-│   │   │   └───entity
-│   │   ├───repository
-│   │   └───service
-│   │       └───oauth2
-│   └───product
-│       ├───controller
-│       ├───exception
-│       ├───model
-│       │   ├───dto
-│       │   │   ├───request
-│       │   │   └───response
-│       │   └───entity
-│       │       └───code
-│       ├───repository
-│       └───service
-├───global
-│   ├───aop
-│   ├───config
-│   │   ├───aws
-│   │   ├───redis
-│   │   ├───security
-│   │   ├───swagger
-│   │   └───web
-│   ├───exception
-│   ├───filter
-│   ├───format
-│   ├───handler
-│   ├───model
-│   │   ├───dto
-│   │   └───entity
-│   ├───status
-│   └───util
-└───infra
-    └───aws
-        ├───controller
-        ├───model
-        │   └───dto
-        │       ├───request
-        │       └───response
-        └───service
+📦 spring-dekku
+┣ 📂 domain
+┃ ┣ 📂 comment
+┃ ┃ ┣ 📂 controller
+┃ ┃ ┣ 📂 event
+┃ ┃ ┣ 📂 exception
+┃ ┃ ┣ 📂 model
+┃ ┃ ┃ ┣ 📂 dto
+┃ ┃ ┃ ┃ ┗ 📂 response
+┃ ┃ ┃ ┗ 📂 entity
+┃ ┃ ┣ 📂 repository
+┃ ┃ ┗ 📂 service
+┃ ┣ 📂 deskterior_post
+┃ ┃ ┣ 📂 controller
+┃ ┃ ┣ 📂 exception
+┃ ┃ ┣ 📂 model
+┃ ┃ ┃ ┣ 📂 dto
+┃ ┃ ┃ ┃ ┣ 📂 request
+┃ ┃ ┃ ┃ ┗ 📂 response
+┃ ┃ ┃ ┗ 📂 entity
+┃ ┃ ┃   ┣ 📂 attribute
+┃ ┃ ┃   ┗ 📂 code
+┃ ┃ ┣ 📂 repository
+┃ ┃ ┗ 📂 service
+┃ ┣ 📂 follow
+┃ ┃ ┗ 동일한 구조
+┃ ┣ 📂 like
+┃ ┃ ┗ 동일한 구조
+┃ ┣ 📂 member
+┃ ┃ ┣ 📂 controller
+┃ ┃ ┣ 📂 exception
+┃ ┃ ┣ 📂 jwt
+┃ ┃ ┣ 📂 model
+┃ ┃ ┃ ┣ 📂 dto
+┃ ┃ ┃ ┃ ┗ 📂 response
+┃ ┃ ┃ ┗ 📂 entity
+┃ ┃ ┣ 📂 repository
+┃ ┃ ┗ 📂 service
+┃ ┃   ┗ 📂 oauth2
+┃ ┗ 📂 product
+┃   ┣ 📂 controller
+┃   ┣ 📂 exception
+┃   ┣ 📂 model
+┃   ┃ ┣ 📂 dto
+┃   ┃ ┃ ┣ 📂 request
+┃   ┃ ┃ ┗ 📂 response
+┃   ┃ ┗ 📂 entity
+┃   ┃   ┗ 📂 code
+┃   ┣ 📂 repository
+┃   ┗ 📂 service
+┣ 📂 global
+┃ ┣ 📂 aop
+┃ ┣ 📂 config
+┃ ┃ ┣ 📂 aws
+┃ ┃ ┣ 📂 redis
+┃ ┃ ┣ 📂 security
+┃ ┃ ┣ 📂 swagger
+┃ ┃ ┗ 📂 web
+┃ ┣ 📂 exception
+┃ ┣ 📂 filter
+┃ ┣ 📂 format
+┃ ┣ 📂 handler
+┃ ┣ 📂 model
+┃ ┃ ┣ 📂 dto
+┃ ┃ ┗ 📂 entity
+┃ ┣ 📂 status
+┃ ┗ 📂 util
+┗ 📂 infra
+  ┗ 📂 aws
+    ┣ 📂 controller
+    ┣ 📂 model
+    ┃ ┗ 📂 dto
+    ┃   ┣ 📂 request
+    ┃   ┗ 📂 response
+    ┗ 📂 service
 ```
+</small>
+
 ### Front
+<small>
+
 ```
-next-dekku
-├───.idea
-├───app
-│   ├───components
-│   │   ├───deskSetup
-│   │   ├───threeD
-│   │   └───threeDafter
-│   ├───deskSetup
-│   │   ├───create
-│   │   ├───create-afterthreed
-│   │   └───[id]
-│   ├───logout
-│   ├───oauth2-jwt-header
-│   ├───styles
-│   ├───threeD
-│   ├───threeDafter
-│   └───users
-│       └───[memberId]
-│           └───edit
-├───fonts
-└───public
-    ├───category
-    ├───products_image
-    └───threedmodels
+📦 next-dekku
+┣ 📂 .idea
+┣ 📂 app
+┃ ┣ 📂 components
+┃ ┃ ┣ 📂 deskSetup
+┃ ┃ ┣ 📂 threeD
+┃ ┃ ┗ 📂 threeDafter
+┃ ┣ 📂 deskSetup
+┃ ┃ ┣ 📂 create
+┃ ┃ ┣ 📂 create-afterthreed
+┃ ┃ ┗ 📂 [id]
+┃ ┣ 📂 logout
+┃ ┣ 📂 oauth2-jwt-header
+┃ ┣ 📂 styles
+┃ ┣ 📂 threeD
+┃ ┣ 📂 threeDafter
+┃ ┗ 📂 users
+┃   ┗ 📂 [memberId]
+┃     ┗ 📂 edit
+┣ 📂 fonts
+┗ 📂 public
+  ┣ 📂 category
+  ┣ 📂 products_image
+  ┗ 📂 threedmodels
 ```
+</small>
 
-
-✨ 협업 툴
----
-- Git
-- JIRA
-- Notion
-- MatterMost
-- SourceTree
-- Webex
-
-
-팀원 소개
----
-
-### Backend
-| <img src="docs/devMembers/bsh.png"  width="150" height="150"/> | <img src="docs/devMembers/kjy.png"  width="150" height="150"/> | <img src="docs/devMembers/pjh.png"  width="150" height="150"/> | <img src="docs/devMembers/sjy.png"  width="150" height="150"/> |
-|:--------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------:|
-|박상후|김재윤|박지환|석준영|
-
-### Frontend
-| <img src="docs/devMembers/kms.png"  width="150" height="150"/> | <img src="docs/devMembers/kja.png"  width="150" height="150"/> |
-|:--------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------:|
-|김민수|권주안|
-
- Dekku 서비스 장면
----
-- ### 회원 관리
-  - #### 소셜 로그인(Kakao)
-    ![beforeKakao.JPG](docs%2Fmember%2FbeforeKakao.JPG)
-  - #### 개인 정보 동의 화면
-    ![DekkuAssign.JPG](docs%2Fmember%2FDekkuAssign.JPG)
-  - #### 로그인 완료 후 페이지
-    ![img.png](docs/member/afterKakao.png)
-  
-  - #### 마이페이지
-    ![mypageInfo.JPG](docs%2Fmypage%2FmypageInfo.JPG)
-    ![mypage2.JPG](docs%2Fmypage%2Fmypage2.JPG)
-  - #### 회원 정보 수정
-    ![beforeChange.JPG](docs%2Fmypage%2FbeforeChange.JPG)
-    ![afterChange.JPG](docs%2Fmypage%2FafterChange.JPG)
-  - #### 팔로우
-    ![beforeFollow.JPG](docs%2Ffollow%2FbeforeFollow.JPG)
-    ![afterFollow.JPG](docs%2Ffollow%2FafterFollow.JPG)
-- ### 3D 데꾸
-  - #### 3D 데꾸 과정
-      ![beforeDekku.JPG](docs%2Fdekku3d%2FbeforeDekku.JPG)
-      ![Dekkuing.JPG](docs%2Fdekku3d%2FDekkuing.JPG)
-      ![afterDekku.JPG](docs%2Fdekku3d%2FafterDekku.JPG)
-      ![recommend.JPG](docs%2Fdekku3d%2Frecommend.JPG)
-  - #### 게시글 작성
-      ![post.JPG](docs%2Fdekku3d%2Fpost.JPG)
-      ![mypost.JPG](docs%2Fdekku3d%2Fmypost.JPG)
-
-- ### 데스크 셋업 페이지 
-  - #### 전체 게시글
-      ![deskAll.JPG](docs%2Fpost%2FdeskAll.JPG)
-  - #### 상세 게시글
-      ![details.JPG](docs%2Fpost%2Fdetails.JPG)
-  - #### 좋아요
-      ![afterLike.JPG](docs%2Fpost%2FafterLike.JPG)
-      ![dislike.JPG](docs%2Fpost%2Fdislike.JPG)
-  - #### 댓글
-      ![afterComment.JPG](docs%2Fpost%2FafterComment.JPG)
-      ![deleteComment.JPG](docs%2Fpost%2FdeleteComment.JPG)
-
-- ### 상품 및 Dekku 추천 페이지
-  - #### 최신 상품 추천 페이지
-    ![updateItem.JPG](docs%2Frecommend%2FupdateItem.JPG)
-  - #### 데스크 셋업 추천 페이지
-    ![deskForDev.JPG](docs%2Frecommend%2FdeskForDev.JPG)
-    ![recentLikedPosts.JPG](docs%2Frecommend%2FrecentLikedPosts.JPG)
