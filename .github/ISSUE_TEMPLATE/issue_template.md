@@ -1,9 +1,9 @@
 ---
 name: ISSUE_TEMPLATE
-about: 이슈 템플릿
+about: issue
 title: ''
 labels: ''
-assignees: ''
+assignees: SangHuPark
 
 ---
 
