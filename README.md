@@ -189,21 +189,21 @@
     </tr>
 </table>
 
-## ERD Diagram
+## 🗂️ ERD
 
 <div align=center>
   <img src="docs/ERD.JPG"  width="70%"/>
 </div>
 
-## System Architecture
+## 🏗️ System Architecture
 
 <div align=center>
   <img src="docs/architecture.png" width="80%"/>
 </div>
 
-##  프로젝트 파일 구조도
----
-### Back
+## 📂 프로젝트 파일 구조도
+
+### Back-end
 <small>
 
 ```
@@ -285,7 +285,7 @@
 ```
 </small>
 
-### Front
+### Front-end
 <small>
 
 ```
