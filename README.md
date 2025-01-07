@@ -198,7 +198,7 @@
 ## System Architecture
 
 <div align=center>
-  <img src="docs/dekku-architecture.png"  width="80%"/>
+  <img src="docs/architecture.png"/>
 </div>
 
 ##  프로젝트 파일 구조도
