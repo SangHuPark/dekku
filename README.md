@@ -198,7 +198,7 @@
 ## System Architecture
 
 <div align=center>
-  <img src="docs/architecture.png"/>
+  <img src="docs/architecture.png" width="80%"/>
 </div>
 
 ##  프로젝트 파일 구조도
