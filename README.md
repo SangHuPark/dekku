@@ -181,7 +181,7 @@
         <img src="docs/devMembers/sjy.png"  width="160"/>
       </td>
       <td>
-         <img src="docs/devMembers/kms.png"  width="160"/>
+         <a href="https://github.com/min75046591"><img src="https://avatars.githubusercontent.com/min75046591" width=160/></a>
       </td>
       <td>
          <img src="docs/devMembers/kja.png"  width="160"/>
@@ -198,7 +198,7 @@
 ## System Architecture
 
 <div align=center>
-  <img src="docs/SystemArchitecture.png"  width="70%"/>
+  <img src="docs/dekku-architecture.png"  width="70%"/>
 </div>
 
 ##  프로젝트 파일 구조도
