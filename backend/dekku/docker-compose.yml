@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # app = 서버 컨테이너를 별도로 생성
+#  app:
+#    container_name: dekku
+#    image: openjdk:17
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - dekku-network
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: dekku
+      MARIADB_USER: dekku
+      MARIADB_PASSWORD: dekku1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - dekku-network
+
+volumes:
+  mariadb_data:
+
+networks:
+  dekku-network:
