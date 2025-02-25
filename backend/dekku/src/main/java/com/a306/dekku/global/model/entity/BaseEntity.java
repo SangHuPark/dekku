@@ -1,5 +1,6 @@
 package com.a306.dekku.global.model.entity;
 
+import com.a306.dekku.global.util.ClockUtil;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
