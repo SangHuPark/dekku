@@ -1,8 +1,7 @@
 package com.a306.dekku.domain.member.model.entity.enums;
 
-import com.a306.dekku.domain.member.exception.InvalidProviderTypeException;
+import com.a306.dekku.domain.auth.exception.InvalidProviderTypeException;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

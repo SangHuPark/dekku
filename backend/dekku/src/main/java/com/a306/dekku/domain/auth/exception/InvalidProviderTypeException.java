@@ -1,4 +1,4 @@
-package com.a306.dekku.domain.member.exception;
+package com.a306.dekku.domain.auth.exception;
 
 import com.a306.dekku.global.exception.BaseException;
 import com.a306.dekku.global.exception.ErrorCode;
