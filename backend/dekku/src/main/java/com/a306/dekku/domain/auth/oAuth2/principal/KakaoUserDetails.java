@@ -1,6 +1,6 @@
-package com.a306.dekku.domain.auth.security;
+package com.a306.dekku.domain.auth.oAuth2.principal;
 
-import com.a306.dekku.domain.auth.model.dto.KakaoUserProfile;
+import com.a306.dekku.domain.auth.oAuth2.model.dto.KakaoUserProfile;
 import com.a306.dekku.domain.member.model.entity.enums.ProviderType;
 
 import java.util.Map;

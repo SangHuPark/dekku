@@ -1,4 +1,4 @@
-package com.a306.dekku.domain.auth.model.dto;
+package com.a306.dekku.domain.auth.oAuth2.model.dto;
 
 import java.util.Map;
 
