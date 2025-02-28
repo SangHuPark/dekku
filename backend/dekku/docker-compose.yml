@@ -15,7 +15,8 @@ services:
     container_name: mariadb
     restart: always
     environment:
-      MARIADB_ROOT_PASSWORD: root
+      TZ: Asia/Seoul
+      MARIADB_ROOT_PASSWORD: dekku1234
       MARIADB_DATABASE: dekku
       MARIADB_USER: dekku
       MARIADB_PASSWORD: dekku1234
@@ -26,8 +27,17 @@ services:
     networks:
       - dekku-network
 
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - 6379:6379
+    networks:
+      - local-bridge
+
 volumes:
   mariadb_data:
 
 networks:
   dekku-network:
+    driver: bridge
