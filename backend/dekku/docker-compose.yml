@@ -1,19 +1,8 @@
-version: '3.8'
-
 services:
-  # app = 서버 컨테이너를 별도로 생성
-#  app:
-#    container_name: dekku
-#    image: openjdk:17
-#    ports:
-#      - "8080:8080"
-#    networks:
-#      - dekku-network
 
   mariadb:
     image: mariadb:latest
     container_name: mariadb
-    restart: always
     environment:
       TZ: Asia/Seoul
       MARIADB_ROOT_PASSWORD: dekku1234
@@ -32,11 +21,14 @@ services:
     container_name: redis
     ports:
       - 6379:6379
+    volumes:
+      - redis_data:/data
     networks:
-      - local-bridge
+      - dekku-network
 
 volumes:
   mariadb_data:
+  redis_data:
 
 networks:
   dekku-network:
