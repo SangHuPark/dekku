@@ -1,0 +1,14 @@
+{
+  "properties": {
+    "title": {
+      "type": "text",
+      "analyzer": "jaso_edge_ngram_index_analyzer",
+      "search_analyzer": "jaso_edge_ngram_search_analyzer"
+    },
+    "productNames": {
+      "type": "text",
+      "analyzer": "jaso_edge_ngram_index_analyzer",
+      "search_analyzer": "jaso_edge_ngram_search_analyzer"
+    }
+  }
+}

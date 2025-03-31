@@ -1,0 +1,17 @@
+{
+  "properties": {
+    "id": {
+      "type": "keyword"
+    },
+    "title": {
+      "type": "text",
+      "analyzer": "ngram_analyzer",
+      "search_analyzer": "standard"
+    },
+    "productNames": {
+      "type": "text",
+      "analyzer": "ngram_analyzer",
+      "search_analyzer": "standard"
+    }
+  }
+}
