@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers(SWAGGER_URI).permitAll()  // ✅ Swagger UI 인증 없이 허용
-//                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/**").permitAll()
 //                        .requestMatchers("/api/v1/public/**").permitAll()
                         .anyRequest().authenticated()
                 )
