@@ -62,5 +62,5 @@ out/
 .AppleDouble
 .LSOverride
 
-### container volume ###
-.infra
+### container 설정 관련 ###
+infra/
