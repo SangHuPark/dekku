@@ -1,5 +1,16 @@
 # 🕹️ 나만의 3D 데스크테리어, "dekku"
 
+<table>
+  <tr>
+    <td><strong>시작일</strong></td>
+    <td>2024.07.01 (월)</td>
+  </tr>
+  <tr>
+    <td><strong>종료일</strong></td>
+    <td>2024.08.16 (금)</td>
+  </tr>
+</table>
+
 </br>
 
 ## 1. 소개 📌
@@ -17,14 +28,9 @@
 
 </br>
 
-## 2. 프로젝트 기간 💬
-2024.07.01(월) ~ 2022.08.16(금)   
+## 2. 주요 기능 📝
 
-</br>
-
-## 3. 주요 기능 📝
-
-### 3.1. 사용자 관리 📚
+### 2.1. 사용자 관리 📚
 
 - 소셜 로그인(Kakao)으로 간편한 회원가입
 
@@ -55,7 +61,7 @@
 
 </br>
 
-### 3.2. 3D 데스크 꾸미기 🖼️
+### 2.2. 3D 데스크 꾸미기 🖼️
 
 - 다양한 상품(Monitor, Keyboard 등)을 활용해 나만의 데스크를 꾸며보세요
 
@@ -86,7 +92,7 @@
 
 </br>
 
-### 3.3. 게시글 작성 및 공유 🖊️
+### 2.3. 게시글 작성 및 공유 🖊️
 
 - 꾸민 결과물을 게시글로 작성해 다른 사용자와 공유
 
@@ -117,7 +123,7 @@
 
 </br>
 
-### 3.4. 상품 및 게시글 추천 🛍️
+### 2.4. 상품 및 게시글 추천 🛍️
 
 - Dekku한 게시글 속 상품 목록 확인
 
@@ -144,7 +150,7 @@
 
 </br>
 
-## 4. 팀 구성 🧑🏻
+## 3. 팀 구성 🧑🏻
 
 <table border="1" style="border-collapse: collapse; text-align: center; width: 100%;">
     <tr>
@@ -183,7 +189,7 @@
 
 </br>
 
-## 5. 사용 기술 ⚒️
+## 4. 사용 기술 ⚒️
 
 ### 🖥️ Client
 |  |  |
@@ -214,16 +220,16 @@
 | Version Control      | <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"/> <img src="https://img.shields.io/badge/gitLAB-fc6d26?style=for-the-badge&logo=gitlab&logoColor=white"/>              |
 | **Design**          | <img src="https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" alt="Figma"/> |
 
-## 6. 산출물 📚
+## 5. 산출물 📚
 
 |  |  |
 | :--: | ---: |
 | Architecture | <img width="700" src="docs/architecture.png"> |
 | ERD          | <img width="700" src="docs/ERD.JPG"> |
 
-## 7. 프로젝트 파일 구조도 📂
+## 6. 프로젝트 파일 구조도 📂
 
-### 7.1. Back-end
+### 6.1. Back-end
 <small>
 
 ```
@@ -305,7 +311,7 @@
 ```
 </small>
 
-### 7.2. Front-end
+### 6.2. Front-end
 <small>
 
 ```
