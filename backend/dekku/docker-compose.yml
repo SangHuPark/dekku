@@ -33,8 +33,6 @@ services:
       context: ./dockerfiles/es
     container_name: es
     environment:
-      #      - node.name=es-node
-      #      - cluster.name=search-cluster
       - discovery.type=single-node
       - xpack.security.enabled=false
       - xpack.security.http.ssl.enabled=false
