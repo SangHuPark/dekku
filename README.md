@@ -212,7 +212,7 @@
 
 |  |  |
 | :--: | ---: |
-| Architecture | <img width="700" src=".docs/architecture.png"> |
+| Architecture | <img width="700" src="docs/architecture.png"> |
 | ERD          | <img width="700" src="docs/ERD.JPG"> |
 
 ## 7. 프로젝트 파일 구조도 📂
