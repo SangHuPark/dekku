@@ -53,4 +53,9 @@ public class Board extends BaseEntity {
         boardProduct.setBoard(this);
     }
 
+    // 조회수 증가 메서드
+    public void increaseViewCount() {
+        this.viewCount += 1;
+    }
+
 }
