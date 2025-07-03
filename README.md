@@ -316,7 +316,6 @@
 
 ```
 📦 next-dekku
-┣ 📂 .idea
 ┣ 📂 app
 ┃ ┣ 📂 components
 ┃ ┃ ┣ 📂 deskSetup
