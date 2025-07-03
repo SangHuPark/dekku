@@ -21,7 +21,7 @@ public class BoardQuerySerivceImpl implements BoardQueryService {
         List<Board> boards = boardRepository.findByTitleOrProductNameContaining(keyword);
 
         return boards.stream()
-                .map(board -> new SimpleBoardDto(board.getId(), board.getTitle(), board.getContent()))
+                .map(board -> SimpleBoardDto.of(board, board.getViewCount()))
                 .toList();
     }
 
