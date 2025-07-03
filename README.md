@@ -2,7 +2,7 @@
 
 </br>
 
-## 1. 주제 📌
+## 1. 소개 📌
 
 **3D** 방식의 **데스크 꾸미기 및 공유** 서비스
 
@@ -15,8 +15,12 @@
 
 다른 사람들의 잘 꾸며진 책상을 구경하고, 나만의 결과물을 3D로 만들어 공유해보세요!
 
+</br>
+
 ## 2. 프로젝트 기간 💬
 2024.07.01(월) ~ 2022.08.16(금)   
+
+</br>
 
 ## 3. 주요 기능 📝
 
@@ -45,6 +49,10 @@
   </table>
 </div>
 
+---
+
+</br>
+
 ### 3.2. 3D 데스크 꾸미기 🖼️
 
 - 다양한 상품(Monitor, Keyboard 등)을 활용해 나만의 데스크를 꾸며보세요
@@ -69,6 +77,10 @@
     </tr>
   </table>
 </div>
+
+---
+
+</br>
 
 ### 3.3. 게시글 작성 및 공유 🖊️
 
@@ -95,6 +107,10 @@
   </table>
 </div>
 
+---
+
+</br>
+
 ### 3.4. 상품 및 게시글 추천 🛍️
 
 - Dekku한 게시글 속 상품 목록 확인
@@ -120,33 +136,38 @@
   </table>
 </div>
 
+</br>
+
 ## 4. 사용 기술 ⚒️
 
-**Backend Skills**
-* IntelliJ IDEA Ultimate
-* Springboot 3.3.2
-* Spring Web
-* Spring Security
-* Spring Data JPA
-* Spring Validation
-* Swagger 2.0.2
-* MySQL
-* MongoDB
-* Redis
-* Redisson
+### 🖥️ Client
+|  |  |
+| :----- | :----- |
+| Framework            | <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black"> <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white"/> | 
+| Language             | <img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"/>                                                                                                        |
+| Styling              | <img src="https://img.shields.io/badge/styled%20components-DB7093?style=for-the-badge&logo=styledcomponents&logoColor=white"> <img src="https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white"/>                                                                                         |
+| State Management     | <img src="https://img.shields.io/badge/react%20query-FF4154?style=for-the-badge&logo=reactquery&logoColor=white"> <img src="https://img.shields.io/badge/redux-764ABC?style=for-the-badge&logo=redux&logoColor=white"> |
+| IDE                  | <img src="https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visualstudiocode&logoColor=white"/>                                                                                  |
 
-**Frontend Skills**
-- Visual Studio Code
-- React
-- NextJS
-- ThreeJs
+### 🖥️ Server
+|  |  |
+| :-------------------: | :-------------- |
+| **Framework**         | <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white"/> |
+| **Language**          | <img src="https://img.shields.io/badge/Java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white"/> |
+| **Database**          | <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/> <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white"/> |
+| **In-Memory DB / Lock** | <img src="https://img.shields.io/badge/Redis-FF4438?style=for-the-badge&logo=redis&logoColor=white"/> <img src="https://img.shields.io/badge/Redisson-000000?style=for-the-badge&logo=redis&logoColor=white"/> |
+| **Validation / Security** | <img src="https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"/> <img src="https://img.shields.io/badge/Validation-007396?style=for-the-badge&logoColor=white"/> |
+| **Cloud**             | <img src="https://img.shields.io/badge/AWS%20EC2%20Lightsail-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white"/> <img src="https://img.shields.io/badge/AWS%20S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white"/> |
+| **DevOps / Infra**    | <img src="https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white"/> <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/> <img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=nginx&logoColor=white"/> |
+| **IDE**               | <img src="https://img.shields.io/badge/IntelliJIDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white"/> |
 
-**CI/CD Skills**
-- AWS EC2 Lightsail
-- AWS S3
-- Jenkins
-- NGINX
-- Docker
+### 🖥️ Common
+|  |  |
+| :-------------------: | :-------------- |
+| **Comunication**          | <img src="https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white" alt="Jira"/> <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white" alt="Notion"/> |
+| **API Docs**          | <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black"/> |
+| Version Control      | <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"/> <img src="https://img.shields.io/badge/gitLAB-fc6d26?style=for-the-badge&logo=gitlab&logoColor=white"/>              |
+| **Design**          | <img src="https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" alt="Figma"/> |
 
 ## 5. 팀 구성 🧑🏻
 
