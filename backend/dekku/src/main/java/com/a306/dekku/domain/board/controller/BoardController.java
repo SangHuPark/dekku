@@ -1,5 +1,6 @@
 package com.a306.dekku.domain.board.controller;
 
+import com.a306.dekku.domain.board.model.dto.SimpleBoardDto;
 import com.a306.dekku.domain.board.model.dto.request.CreateBoardRequest;
 import com.a306.dekku.domain.board.service.BoardService;
 import com.a306.dekku.global.model.dto.Result;
@@ -8,10 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/boards")
