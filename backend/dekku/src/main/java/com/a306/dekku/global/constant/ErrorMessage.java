@@ -30,16 +30,14 @@ public class ErrorMessage {
      * - 존재하지 않는 자원
      */
     public static final String NOT_EXIST_MEMBER_MESSAGE = "존재하지 않는 사용자입니다.";
-//    public static final String NOT_EXIST_PRESS_MESSAGE = "존재하지 않는 언론사입니다.";
-//    public static final String NOT_EXIST_FOLDER_MESSAGE = "존재하지 않는 폴더입니다.";
     public static final String NOT_EXIST_POST_MESSAGE = "존재하지 않는 게시글입니다.";
     public static final String NOT_EXIST_LIKE_MESSAGE = "존재하지 않는 좋아요입니다.";
-//    public static final String NOT_SUBSCRIBE_PRESS_MESSAGE = "구독하지 않은 언론사입니다.";
 
     /**
      * [500 INTERNAL_SERVER_ERROR]
      * - 서버 오류
      */
     public static final String FAIL_TO_ISSUE_TOKEN_MESSAGE = "토큰 발행을 실패했습니다.";
+    public static final String FAIL_TO_ACQUIRE_LOCK_MESSAGE = "락 획득에 실패했습니다.";
 
 }
