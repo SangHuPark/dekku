@@ -1,16 +1,12 @@
-# 나만을 위한 3D 데스크테리어 서비스 - dekku 📰
-
-<div align=center>
-  <img width="40%" src="docs/dekku-logo.png">
-</div>
+# 🕹️ 나만의 3D 데스크테리어, "dekku"
 
 </br>
 
-## 📖 주제
+## 1. 주제 📌
 
 **3D** 방식의 **데스크 꾸미기 및 공유** 서비스
 
-- ✨ 3D로 데스크 꾸미기
+- ✨ 사용자 3D 공간에서 데스크 꾸미기
 - 🌐 나만의 결과물 공유
 - 💡 맞춤형 상품 추천
 
@@ -19,12 +15,12 @@
 
 다른 사람들의 잘 꾸며진 책상을 구경하고, 나만의 결과물을 3D로 만들어 공유해보세요!
 
-## 💬 프로젝트 기간
+## 2. 프로젝트 기간 💬
 2024.07.01(월) ~ 2022.08.16(금)   
 
-## 📝 주요 기능
+## 3. 주요 기능 📝
 
-### 📚 사용자 관리
+### 3.1. 사용자 관리 📚
 
 - 소셜 로그인(Kakao)으로 간편한 회원가입
 
@@ -49,7 +45,7 @@
   </table>
 </div>
 
-### 🖼️ 3D 데스크 꾸미기
+### 3.2. 3D 데스크 꾸미기 🖼️
 
 - 다양한 상품(Monitor, Keyboard 등)을 활용해 나만의 데스크를 꾸며보세요
 
@@ -74,7 +70,7 @@
   </table>
 </div>
 
-### 🖊️ 게시글 작성 및 공유
+### 3.3. 게시글 작성 및 공유 🖊️
 
 - 꾸민 결과물을 게시글로 작성해 다른 사용자와 공유
 
@@ -99,7 +95,7 @@
   </table>
 </div>
 
-### 🛍️ 상품 및 게시글 추천
+### 3.4. 상품 및 게시글 추천 🛍️
 
 - Dekku한 게시글 속 상품 목록 확인
 
@@ -124,7 +120,7 @@
   </table>
 </div>
 
-## ⚒️ 기술 스택
+## 4. 사용 기술 ⚒️
 
 **Backend Skills**
 * IntelliJ IDEA Ultimate
@@ -152,7 +148,7 @@
 - NGINX
 - Docker
 
-## 🧑🏻 팀원
+## 5. 팀 구성 🧑🏻
 
 <table border="1" style="border-collapse: collapse; text-align: center; width: 100%;">
     <tr>
@@ -189,21 +185,16 @@
     </tr>
 </table>
 
-## 🗂️ ERD
+## 6. 산출물 📚
 
-<div align=center>
-  <img src="docs/ERD.JPG"  width="70%"/>
-</div>
+|  |  |
+| :--: | ---: |
+| Architecture | <img width="700" src=".docs/architecture.png"> |
+| ERD          | <img width="700" src="docs/ERD.JPG"> |
 
-## 🏗️ System Architecture
+## 7. 프로젝트 파일 구조도 📂
 
-<div align=center>
-  <img src="docs/architecture.png" width="80%"/>
-</div>
-
-## 📂 프로젝트 파일 구조도
-
-### Back-end
+### 7.1. Back-end
 <small>
 
 ```
@@ -285,7 +276,7 @@
 ```
 </small>
 
-### Front-end
+### 7.2. Front-end
 <small>
 
 ```
