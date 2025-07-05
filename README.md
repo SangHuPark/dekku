@@ -123,19 +123,20 @@
 
 </br>
 
-### 2.4. 상품 및 게시글 추천 🛍️
 
-- Dekku한 게시글 속 상품 목록 확인
+### 2.4. 통합 검색 기능 개선 🔍
 
-- 새로운 상품 업데이트 및 인기 게시글 추천 시스템
+- 게시글 제목, 본문, 연관 상품명을 모두 검색 대상에 포함
 
-- 7일마다 갱신되는 추천 리스트로 매번 새로운 콘텐츠 제공
+- 사용자는 초성만 입력해도 관련 게시글을 빠르게 탐색 가능
+
+- 세 필드 중 하나만 일치해도 검색 결과로 노출되도록 구현
 
 <div align=center>
   <table border="1" style="border-collapse: collapse; text-align: center; width: 100%;">
     <tr>
-      <th scope="col" align=center> 상품 추천 </th>
-      <th scope="col" align=center> 게시글 추천 </th>
+      <th scope="col" align=center> 상품 기준 상단 노출 </th>
+      <th scope="col" align=center> 검색 빈도 기반 게시글 노출 </th>
     </tr>
     <tr>
       <td align=center>
