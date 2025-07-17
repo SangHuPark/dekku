@@ -4,13 +4,11 @@ services:
     image: mysql:8.3.0
     container_name: mysql
     ports:
-      - 3306:3306
+      - "3306:3306"
     environment:
+      MYSQL_ROOT_PASSWORD: 1234
       TZ: Asia/Seoul
-      MARIADB_ROOT_PASSWORD: dekku1234
-      MARIADB_DATABASE: dekku
-      MARIADB_USER: dekku
-      MARIADB_PASSWORD: dekku1234
+      MYSQL_DATABASE: dekku
     networks:
       - local
 
@@ -19,7 +17,7 @@ services:
     container_name: redis
     # restart: always
     ports:
-      - 6379:6379
+      - "6379:6379"
     volumes:
       - ./infra/redis/data/:/data
       - ./infra/redis/redis.conf:/usr/local/etc/redis/redis.conf
@@ -29,7 +27,7 @@ services:
 
   es:
     build:
-      context: ./dockerfiles/es
+      context: dockerfile/es
     container_name: es
     environment:
       - discovery.type=single-node
@@ -37,12 +35,9 @@ services:
       - xpack.security.http.ssl.enabled=false
       - xpack.security.transport.ssl.enabled=false
     ports:
-      - 9200:9200
+      - "9200:9200"
     networks:
       - local
-
-volumes:
-  mariadb_data:
 
 networks:
   local:
