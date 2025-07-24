@@ -2,12 +2,8 @@
 
 <table>
   <tr>
-    <td><strong>시작일</strong></td>
-    <td>2024.07.01 (월)</td>
-  </tr>
-  <tr>
-    <td><strong>종료일</strong></td>
-    <td>2024.08.16 (금)</td>
+    <td><strong>프로젝트 기간</strong></td>
+    <td>2024.07.01 - 2024.08.16 (7주)</td>
   </tr>
 </table>
 
